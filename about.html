@@ -57,49 +57,51 @@
 <div id="footer-placeholder"></div>
 
 <script>
-function initReveal() {
 
-  const elements = document.querySelectorAll('.reveal');
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.2 });
-
-  elements.forEach(el => observer.observe(el));
-
-  /* ✅ HANDLE IN-VIEW ELEMENTS ON LOAD */
-  elements.forEach((el, index) => {
-    const rect = el.getBoundingClientRect();
-
-    if (rect.top < window.innerHeight) {
-      setTimeout(() => {
-        el.classList.add('active');
-      }, index * 120);
-    }
-  });
-
-}
-
-/* HEADER */
+// ===============================
+// LOAD HEADER
+// ===============================
 fetch('partials/header.html')
   .then(res => res.text())
   .then(data => {
-    document.getElementById('header-placeholder').innerHTML = data;
+    const headerEl = document.getElementById('header-placeholder');
+    if (headerEl) headerEl.innerHTML = data;
   });
 
-/* FOOTER */
+// ===============================
+// LOAD FOOTER
+// ===============================
 fetch('partials/footer.html')
   .then(res => res.text())
   .then(data => {
-    document.getElementById('footer-placeholder').innerHTML = data;
+    const footerEl = document.getElementById('footer-placeholder');
+    if (footerEl) footerEl.innerHTML = data;
   });
 
-window.addEventListener('load', initReveal);
+// ===============================
+// MOBILE NAV (AFTER LOAD)
+// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (menuToggle && navLinks) {
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+  }
+
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks?.classList.remove('active');
+    });
+  });
+
+});
+
+ 
+  
 </script>
 
 </body>
