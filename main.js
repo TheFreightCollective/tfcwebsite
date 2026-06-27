@@ -63,3 +63,17 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // (prevents console errors across multiple pages)
 // ===============================
 console.log("Main JS loaded ✅");
+
+
+
+// ===============================
+// SIMPLE REVEAL SYSTEM
+// ===============================
+function initReveal() {
+  const elements = document.querySelectorAll('.reveal');
+
+  elements.forEach(el => {
+    el.style.opacity = 1;
+    el.style.transform = 'translateY(0)';
+  });
+}
