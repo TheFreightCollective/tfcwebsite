@@ -1,4 +1,4 @@
-/* GLOBAL */
+8/* GLOBAL */
 body {
   margin: 0;
   font-family: Inter, Arial, sans-serif;
@@ -557,6 +557,121 @@ p {
 
   .card {
     padding: 18px;
+  }
+}
+
+/* ================= MOBILE HAMBURGER MENU ================= */
+
+.mobile-menu-toggle {
+  display: none;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(30, 58, 138, 0.15);
+  background: #ffffff;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  transition: all 0.25s ease;
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #1e3a8a;
+  border-radius: 999px;
+  transition: all 0.25s ease;
+}
+
+.mobile-menu-toggle:hover {
+  border-color: #c7a24a;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+/* Mobile dropdown panel */
+.mobile-nav {
+  display: none;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.mobile-nav a {
+  display: block;
+  padding: 16px 22px;
+  text-decoration: none;
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.mobile-nav a:hover {
+  color: #1e3a8a;
+  background: #f8fafc;
+  padding-left: 28px;
+}
+
+.mobile-nav.active {
+  display: block;
+}
+
+/* Hamburger active animation */
+.mobile-menu-toggle.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+
+/* ================= RESPONSIVE HEADER UPDATE ================= */
+
+@media (max-width: 768px) {
+
+  .header-content {
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+  }
+
+  .logo img {
+    height: 32px;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .header-icon img {
+    width: 19px;
+    height: 19px;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-nav {
+    display: none !important;
   }
 }
 
