@@ -133,6 +133,13 @@ fetch('/tfcwebsite/partials/header.html')
     document.getElementById('header-placeholder').innerHTML = data;
   });
 
+    // ✅ INIT NAV HERE
+    if (typeof initNav === 'function') {
+      initNav();
+    }
+  });
+
+  
 /* FOOTER */
 fetch('/tfcwebsite/partials/footer.html')
   .then(res => res.text())
