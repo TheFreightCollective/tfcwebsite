@@ -77,7 +77,9 @@ fetch('/tfcwebsite/partials/footer.html')
 
 /* ✅ WAIT FOR RENDER PROPERLY */
 window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(initReveal, 50);
+  if (typeof initReveal === 'function') {
+    setTimeout(initReveal, 50);
+  }
 });
 </script>
 
