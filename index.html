@@ -119,50 +119,13 @@
 
 <div id="footer-placeholder"></div>
 
+
+
+
 <!-- SCRIPTS -->
 <script>
-function initReveal() {
 
-  const gridSection = document.querySelector('.services-grid');
-
-  if (gridSection) {
-
-    const gridItems = gridSection.querySelectorAll('.reveal');
-
-    const gridObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-
-          // ✅ Trigger cascade ONLY when visible
-          gridItems.forEach((el, index) => {
-            setTimeout(() => {
-              el.classList.add('active');
-            }, index * 120);
-          });
-
-          gridObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.25 });
-
-    gridObserver.observe(gridSection);
-  }
-
-  // ✅ Everything else stays scroll-based
-  const otherItems = document.querySelectorAll('.reveal:not(.services-grid .reveal)');
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.2 });
-
-  otherItems.forEach(el => observer.observe(el));
-}
-
+main.jsscript>
 
 /* HEADER */
 fetch('partials/header.html')
