@@ -91,68 +91,50 @@
 <!-- SCRIPTS -->
 <script>
 
-function initReveal() {
-  const elements = document.querySelectorAll('.services-grid .reveal');
-
-  elements.forEach((el, index) => {
-    setTimeout(() => {
-      el.classList.add('active');
-    }, index * 120);
+ // ===============================
+// LOAD HEADER
+// ===============================
+fetch('partials/header.html')
+  .then(res => res.text())
+  .then(data => {
+    const headerEl = document.getElementById('header-placeholder');
+    if (headerEl) headerEl.innerHTML = data;
   });
 
-  const others = document.querySelectorAll('.reveal:not(.services-grid .reveal)');
+// ===============================
+// LOAD FOOTER
+// ===============================
+fetch('partials/footer.html')
+  .then(res => res.text())
+  .then(data => {
+    const footerEl = document.getElementById('footer-placeholder');
+    if (footerEl) footerEl.innerHTML = data;
+  });
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-        observer.unobserve(entry.target);
-      }
+// ===============================
+// MOBILE NAV (AFTER LOAD)
+// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (menuToggle && navLinks) {
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
     });
-  }, { threshold: 0.2 });
+  }
 
-  others.forEach(el => observer.observe(el));
-}
-
-function initMobileMenu() {
-  const menuToggle = document.querySelector('.mobile-menu-toggle');
-  const mobileNav = document.querySelector('.mobile-nav');
-
-  if (!menuToggle || !mobileNav) return;
-
-  menuToggle.addEventListener('click', () => {
-    const isOpen = mobileNav.classList.toggle('active');
-
-    menuToggle.classList.toggle('active', isOpen);
-    menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  });
-
-  mobileNav.querySelectorAll('a').forEach(link => {
+  document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => {
-      mobileNav.classList.remove('active');
-      menuToggle.classList.remove('active');
-      menuToggle.setAttribute('aria-expanded', 'false');
+      navLinks?.classList.remove('active');
     });
   });
-}
 
-/* HEADER */
-fetch('/tfcwebsite/partials/header.html')
-  .then(res => res.text())
-  .then(data => {
-    document.getElementById('header-placeholder').innerHTML = data;
-    initMobileMenu();
-  });
+});
 
-/* FOOTER */
-fetch('/tfcwebsite/partials/footer.html')
-  .then(res => res.text())
-  .then(data => {
-    document.getElementById('footer-placeholder').innerHTML = data;
-  });
 
-window.addEventListener('load', initReveal);
-
+  
 </script>
 
 </body>
