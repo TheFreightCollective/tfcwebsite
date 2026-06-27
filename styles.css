@@ -428,3 +428,135 @@ body {
 p {
   max-width: 650px;
 }
+
+/* ================= RESPONSIVE ================= */
+
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+
+  .container {
+    padding: 8px 16px;
+  }
+
+  /* HERO */
+  .hero-gradient {
+    padding-left: 60px;
+    height: 460px;
+  }
+
+  .hero-gradient h1 {
+    font-size: 36px;
+  }
+
+  /* SERVICES GRID */
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  /* FOOTER */
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+
+  /* HEADER */
+  .header-content {
+    grid-template-columns: auto auto;
+    gap: 10px;
+  }
+
+  .nav-links {
+    display: none; /* hide menu for now (we can add hamburger next) */
+  }
+
+  .logo img {
+    height: 32px;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  /* HERO */
+  .hero-gradient {
+    height: auto;
+    padding: 80px 20px 60px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .hero-gradient .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-gradient h1 {
+    font-size: 30px;
+  }
+
+  .hero-gradient p {
+    font-size: 15px;
+  }
+
+  .btn {
+    padding: 12px 22px;
+    font-size: 14px;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 60px 20px;
+  }
+
+  .section h1 {
+    font-size: 28px;
+  }
+
+  /* SERVICES */
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .service-card {
+    padding: 22px;
+  }
+
+  /* FOOTER */
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    text-align: center;
+  }
+
+  .footer-col a {
+    align-items: center;
+  }
+}
+
+
+/* ===== SMALL MOBILE ===== */
+@media (max-width: 480px) {
+
+  .hero-gradient h1 {
+    font-size: 26px;
+  }
+
+  .hero-gradient p {
+    font-size: 14px;
+  }
+
+  .service-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+}
+
