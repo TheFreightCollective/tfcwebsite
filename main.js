@@ -73,7 +73,15 @@ function initReveal() {
   const elements = document.querySelectorAll('.reveal');
 
   elements.forEach(el => {
-    el.style.opacity = 1;
-    el.style.transform = 'translateY(0)';
+    let delay = 0;
+
+    if (el.classList.contains('reveal-delay-1')) delay = 100;
+    if (el.classList.contains('reveal-delay-2')) delay = 200;
+    if (el.classList.contains('reveal-delay-3')) delay = 300;
+
+    setTimeout(() => {
+      el.style.opacity = 1;
+      el.style.transform = 'translateY(0)';
+    }, delay);
   });
 }
