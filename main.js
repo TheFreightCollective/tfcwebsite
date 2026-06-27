@@ -3,7 +3,7 @@
 // ===============================
 
 function initNav() {
-  const menuToggle = document.querySelector('.menu-toggle');
+  const menuToggle = document.querySelector('.mobile-menu-toggle');
   const navLinks = document.querySelector('.nav-links');
 
   if (menuToggle && navLinks) {
