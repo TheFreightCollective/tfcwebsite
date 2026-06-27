@@ -52,6 +52,32 @@ body {
   height: 38px;
 }
 
+
+
+/* Remove blue tap highlight (mobile) */
+button,
+a,
+.nav-toggle,
+.mobile-menu-toggle {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove focus outline (desktop + mobile) */
+button:focus,
+a:focus,
+.nav-toggle:focus,
+.mobile-menu-toggle:focus {
+  outline: none;
+}
+
+/* Optional: remove active flash */
+button:active,
+a:active,
+.nav-toggle:active,
+.mobile-menu-toggle:active {
+  background: none;
+}
+
 /* NAV */
 .nav-links {
   display: flex;
