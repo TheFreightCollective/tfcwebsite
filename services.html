@@ -90,7 +90,6 @@
 <script>
 
 function initReveal() {
-
   const elements = document.querySelectorAll('.services-grid .reveal');
 
   elements.forEach((el, index) => {
@@ -113,14 +112,37 @@ function initReveal() {
   others.forEach(el => observer.observe(el));
 }
 
+function initMobileMenu() {
+  const menuToggle = document.querySelector('.mobile-menu-toggle');
+  const mobileNav = document.querySelector('.mobile-nav');
 
-/* ✅ FIXED: include repo path */
+  if (!menuToggle || !mobileNav) return;
+
+  menuToggle.addEventListener('click', () => {
+    const isOpen = mobileNav.classList.toggle('active');
+
+    menuToggle.classList.toggle('active', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  mobileNav.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileNav.classList.remove('active');
+      menuToggle.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
+/* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
+    initMobileMenu();
   });
 
+/* FOOTER */
 fetch('/tfcwebsite/partials/footer.html')
   .then(res => res.text())
   .then(data => {
@@ -128,6 +150,7 @@ fetch('/tfcwebsite/partials/footer.html')
   });
 
 window.addEventListener('load', initReveal);
+
 </script>
 
 </body>
