@@ -675,3 +675,14 @@ p {
   }
 }
 
+
+.nav-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: flex; /* or block */
+  }
+}
+
