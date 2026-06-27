@@ -495,37 +495,37 @@ p {
   }
 
   
-
   .nav-links {
     display: none;
     flex-direction: column;
 
     position: absolute;
-    top: 65px;          /* pushes below header */
+    top: 70px;            /* ✅ slightly lower = less cramped */
     left: 0;
     width: 100%;
 
     background: #ffffff;
-    padding: 20px 0;
 
+    padding: 10px 0;      /* ✅ reduce top/bottom crowding */
     border-top: 1px solid #e5e7eb;
-    box-shadow: 0 12px 25px rgba(0,0,0,0.08);
 
-    z-index: 999;       /* sit above content */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
   }
-
-
 
   .nav-links.active {
     display: flex;
   }
 
+  .nav-links a {
+    padding: 18px 24px;     /* ✅ better spacing */
+    font-size: 14px;
+    letter-spacing: 1px;
 
-.nav-links a {
-    padding: 14px 20px;
-    width: 100%;
-    text-align: left;
     border-bottom: 1px solid #f1f5f9;
+  }
+
+  .nav-links a:last-child {
+    border-bottom: none;
   }
 
   .logo img {
