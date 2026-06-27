@@ -774,3 +774,26 @@ p {
     display: flex; /* or block */
   }
 }
+
+/* ── Quote Form ─────────────────────────── */
+.quote-intro { max-width: 600px; margin-bottom: 2.5rem; }
+.quote-form { max-width: 680px; }
+.form-group { margin-bottom: 1.5rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+.form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 0.4rem; }
+.form-group .field-hint { display: block; font-size: 12px; margin-bottom: 0.4rem; opacity: 0.6; }
+.form-group input,
+.form-group textarea { width: 100%; padding: 10px 14px; font-size: 15px; border: 1px solid var(--border, #ddd); border-radius: 6px; background: var(--surface-2, #fff); color: var(--text-primary, #111); font-family: inherit; transition: border-color 0.15s; box-sizing: border-box; }
+.form-group input:focus,
+.form-group textarea:focus { outline: none; border-color: var(--color-accent, #5a8f5a); }
+.form-group textarea { resize: vertical; min-height: 100px; }
+.form-divider { margin: 2rem 0 1.75rem; border: none; border-top: 1px solid var(--border, #eee); }
+.form-section-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.5; margin-bottom: 1.25rem; }
+.field-required { color: #a32d2d; }
+.field-error { border-color: #a32d2d !important; }
+.form-submit { margin-top: 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.form-status { font-size: 14px; display: none; }
+.form-status.success { color: #3b6d11; display: block; }
+.form-status.error { color: #a32d2d; display: block; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
