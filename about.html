@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="UTF-8">
+  <title>About The Freight Collective</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div id="header-placeholder" class="header-wrapper"></div>
+
+<section class="section">
+
+  <h1 class="reveal">About The Freight Collective</h1>
+
+  <p class="reveal reveal-delay-1">
+    The Freight Collective was built to simplify freight coordination and contractor management across Australia.
+  </p>
+
+  <p class="reveal reveal-delay-2">
+    We operate through a trusted national network of transport operators, enabling flexible, scalable and efficient freight solutions for businesses of all sizes.
+  </p>
+
+  <h2 class="reveal">Our Approach</h2>
+
+  <p class="reveal reveal-delay-1">
+    We understand that no two freight movements are the same. Every job requires careful consideration of equipment, location, timing and logistics complexity.
+  </p>
+
+  <p class="reveal reveal-delay-2">
+    Our approach is to assess each requirement individually and deliver the most effective solution.
+  </p>
+
+  <p class="reveal reveal-delay-3">
+    By coordinating multiple service providers into one streamlined process, we remove the complexity traditionally involved in managing freight movements.
+  </p>
+
+  <h2 class="reveal">Why Businesses Choose Us</h2>
+
+  <ul class="reveal reveal-delay-1">
+    <li>Access to a national network of experienced operators</li>
+    <li>Fast response times and clear communication</li>
+    <li>Ability to handle complex and urgent freight requirements</li>
+    <li>Reliable delivery across metro and regional Australia</li>
+  </ul>
+
+  <h2 class="reveal">Articles</h2>
+
+  <p class="reveal reveal-delay-1">
+    Read our latest insights, project case studies, and updates on freight and logistics operations.
+  </p>
+
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script>
+function initReveal() {
+
+  const elements = document.querySelectorAll('.reveal');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  elements.forEach(el => observer.observe(el));
+
+  /* ✅ HANDLE IN-VIEW ELEMENTS ON LOAD */
+  elements.forEach((el, index) => {
+    const rect = el.getBoundingClientRect();
+
+    if (rect.top < window.innerHeight) {
+      setTimeout(() => {
+        el.classList.add('active');
+      }, index * 120);
+    }
+  });
+
+}
+
+/* HEADER */
+fetch('partials/header.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('header-placeholder').innerHTML = data;
+  });
+
+/* FOOTER */
+fetch('partials/footer.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+
+window.addEventListener('load', initReveal);
+</script>
+
+</body>
+</html>
+
+

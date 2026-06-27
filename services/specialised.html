@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Specialised & General Logistics</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div id="header-placeholder" class="header-wrapper"></div>
+
+<section class="section">
+
+<h1 class="reveal">Specialised & General Logistics</h1>
+
+<p class="reveal reveal-delay-1">
+We provide specialised logistics solutions for complex, oversized, and high-value freight.
+</p>
+
+<p class="reveal reveal-delay-2">
+Our services ensure safe, efficient, and compliant transport for challenging freight movements.
+</p>
+
+<h2 class="reveal">Tailored Transport Solutions</h2>
+
+<p class="reveal reveal-delay-1">
+Each job is assessed individually to deliver the most effective transport plan.
+</p>
+
+<h2 class="reveal">General Logistics</h2>
+
+<p class="reveal reveal-delay-1">
+We also support everyday freight requirements across Australia with reliable and scalable solutions.
+</p>
+
+<div class="reveal" style="margin-top:30px;">
+<a href="../contact/quote.html" class="btn">Request a Quote</a>
+</div>
+
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script>
+function initReveal() {
+
+  const elements = document.querySelectorAll('.reveal');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  elements.forEach(el => observer.observe(el));
+
+  /* ✅ HANDLE IN-VIEW ELEMENTS ON LOAD */
+  elements.forEach((el, index) => {
+    const rect = el.getBoundingClientRect();
+
+    if (rect.top < window.innerHeight) {
+      setTimeout(() => {
+        el.classList.add('active');
+      }, index * 120);
+    }
+  });
+
+}
+
+/* HEADER */
+fetch('../partials/header.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('header-placeholder').innerHTML = data;
+  });
+
+/* FOOTER */
+fetch('../partials/footer.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+
+window.addEventListener('load', initReveal);
+</script>
+
+</body>
+</html>

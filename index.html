@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>The Freight Collective</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div id="header-placeholder" class="header-wrapper"></div>
+<section class="hero hero-gradient">
+  <div class="hero-content">
+    <h1>Complex Logistics Made Simple</h1>
+
+    <p>
+      Specialised freight, project logistics, and national transport solutions delivered through a trusted network.
+    </p>
+
+    <a href="contact/quote.html" class="btn">Request a Quote</a>
+  </div>
+</section>
+
+
+
+<!-- OVERVIEW -->
+<section class="section">
+  <h1 class="reveal">Complete Freight Solutions</h1>
+
+  <p class="reveal reveal-delay-1">
+    We coordinate complex freight, machinery transport, crane movements and interstate logistics across Australia with speed and precision.
+  </p>
+</section>
+
+<!-- SERVICES -->
+<section class="section">
+  <h1 class="reveal">Our Services</h1>
+
+  <div class="services-grid">
+
+    <a href="services/specialised.html" class="service-card reveal reveal-delay-1">
+      <img src="assets/images/icons/brainpower.png" class="service-icon" alt="">
+      <h3>Specialised & General Logistics</h3>
+      <p>Oversized, complex and general freight solutions.</p>
+    </a>
+
+    <a href="services/cranes.html" class="service-card reveal reveal-delay-2">
+      <img src="assets/images/icons/cranetruck.png" class="service-icon" alt="">
+      <h3>Cranes & Crane Trucks</h3>
+      <p>Lifting and transport combined into one system.</p>
+    </a>
+
+    <a href="services/complex.html" class="service-card reveal reveal-delay-3">
+      <img src="assets/images/icons/australiapoints.png" class="service-icon" alt="">
+      <h3>Complex Logistics Movements</h3>
+      <p>Multi-stage logistics coordination and planning.</p>
+    </a>
+
+    <a href="services/regional.html" class="service-card reveal reveal-delay-1">
+      <img src="assets/images/icons/australia.png" class="service-icon" alt="">
+      <h3>Regional Transport Network</h3>
+      <p>Reliable transport across regional Australia.</p>
+    </a>
+
+    <a href="services/project.html" class="service-card reveal reveal-delay-2">
+      <img src="assets/images/icons/hardhatkog.png" class="service-icon" alt="">
+      <h3>Project Management</h3>
+      <p>End-to-end logistics planning and execution.</p>
+    </a>
+
+    <a href="services/hotshot.html" class="service-card reveal reveal-delay-3">
+      <img src="assets/images/icons/express.png" class="service-icon" alt="">
+      <h3>Hot Shot Express</h3>
+      <p>Urgent, time-critical freight delivery.</p>
+    </a>
+
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="section">
+  <h1 class="reveal">Why Work With Us</h1>
+
+  <div class="grid">
+
+    <div class="card reveal reveal-delay-1">
+      <h3>National Network</h3>
+      <p>Access to trusted operators across Australia.</p>
+    </div>
+
+    <div class="card reveal reveal-delay-2">
+      <h3>Fast Response</h3>
+      <p>Quick turnaround on quotes and job allocation.</p>
+    </div>
+
+    <div class="card reveal reveal-delay-3">
+      <h3>Complex Capability</h3>
+      <p>We handle challenging and multi-stage freight movements.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <h1 class="reveal">Let’s Move Your Freight</h1>
+
+  <p class="reveal reveal-delay-1">
+    Get in touch with our team to discuss your next job and receive a fast quote.
+  </p>
+
+  <div class="reveal reveal-delay-2" style="margin-top:20px;">
+    <a href="contact/quote.html" class="btn">Get a Quote</a>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<!-- SCRIPTS -->
+<script>
+function initReveal() {
+
+  const gridSection = document.querySelector('.services-grid');
+
+  if (gridSection) {
+
+    const gridItems = gridSection.querySelectorAll('.reveal');
+
+    const gridObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+
+          // ✅ Trigger cascade ONLY when visible
+          gridItems.forEach((el, index) => {
+            setTimeout(() => {
+              el.classList.add('active');
+            }, index * 120);
+          });
+
+          gridObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25 });
+
+    gridObserver.observe(gridSection);
+  }
+
+  // ✅ Everything else stays scroll-based
+  const otherItems = document.querySelectorAll('.reveal:not(.services-grid .reveal)');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  otherItems.forEach(el => observer.observe(el));
+}
+
+
+/* HEADER */
+fetch('partials/header.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('header-placeholder').innerHTML = data;
+  });
+
+/* FOOTER */
+fetch('partials/footer.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+
+/* ✅ WAIT FOR RENDER PROPERLY */
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initReveal, 50);
+});
+</script>
+
+
+</body>
+</html>

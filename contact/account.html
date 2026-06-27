@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Account Application</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div id="header-placeholder" class="header-wrapper"></div>
+
+<section class="section">
+  <h1 class="reveal">Account Application</h1>
+
+  <iframe 
+    class="reveal reveal-delay-1"
+    width="100%" 
+    height="900px" 
+    src="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=nngWXPFKFUOSvedAYH2YSnjXP0tp9OhCuwv0KN6kQpZUN0JOWVZOOUhCWkw1WjlQTkM4WEJIRFNVWS4u&embed=true">
+  </iframe>
+
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script>
+function initReveal() {
+
+  const elements = document.querySelectorAll('.reveal');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  elements.forEach(el => observer.observe(el));
+
+  /* ✅ HANDLE IN-VIEW ELEMENTS ON LOAD */
+  elements.forEach((el, index) => {
+    const rect = el.getBoundingClientRect();
+
+    if (rect.top < window.innerHeight) {
+      setTimeout(() => {
+        el.classList.add('active');
+      }, index * 120);
+    }
+  });
+
+}
+
+/* HEADER */
+fetch('../partials/header.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('header-placeholder').innerHTML = data;
+  });
+
+/* FOOTER */
+fetch('../partials/footer.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+
+window.addEventListener('load', initReveal);
+</script>
+
+</body>
+</html>

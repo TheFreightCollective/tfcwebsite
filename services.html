@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Our Services</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div id="header-placeholder" class="header-wrapper"></div>
+
+<section class="section">
+
+  <h1 class="reveal">Our Services</h1>
+
+  <div class="services-grid">
+
+    <!-- Specialised -->
+    <a href="services/specialised.html" class="service-card reveal reveal-delay-1">
+      <img src="../assets/images/icons/brainpower.png" class="service-icon" alt="">
+      <h3>Specialised & General Logistics</h3>
+      <p>Oversized, complex and general freight solutions.</p>
+    </a>
+
+    <!-- Cranes -->
+    <a href="services/cranes.html" class="service-card reveal reveal-delay-2">
+      <img src="../assets/images/icons/cranetruck.png" class="service-icon" alt="">
+      <h3>Cranes & Crane Trucks</h3>
+      <p>Lifting and transport combined into one system.</p>
+    </a>
+
+    <!-- Complex -->
+    <a href="services/complex.html" class="service-card reveal reveal-delay-3">
+      <img src="../assets/images/icons/australiapoints.png" class="service-icon" alt="">
+      <h3>Complex Logistics Movements</h3>
+      <p>Multi-stage logistics coordination and planning.</p>
+    </a>
+
+    <!-- Regional -->
+    <a href="services/regional.html" class="service-card reveal reveal-delay-1">
+      <img src="../assets/images/icons/australia.png" class="service-icon" alt="">
+      <h3>Regional Transport Network</h3>
+      <p>Reliable transport across regional Australia.</p>
+    </a>
+
+    <!-- Project -->
+    <a href="services/project.html" class="service-card reveal reveal-delay-2">
+      <img src="../assets/images/icons/hardhatkog.png" class="service-icon" alt="">
+      <h3>Project Management</h3>
+      <p>End-to-end logistics planning and execution.</p>
+    </a>
+
+    <!-- Hotshot -->
+    <a href="services/hotshot.html" class="service-card reveal reveal-delay-3">
+      <img src="../assets/images/icons/express.png" class="service-icon" alt="">
+      <h3>Hot Shot Express</h3>
+      <p>Urgent, time-critical freight delivery.</p>
+    </a>
+
+    <!-- Interstate -->
+    <a href="services/interstate.html" class="service-card reveal reveal-delay-1">
+      <img src="../assets/images/icons/pointtopoint.png" class="service-icon" alt="">
+      <h3>Interstate Transport</h3>
+      <p>Consistent freight movement nationwide.</p>
+    </a>
+
+    <!-- Consulting -->
+    <a href="services/consulting.html" class="service-card reveal reveal-delay-2">
+      <img src="../assets/images/icons/roundtable.png" class="service-icon" alt="">
+      <h3>Logistics & Consulting</h3>
+      <p>Expert advice to optimise freight operations.</p>
+    </a>
+
+    <!-- Port -->
+    <a href="services/port.html" class="service-card reveal reveal-delay-3">
+      <img src="../assets/images/icons/australiapoints.png" class="service-icon" alt="">
+      <h3>Port to Destination Transport</h3>
+      <p>Seamless coordination from port to delivery.</p>
+    </a>
+
+  </div>
+
+</section>
+
+<div id="footer-placeholder"></div>
+
+<!-- SCRIPTS -->
+<script>
+
+function initReveal() {
+
+  const elements = document.querySelectorAll('.services-grid .reveal');
+
+  elements.forEach((el, index) => {
+    setTimeout(() => {
+      el.classList.add('active');
+    }, index * 120);
+  });
+
+  /* Keep normal reveal for everything else */
+  const others = document.querySelectorAll('.reveal:not(.services-grid .reveal)');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  others.forEach(el => observer.observe(el));
+}
+
+
+/* HEADER */
+fetch('partials/header.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('header-placeholder').innerHTML = data;
+  });
+
+/* FOOTER */
+fetch('partials/footer.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+
+window.addEventListener('load', initReveal);
+</script>
+
+
+</body>
+</html>

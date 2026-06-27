@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Project Management</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div id="header-placeholder" class="header-wrapper"></div>
+
+<section class="section">
+
+<h1 class="reveal">Project Management</h1>
+
+<p class="reveal reveal-delay-1">
+We manage complex logistics projects from planning through to final delivery.
+</p>
+
+<p class="reveal reveal-delay-2">
+Our team ensures coordination across all stakeholders and stages.
+</p>
+
+<h2 class="reveal">Full Coordination</h2>
+
+<p class="reveal reveal-delay-1">
+We handle communication, scheduling, and execution end-to-end.
+</p>
+
+<h2 class="reveal">Planning & Execution</h2>
+
+<p class="reveal reveal-delay-1">
+Every project is carefully planned to deliver efficient outcomes.
+</p>
+
+<div class="reveal" style="margin-top:30px;">
+<a href="../contact/quote.html" class="btn">Request a Quote</a>
+</div>
+
+</section>
+
+<div id="footer-placeholder"></div>
+<script>
+function initReveal() {
+
+  const elements = document.querySelectorAll('.reveal');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  elements.forEach(el => observer.observe(el));
+
+  /* ✅ HANDLE IN-VIEW ELEMENTS ON LOAD */
+  elements.forEach((el, index) => {
+    const rect = el.getBoundingClientRect();
+
+    if (rect.top < window.innerHeight) {
+      setTimeout(() => {
+        el.classList.add('active');
+      }, index * 120);
+    }
+  });
+
+}
+
+/* HEADER */
+fetch('../partials/header.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('header-placeholder').innerHTML = data;
+  });
+
+/* FOOTER */
+fetch('../partials/footer.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+
+window.addEventListener('load', initReveal);
+</script>
+
+
+</body>
+</html>

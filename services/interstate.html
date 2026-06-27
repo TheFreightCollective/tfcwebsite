@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Interstate Transport</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div id="header-placeholder" class="header-wrapper"></div>
+
+<section class="section">
+
+  <h1 class="reveal">Interstate Transport Network</h1>
+
+  <p class="reveal reveal-delay-1">
+    We provide reliable interstate freight services connecting businesses across Australia.
+  </p>
+
+  <p class="reveal reveal-delay-2">
+    Our network ensures consistent, efficient delivery between major cities and regional locations.
+  </p>
+
+  <h2 class="reveal">National Coverage</h2>
+
+  <p class="reveal reveal-delay-1">
+    We coordinate freight movements across state lines using trusted carrier partnerships.
+  </p>
+
+  <h2 class="reveal">Reliable Delivery</h2>
+
+  <p class="reveal reveal-delay-1">
+    We ensure consistent transit times and reliable service across all interstate routes.
+  </p>
+
+  <div class="reveal" style="margin-top:30px;">
+    <a href="../contact/quote.html" class="btn">Request a Quote</a>
+  </div>
+
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script>
+function initReveal() {
+
+  const elements = document.querySelectorAll('.reveal');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  elements.forEach(el => observer.observe(el));
+
+  /* ✅ HANDLE IN-VIEW ELEMENTS ON LOAD */
+  elements.forEach((el, index) => {
+    const rect = el.getBoundingClientRect();
+
+    if (rect.top < window.innerHeight) {
+      setTimeout(() => {
+        el.classList.add('active');
+      }, index * 120);
+    }
+  });
+
+}
+
+/* HEADER */
+fetch('../partials/header.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('header-placeholder').innerHTML = data;
+  });
+
+/* FOOTER */
+fetch('../partials/footer.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+
+window.addEventListener('load', initReveal);
+</script>
+
+
+</body>
+</html>

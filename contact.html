@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Contact</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div id="header-placeholder" class="header-wrapper"></div>
+
+<section class="section">
+
+  <h1 class="reveal">Get in Touch</h1>
+
+  <p class="reveal reveal-delay-1">
+    Choose the best option below and our team will assist you promptly.
+  </p>
+
+  <div class="services-grid">
+
+    <!-- MESSAGE -->
+    <a href="contact/message.html" class="service-card reveal reveal-delay-1">
+      <img src="../assets/images/icons/brainpower.png" class="service-icon" alt="">
+      <h3>Send Message</h3>
+      <p>General enquiries, questions or support.</p>
+    </a>
+
+    <!-- QUOTE -->
+    <a href="contact/quote.html" class="service-card reveal reveal-delay-2">
+      <img src="../assets/images/icons/pointtopoint.png" class="service-icon" alt="">
+      <h3>Request a Quote</h3>
+      <p>Get pricing and availability for your job.</p>
+    </a>
+
+    <!-- ACCOUNT -->
+    <a href="contact/account.html" class="service-card reveal reveal-delay-3">
+      <img src="../assets/images/icons/roundtable.png" class="service-icon" alt="">
+      <h3>Account Application</h3>
+      <p>Apply for a business trading account.</p>
+    </a>
+
+  </div>
+
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script>
+function initReveal() {
+
+  const grids = document.querySelectorAll('.services-grid');
+
+  grids.forEach(grid => {
+
+    const items = grid.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+
+          items.forEach((el, index) => {
+            setTimeout(() => {
+              el.classList.add('active');
+            }, index * 100);
+          });
+
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25 });
+
+    observer.observe(grid);
+  });
+
+  // ✅ everything else
+  const others = document.querySelectorAll('.reveal:not(.services-grid .reveal)');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  others.forEach(el => observer.observe(el));
+}
+
+/* HEADER */
+fetch('partials/header.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('header-placeholder').innerHTML = data;
+  });
+
+/* FOOTER */
+fetch('partials/footer.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+
+window.addEventListener('load', initReveal);
+</script>
+
+</body>
+</html>

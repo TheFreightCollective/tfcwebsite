@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cranes & Crane Trucks</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+<div id="header-placeholder" class="header-wrapper"></div>
+
+<section class="section">
+
+<h1 class="reveal">Cranes & Crane Trucks</h1>
+
+<p class="reveal reveal-delay-1">
+Crane trucks combine lifting and transport into one efficient solution.
+</p>
+
+<p class="reveal reveal-delay-2">
+This removes the need for multiple contractors and simplifies operations.
+</p>
+
+<h2 class="reveal">Integrated Transport</h2>
+
+<p class="reveal reveal-delay-1">
+We handle machinery, construction freight, and complex site deliveries.
+</p>
+
+<h2 class="reveal">Key Benefits</h2>
+
+<ul class="reveal reveal-delay-2">
+<li>Reduced handling</li>
+<li>Faster delivery</li>
+<li>Lower costs</li>
+<li>Ideal for tight access sites</li>
+</ul>
+
+<div class="reveal" style="margin-top:30px;">
+<a href="../contact/quote.html" class="btn">Request a Quote</a>
+</div>
+
+</section>
+
+<div id="footer-placeholder"></div>
+<script>
+function initReveal() {
+
+  const elements = document.querySelectorAll('.reveal');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  elements.forEach(el => observer.observe(el));
+
+  /* ✅ HANDLE IN-VIEW ELEMENTS ON LOAD */
+  elements.forEach((el, index) => {
+    const rect = el.getBoundingClientRect();
+
+    if (rect.top < window.innerHeight) {
+      setTimeout(() => {
+        el.classList.add('active');
+      }, index * 120);
+    }
+  });
+
+}
+
+/* HEADER */
+fetch('../partials/header.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('header-placeholder').innerHTML = data;
+  });
+
+/* FOOTER */
+fetch('../partials/footer.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+
+window.addEventListener('load', initReveal);
+</script>
+
+</body>
+</html>
