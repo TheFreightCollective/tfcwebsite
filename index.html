@@ -131,13 +131,13 @@ fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-  });
 
-    // ✅ INIT NAV HERE
+    // ✅ INIT NAV AFTER HEADER LOADS
     if (typeof initNav === 'function') {
       initNav();
-    }
+    }    
   });
+
 
   
 /* FOOTER */
