@@ -66,22 +66,38 @@ console.log("Main JS loaded ✅");
 
 
 
+
 // ===============================
-// SIMPLE REVEAL SYSTEM
+// SCROLL REVEAL SYSTEM (PROPER)
 // ===============================
 function initReveal() {
   const elements = document.querySelectorAll('.reveal');
 
-  elements.forEach(el => {
-    let delay = 0;
+  const revealOnScroll = () => {
+    const windowHeight = window.innerHeight;
 
-    if (el.classList.contains('reveal-delay-1')) delay = 100;
-    if (el.classList.contains('reveal-delay-2')) delay = 200;
-    if (el.classList.contains('reveal-delay-3')) delay = 300;
+    elements.forEach(el => {
+      const elementTop = el.getBoundingClientRect().top;
 
-    setTimeout(() => {
-      el.style.opacity = 1;
-      el.style.transform = 'translateY(0)';
-    }, delay);
-  });
+      if (elementTop < windowHeight - 100) {
+        let delay = 0;
+
+        if (el.classList.contains('reveal-delay-1')) delay = 100;
+        if (el.classList.contains('reveal-delay-2')) delay = 200;
+        if (el.classList.contains('reveal-delay-3')) delay = 300;
+
+        setTimeout(() => {
+          el.style.opacity = 1;
+          el.style.transform = 'translateY(0)';
+        }, delay);
+      }
+    });
+  };
+
+  // Run once on load
+  revealOnScroll();
+
+  // Run on scroll
+  window.addEventListener('scroll', revealOnScroll);
 }
+
