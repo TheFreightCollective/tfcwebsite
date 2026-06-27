@@ -3,10 +3,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Request Quote</title>
+  <title>Request a Quote — The Freight Collective</title>
   <link rel="stylesheet" href="/tfcwebsite/styles.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+   
+  </style>
 </head>
 
 <body>
@@ -14,25 +16,163 @@
 <div id="header-placeholder" class="header-wrapper"></div>
 
 <section class="section">
-  <h1 class="reveal">Request Quote</h1>
+
+  <div class="quote-intro">
+    <h1 class="reveal">Request a Quote</h1>
+    <p class="reveal reveal-delay-1">
+      Fill in the details below and we'll come back to you with a fast, straightforward quote. The more detail you can give us about the freight, the better — but don't worry if you're not sure on everything yet.
+    </p>
+  </div>
+
+  <form class="quote-form reveal reveal-delay-2" id="quoteForm" novalidate>
+
+    <p class="form-section-label">Your details</p>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="full_name">Full name <span class="field-required">*</span></label>
+        <input type="text" id="full_name" name="full_name" placeholder="Jane Smith" required>
+      </div>
+      <div class="form-group">
+        <label for="company">Company</label>
+        <input type="text" id="company" name="company" placeholder="Acme Industries">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Email address <span class="field-required">*</span></label>
+        <input type="email" id="email" name="email" placeholder="jane@company.com.au" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone number <span class="field-required">*</span></label>
+        <input type="tel" id="phone" name="phone" placeholder="04XX XXX XXX" required>
+      </div>
+    </div>
+
+    <hr class="form-divider">
+
+    <p class="form-section-label">Freight details</p>
+
+    <div class="form-group">
+      <label for="freight_description">What are you moving? <span class="field-required">*</span></label>
+      <span class="field-hint">Type of goods, dimensions, weight, number of items — whatever you know.</span>
+      <textarea id="freight_description" name="freight_description" rows="3" placeholder="e.g. One excavator, approx 8 tonne. Dimensions unknown at this stage." required></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="pickup_location">Pickup location <span class="field-required">*</span></label>
+        <input type="text" id="pickup_location" name="pickup_location" placeholder="Suburb, State" required>
+      </div>
+      <div class="form-group">
+        <label for="delivery_location">Delivery location <span class="field-required">*</span></label>
+        <input type="text" id="delivery_location" name="delivery_location" placeholder="Suburb, State" required>
+      </div>
+    </div>
+
+    <hr class="form-divider">
+
+    <p class="form-section-label">Anything else?</p>
+
+    <div class="form-group">
+      <label for="comments">Additional comments</label>
+      <span class="field-hint">Access restrictions, special handling requirements, timing, or anything else we should know.</span>
+      <textarea id="comments" name="comments" rows="4" placeholder="e.g. Tight access at delivery site, needs hiab. Ideally moved before end of the month."></textarea>
+    </div>
+
+    <div class="form-submit">
+      <button type="submit" class="btn" id="submitBtn">Submit quote request</button>
+      <span class="form-status" id="formStatus"></span>
+    </div>
+
+  </form>
+
 </section>
 
 <div id="footer-placeholder"></div>
- <script src="../main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../main.js"></script>
 
 <!-- SCRIPTS -->
 <script>
 
+
+/* =============================================
+   SUPABASE CONFIG
+   Replace these two values with your own from:
+   Supabase Dashboard → Project Settings → API
+   ============================================= */
+const SUPABASE_URL = 'https://supabase.com/dashboard/project/wwrgcvwgjhcnmuzjjvcb';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cmdjdndnamhjbm11empqdmNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjQ5NDYsImV4cCI6MjA5NjE0MDk0Nn0.egMO_NgiOmDQ0liMyNThkSz28gC485H26JkXn9-CuNo';
+
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* FORM SUBMISSION */
+document.getElementById('quoteForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const submitBtn = document.getElementById('submitBtn');
+  const statusEl = document.getElementById('formStatus');
+
+  const required = form.querySelectorAll('[required]');
+  let valid = true;
+  required.forEach(field => {
+    if (!field.value.trim()) {
+      field.classList.add('field-error');
+      valid = false;
+    } else {
+      field.classList.remove('field-error');
+    }
+  });
+
+  if (!valid) {
+    statusEl.textContent = 'Please fill in all required fields.';
+    statusEl.className = 'form-status error';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  statusEl.className = 'form-status';
+
+  const payload = {
+    full_name:           form.full_name.value.trim(),
+    company:             form.company.value.trim() || null,
+    email:               form.email.value.trim(),
+    phone:               form.phone.value.trim(),
+    freight_description: form.freight_description.value.trim(),
+    pickup_location:     form.pickup_location.value.trim(),
+    delivery_location:   form.delivery_location.value.trim(),
+    comments:            form.comments.value.trim() || null,
+    submitted_at:        new Date().toISOString(),
+  };
+
+  const { error } = await db.from('quote_requests').insert([payload]);
+
+  if (error) {
+    console.error('Supabase error:', error);
+    statusEl.textContent = 'Something went wrong — please try again or call us directly.';
+    statusEl.className = 'form-status error';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit quote request';
+  } else {
+    form.reset();
+    statusEl.textContent = "Thanks — we\'ve received your request and will be in touch shortly.";
+    statusEl.className = 'form-status success';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit quote request';
+  }
+});
 
 /* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-    // ✅ INIT NAV AFTER HEADER LOADS
-    if (typeof initNav === 'function') {
-      initNav();
-    }    
+    if (typeof initNav === 'function') initNav();
   });
 
 /* FOOTER */
@@ -42,10 +182,8 @@ fetch('/tfcwebsite/partials/footer.html')
     document.getElementById('footer-placeholder').innerHTML = data;
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
 window.addEventListener('DOMContentLoaded', () => {
-  initReveal();
+  if (typeof initReveal === 'function') initReveal();
 });
 
 </script>
