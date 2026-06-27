@@ -498,31 +498,38 @@ p {
   .nav-links {
     display: none;
     flex-direction: column;
-
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.25s ease;
     position: absolute;
     top: 70px;            /* ✅ slightly lower = less cramped */
     left: 0;
     width: 100%;
-
     background: #ffffff;
-
     padding: 10px 0;      /* ✅ reduce top/bottom crowding */
     border-top: 1px solid #e5e7eb;
-
-    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   }
 
   .nav-links.active {
     display: flex;
+    transform: translateY(0);
+    opacity: 1;
   }
 
   .nav-links a {
     padding: 18px 24px;     /* ✅ better spacing */
     font-size: 14px;
     letter-spacing: 1px;
-
+    transition: all 0.2s ease;
     border-bottom: 1px solid #f1f5f9;
   }
+  
+.nav-links a:hover {
+  background: #f8fafc;
+  padding-left: 28px;
+}
+
 
   .nav-links a:last-child {
     border-bottom: none;
