@@ -88,6 +88,13 @@ body {
   width: 100%;
 }
 
+
+.nav-links.active {
+  display: flex;
+}
+
+
+
 /* RIGHT SIDE */
 .header-actions {
   display: flex;
@@ -471,9 +478,18 @@ p {
     gap: 10px;
   }
 
-  .nav-links {
-    display: none; /* hide menu for now (we can add hamburger next) */
+  
+.nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: #ffffff;
   }
+
+  .nav-links.active {
+    display: flex;
+  }
+
 
   .logo img {
     height: 32px;
