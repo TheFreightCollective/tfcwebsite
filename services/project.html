@@ -5,7 +5,6 @@
 <title>Project Management</title>
 <link rel="stylesheet" href="/tfcwebsite/styles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 
 <body>
@@ -16,45 +15,149 @@
 
 <h1 class="reveal">Project Management</h1>
 
-<p class="reveal reveal-delay-1">
-We manage complex logistics projects from planning through to final delivery.
+<p class="reveal">
+The Freight Collective provides end-to-end logistics project management, taking full control of complex freight movements from planning through to final delivery.
 </p>
 
-<p class="reveal reveal-delay-2">
-Our team ensures coordination across all stakeholders and stages.
+<p class="reveal">
+We coordinate every stage of the job — ensuring all contractors, timelines, and moving parts are managed efficiently so your project runs smoothly.
 </p>
 
-<h2 class="reveal">Full Coordination</h2>
+<br><br>
 
-<p class="reveal reveal-delay-1">
-We handle communication, scheduling, and execution end-to-end.
+<!-- WHAT THIS SERVICE IS -->
+<h2 class="reveal">End-to-End Logistics Coordination</h2>
+
+<p class="reveal">
+Our project management service is designed for jobs that involve multiple suppliers, stages, or specialised requirements.
 </p>
 
+<p class="reveal">
+Instead of managing transport, cranes, escorts, and scheduling separately, you deal with one team overseeing the entire operation.
+</p>
+
+<br><br>
+
+<!-- CAPABILITIES -->
+<h2 class="reveal">What We Manage</h2>
+
+<p class="reveal">
+• Multi-stage transport movements<br>
+• Coordination of trucks, cranes, and specialised equipment<br>
+• Pilot and escort vehicle scheduling<br>
+• Site delivery planning and access requirements<br>
+• Contractor and carrier management<br>
+• Timeline and scheduling control across all stages
+</p>
+
+<br><br>
+
+<!-- HOW IT WORKS -->
 <h2 class="reveal">Planning & Execution</h2>
 
-<p class="reveal reveal-delay-1">
-Every project is carefully planned to deliver efficient outcomes.
+<p class="reveal">
+Every project begins with a detailed assessment of your requirements, including freight type, site conditions, timing, and constraints.
 </p>
 
-<div class="reveal" style="margin-top:30px;">
-<a href="../contact/quote.html" class="btn">Request a Quote</a>
+<p class="reveal">
+We then develop a structured plan, selecting the right equipment and operators while coordinating the full delivery sequence to ensure efficiency and minimise risk.
+</p>
+
+<br><br>
+
+<!-- NEW: PROCESS -->
+<h2 class="reveal">Our Process</h2>
+
+<p class="reveal">
+We manage every project through a clear and controlled process:
+</p>
+
+<p class="reveal">
+<strong>1. Assessment:</strong> Understanding your job requirements and challenges<br>
+<strong>2. Planning:</strong> Designing the most efficient and practical solution<br>
+<strong>3. Coordination:</strong> Managing all contractors, equipment, and scheduling<br>
+<strong>4. Execution:</strong> Overseeing the movement from start to finish<br>
+<strong>5. Communication:</strong> Keeping you informed at every key stage
+</p>
+
+<br><br>
+
+<!-- USE CASES -->
+<h2 class="reveal">Typical Projects</h2>
+
+<p class="reveal">
+We regularly manage logistics projects such as:
+</p>
+
+<p class="reveal">
+• Large-scale machinery relocations<br>
+• Multi-load construction and infrastructure deliveries<br>
+• Mining and resource project logistics<br>
+• Shutdown and time-critical project freight<br>
+• Complex regional or remote site deliveries
+</p>
+
+<br><br>
+
+<!-- VALUE / POSITIONING -->
+<h2 class="reveal">Control, Visibility & Peace of Mind</h2>
+
+<p class="reveal">
+By managing the entire logistics process, we remove the risk and complexity of coordinating multiple providers yourself.
+</p>
+
+<p class="reveal">
+You get full visibility, clear communication, and confidence that every stage of the project is being handled properly.
+</p>
+
+<br><br>
+
+<!-- WHY YOU -->
+<h2 class="reveal">Why Choose The Freight Collective</h2>
+
+<p class="reveal">
+We specialise in high-value, complex logistics where coordination and execution are critical to success.
+</p>
+
+<p class="reveal">
+Our hands-on approach ensures that every detail is managed correctly, allowing your team to stay focused on the bigger picture.
+</p>
+
+<p class="reveal">
+You get:
+</p>
+
+<p class="reveal">
+• A single point of contact for the entire project<br>
+• Full coordination across all contractors and stages<br>
+• Reduced risk and improved efficiency<br>
+• Reliable execution for complex logistics jobs<br>
+• Clear communication and ongoing updates
+</p>
+
+<br><br>
+
+<!-- CTA -->
+<div class="reveal" style="margin-top:40px; text-align:center;">
+    <h2>Need Help Managing a Complex Logistics Project?</h2>
+    <p>Speak with our team and we’ll take control of the entire process from start to finish.</p>
+    <a href="../contact/quote.html" class="btn">Request a Quote</a>
 </div>
 
 </section>
 
 <div id="footer-placeholder"></div>
- <script src="../main.js"></script>
+
+<script src="../main.js"></script>
 
 <!-- SCRIPTS -->
 <script>
-
 
 /* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-   // ✅ INIT NAV AFTER HEADER LOADS
     if (typeof initNav === 'function') {
       initNav();
     }    
@@ -67,15 +170,12 @@ fetch('/tfcwebsite/partials/footer.html')
     document.getElementById('footer-placeholder').innerHTML = data;
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
+/* REVEAL */
 window.addEventListener('DOMContentLoaded', () => {
   initReveal();
 });
 
 </script>
-
-
 
 </body>
 </html>
