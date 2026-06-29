@@ -5,7 +5,6 @@
 <title>Logistics & Consulting</title>
 <link rel="stylesheet" href="/tfcwebsite/styles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 
 <body>
@@ -16,46 +15,132 @@
 
 <h1 class="reveal">Logistics & Consulting</h1>
 
-<p class="reveal reveal-delay-1">
-We provide expert advice to optimise freight and logistics operations.
+<p class="reveal">
+The Freight Collective provides practical logistics consulting and freight strategy solutions to help businesses improve efficiency, reduce costs, and simplify complex transport operations.
 </p>
 
-<p class="reveal reveal-delay-2">
-Our consulting services help reduce costs and improve efficiency.
+<p class="reveal">
+We work closely with our clients to identify issues, optimise processes, and implement real-world solutions that deliver measurable results.
 </p>
 
-<h2 class="reveal">Freight Strategy</h2>
+<br><br>
 
-<p class="reveal reveal-delay-1">
-We develop tailored logistics strategies for your business.
+<!-- WHAT THIS SERVICE IS -->
+<h2 class="reveal">Practical, Results-Driven Advice</h2>
+
+<p class="reveal">
+Our consulting approach is based on real industry experience — not theory. We focus on identifying what is actually causing delays, inefficiencies, or unnecessary costs in your logistics operations.
 </p>
 
-<h2 class="reveal">Expert Advice</h2>
-
-<p class="reveal reveal-delay-1">
-Our experience delivers practical, real-world solutions.
+<p class="reveal">
+From one-off advice to ongoing support, we tailor our input to suit your business, freight requirements, and growth plans.
 </p>
 
-<div class="reveal" style="margin-top:30px;">
-<a href="../contact/quote.html" class="btn">Request a Quote</a>
+<br><br>
+
+<!-- CAPABILITIES -->
+<h2 class="reveal">What We Assist With</h2>
+
+<p class="reveal">
+• Freight cost optimisation and rate reviews<br>
+• Transport planning and route efficiency improvements<br>
+• Contractor and carrier selection strategies<br>
+• Multi-stage logistics planning and coordination<br>
+• Identifying inefficiencies in current operations<br>
+• Support for complex or high-value freight projects
+</p>
+
+<br><br>
+
+<!-- USE CASES -->
+<h2 class="reveal">Common Consulting Scenarios</h2>
+
+<p class="reveal">
+We regularly support businesses with:
+</p>
+
+<p class="reveal">
+• Reviewing existing freight spend and identifying savings opportunities<br>
+• Improving delivery times and reliability across supply chains<br>
+• Planning transport strategies for new projects or site expansions<br>
+• Troubleshooting ongoing logistics issues or delays<br>
+• Providing guidance on complex or unfamiliar freight requirements
+</p>
+
+<br><br>
+
+<!-- STRATEGY -->
+<h2 class="reveal">Freight Strategy & Planning</h2>
+
+<p class="reveal">
+We help clients develop structured logistics strategies that align with their operational needs, timelines, and budgets.
+</p>
+
+<p class="reveal">
+By understanding your business and freight requirements, we create solutions that improve efficiency while maintaining reliability and control.
+</p>
+
+<br><br>
+
+<!-- VALUE -->
+<h2 class="reveal">Optimise Performance & Reduce Costs</h2>
+
+<p class="reveal">
+Our goal is to simplify your logistics operations while reducing unnecessary spend and improving overall performance.
+</p>
+
+<p class="reveal">
+Through better planning, smarter coordination, and access to the right network, we help you get more value out of your freight operations.
+</p>
+
+<br><br>
+
+<!-- WHY YOU -->
+<h2 class="reveal">Why Choose The Freight Collective</h2>
+
+<p class="reveal">
+We combine hands-on logistics experience with a practical, no-nonsense approach to problem solving.
+</p>
+
+<p class="reveal">
+Rather than generic advice, we provide solutions that can actually be implemented in real-world operations.
+</p>
+
+<p class="reveal">
+You get:
+</p>
+
+<p class="reveal">
+• Real industry experience behind every recommendation<br>
+• Practical solutions that can be implemented immediately<br>
+• Improved visibility and control over your logistics operations<br>
+• Reduced costs and greater efficiency<br>
+• A partner focused on long-term operational success
+</p>
+
+<br><br>
+
+<!-- CTA -->
+<div class="reveal" style="margin-top:40px; text-align:center;">
+    <h2>Need Help Improving Your Logistics Operations?</h2>
+    <p>Speak with our team to identify opportunities and optimise your freight strategy.</p>
+    <a href="../contact/quote.html" class="btn">Request a Quote</a>
 </div>
 
 </section>
 
 <div id="footer-placeholder"></div>
 
- <script src="../main.js"></script>
+<script src="../main.js"></script>
 
 <!-- SCRIPTS -->
 <script>
-
 
 /* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-   // ✅ INIT NAV AFTER HEADER LOADS
     if (typeof initNav === 'function') {
       initNav();
     }    
@@ -68,14 +153,12 @@ fetch('/tfcwebsite/partials/footer.html')
     document.getElementById('footer-placeholder').innerHTML = data;
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
+/* REVEAL */
 window.addEventListener('DOMContentLoaded', () => {
   initReveal();
 });
 
 </script>
-
 
 </body>
 </html>
