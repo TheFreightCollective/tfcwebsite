@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Regional Transport Network</title>
-<link rel="stylesheet" href="/tfcwebsite/styles.css">
+/tfcwebsite/styles.css
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 
 <body>
@@ -16,46 +15,124 @@
 
 <h1 class="reveal">Regional Transport Network</h1>
 
-<p class="reveal reveal-delay-1">
-We provide reliable freight solutions across regional and remote Australia.
+<p class="reveal">
+The Freight Collective provides reliable transport solutions across regional and remote Australia — ensuring your freight reaches locations others can’t easily service.
 </p>
 
-<p class="reveal reveal-delay-2">
-Our network ensures consistent service regardless of distance or location.
+<p class="reveal">
+From major regional hubs to remote job sites, we coordinate the right carriers and equipment to deliver your freight safely and efficiently.
 </p>
 
-<h2 class="reveal">Australia-Wide Coverage</h2>
 
-<p class="reveal reveal-delay-1">
-We coordinate deliveries to both metropolitan and remote regions.
+<!-- WHAT THIS SERVICE IS -->
+<h2 class="reveal">Access Beyond Major Cities</h2>
+
+<p class="reveal">
+Regional and remote transport requires specialised knowledge, strong networks, and the ability to adapt to changing conditions.
 </p>
 
-<h2 class="reveal">Flexible & Reliable</h2>
-
-<p class="reveal reveal-delay-1">
-Our network adapts quickly to changing freight requirements.
+<p class="reveal">
+We work with experienced operators who understand the challenges of long-distance, regional, and off-network freight movements.
 </p>
 
-<div class="reveal" style="margin-top:30px;">
-<a href="../contact/quote.html" class="btn">Request a Quote</a>
+
+<!-- CAPABILITIES -->
+<h2 class="reveal">What We Can Move</h2>
+
+<p class="reveal">
+• General freight and palletised goods<br>
+• Machinery and heavy equipment<br>
+• Construction materials and site deliveries<br>
+• Mining and project freight<br>
+• Over-dimensional loads and specialised equipment
+</p>
+
+
+<!-- COVERAGE -->
+<h2 class="reveal">Regional & Remote Coverage</h2>
+
+<p class="reveal">
+Our network extends across Australia, servicing regional towns, remote job sites, and locations outside standard transport routes.
+</p>
+
+<p class="reveal">
+Whether your freight is heading to a regional hub or a remote project site, we coordinate the most efficient and reliable delivery path.
+</p>
+
+
+<!-- WHEN TO USE -->
+<h2 class="reveal">When You Need Regional Transport</h2>
+
+<p class="reveal">
+This service is ideal when:
+</p>
+
+<p class="reveal">
+• Your delivery location is outside major metro areas<br>
+• Access is limited or requires specialised vehicles<br>
+• Your freight is heading to remote or project sites<br>
+• Standard freight carriers can’t service the location<br>
+• Your job requires flexible coordination and problem-solving
+</p>
+
+
+<!-- CHALLENGE POSITIONING (IMPORTANT FOR YOU) -->
+<h2 class="reveal">Built for Challenging Deliveries</h2>
+
+<p class="reveal">
+Regional and remote transport isn’t always straightforward — conditions, access, and timelines can all change.
+</p>
+
+<p class="reveal">
+We take a hands-on approach to ensure these challenges are managed properly, reducing risk and keeping your freight moving.
+</p>
+
+
+<!-- WHY YOU -->
+<h2 class="reveal">Why Choose The Freight Collective</h2>
+
+<p class="reveal">
+We specialise in sourcing solutions where standard transport networks fall short.
+</p>
+
+<p class="reveal">
+By leveraging a national network of trusted operators, we ensure your freight reaches even the most difficult locations.
+</p>
+
+<p class="reveal">
+You get:
+</p>
+
+<p class="reveal">
+• Access to regional and remote transport specialists<br>
+• Flexible solutions for challenging deliveries<br>
+• Reliable coordination across long distances<br>
+• Support for time-sensitive or complex jobs<br>
+• A single point of contact managing the entire process
+</p>
+
+
+<!-- CTA -->
+<div class="reveal" style="margin-top:40px; text-align:center;">
+    <h2>Need Freight Delivered to a Regional or Remote Location?</h2>
+    <p>Tell us where it needs to go and we’ll organise the right solution.</p>
+    ../contact/quote.htmlRequest a Quote</a>
 </div>
 
 </section>
 
 <div id="footer-placeholder"></div>
 
- <script src="../main.js"></script>
+../main.jsscript>
 
 <!-- SCRIPTS -->
 <script>
-
 
 /* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-   // ✅ INIT NAV AFTER HEADER LOADS
     if (typeof initNav === 'function') {
       initNav();
     }    
@@ -68,15 +145,12 @@ fetch('/tfcwebsite/partials/footer.html')
     document.getElementById('footer-placeholder').innerHTML = data;
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
+/* REVEAL */
 window.addEventListener('DOMContentLoaded', () => {
   initReveal();
 });
 
 </script>
-
-
 
 </body>
 </html>
