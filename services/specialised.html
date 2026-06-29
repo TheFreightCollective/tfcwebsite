@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +5,6 @@
 <title>Specialised & General Logistics</title>
 <link rel="stylesheet" href="/tfcwebsite/styles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 
 <body>
@@ -17,49 +15,164 @@
 
 <h1 class="reveal">Specialised & General Logistics</h1>
 
-<p class="reveal reveal-delay-1">
-We provide specialised logistics solutions for complex, oversized, and high-value freight.
+<p class="reveal">
+The Freight Collective provides specialised and general logistics solutions for businesses that need reliable, flexible and properly coordinated freight support across Australia.
 </p>
 
-<p class="reveal reveal-delay-2">
-Our services ensure safe, efficient, and compliant transport for challenging freight movements.
+<p class="reveal">
+From everyday freight requirements through to complex, oversized and high-value movements, we work with the right operators, equipment and transport methods to get the job done safely and efficiently.
 </p>
 
-<h2 class="reveal">Tailored Transport Solutions</h2>
+<br><br>
 
-<p class="reveal reveal-delay-1">
-Each job is assessed individually to deliver the most effective transport plan.
+<!-- INTRODUCTION -->
+<h2 class="reveal">Flexible Freight Solutions for Every Requirement</h2>
+
+<p class="reveal">
+Not every freight movement fits neatly into a standard transport option. Some jobs require specialist equipment, detailed planning, site coordination or a provider who can quickly adapt when requirements change.
 </p>
 
+<p class="reveal">
+Our role is to assess each job properly, understand the freight, location and timing, then build the most practical transport solution around your requirements.
+</p>
+
+<br><br>
+
+<!-- SPECIALISED LOGISTICS -->
+<h2 class="reveal">Specialised Logistics</h2>
+
+<p class="reveal">
+Specialised logistics is designed for freight that requires additional planning, care or coordination beyond standard transport.
+</p>
+
+<p class="reveal">
+This may include oversized freight, heavy equipment, high-value cargo, machinery, challenging site access, multi-stage delivery requirements or freight that needs specific handling from pickup through to final delivery.
+</p>
+
+<br><br>
+
+<!-- WHAT WE HANDLE -->
+<h2 class="reveal">What We Can Handle</h2>
+
+<p class="reveal">
+• Oversized and over-dimensional freight<br>
+• Machinery and industrial equipment<br>
+• Construction materials and project freight<br>
+• High-value or sensitive cargo<br>
+• Heavy haulage and complex transport movements<br>
+• Freight requiring cranes, escorts, permits or specialised handling
+</p>
+
+<br><br>
+
+<!-- GENERAL LOGISTICS -->
 <h2 class="reveal">General Logistics</h2>
 
-<p class="reveal reveal-delay-1">
-We also support everyday freight requirements across Australia with reliable and scalable solutions.
+<p class="reveal">
+Alongside complex and specialised movements, we also support general freight requirements across Australia.
 </p>
 
-<div class="reveal" style="margin-top:30px;">
-<a href="../contact/quote.html" class="btn">Request a Quote</a>
+<p class="reveal">
+Whether you need a one-off delivery, ongoing freight support or a reliable solution for regular movements, we provide scalable logistics options suited to your business.
+</p>
+
+<br><br>
+
+<!-- GENERAL FREIGHT EXAMPLES -->
+<h2 class="reveal">General Freight Support</h2>
+
+<p class="reveal">
+Our general logistics services can support:
+</p>
+
+<p class="reveal">
+• Palletised freight<br>
+• Commercial and industrial goods<br>
+• Site deliveries<br>
+• Warehouse-to-customer transport<br>
+• Regional and interstate freight movements<br>
+• Regular or ad hoc transport requirements
+</p>
+
+<br><br>
+
+<!-- TAILORED SOLUTIONS -->
+<h2 class="reveal">Tailored Transport Solutions</h2>
+
+<p class="reveal">
+Every job is assessed individually to determine the most suitable transport method, equipment and carrier network.
+</p>
+
+<p class="reveal">
+By tailoring each solution, we help reduce unnecessary handling, improve delivery reliability and ensure your freight is matched with the right operator for the task.
+</p>
+
+<br><br>
+
+<!-- WHY IT MATTERS -->
+<h2 class="reveal">The Right Solution Matters</h2>
+
+<p class="reveal">
+Choosing the wrong transport option can lead to delays, added costs, site issues or unnecessary risk.
+</p>
+
+<p class="reveal">
+We help remove that uncertainty by coordinating the right solution from the start — whether the job is straightforward, urgent, oversized or highly complex.
+</p>
+
+<br><br>
+
+<!-- WHY CHOOSE US -->
+<h2 class="reveal">Why Choose The Freight Collective</h2>
+
+<p class="reveal">
+The Freight Collective combines practical logistics experience with a broad national network of trusted operators.
+</p>
+
+<p class="reveal">
+We focus on finding the most effective solution for each job, giving you one point of contact and clear communication from start to finish.
+</p>
+
+<p class="reveal">
+You get:
+</p>
+
+<p class="reveal">
+• Support for both general and specialised freight<br>
+• Access to reliable transport operators across Australia<br>
+• Practical solutions tailored to your freight requirements<br>
+• Coordination of equipment, timing and delivery requirements<br>
+• Clear communication throughout the movement
+</p>
+
+<br><br>
+
+<!-- CTA -->
+<div class="reveal" style="margin-top:40px; text-align:center;">
+    <h2>Need Help Moving Freight?</h2>
+    <p>Tell us what needs to move and we’ll organise the right transport solution.</p>
+    <a href="../contact/quote.html" class="btn">Request a Quote</a>
 </div>
 
 </section>
 
 <div id="footer-placeholder"></div>
 
- <script src="../main.js"></script>
+<script src="../main.js"></script>
 
 <!-- SCRIPTS -->
 <script>
-
 
 /* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-   // ✅ INIT NAV AFTER HEADER LOADS
+
+    // INIT NAV AFTER HEADER LOADS
     if (typeof initNav === 'function') {
       initNav();
-    }    
+    }
   });
 
 /* FOOTER */
@@ -69,10 +182,11 @@ fetch('/tfcwebsite/partials/footer.html')
     document.getElementById('footer-placeholder').innerHTML = data;
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
+/* REVEAL */
 window.addEventListener('DOMContentLoaded', () => {
-  initReveal();
+  if (typeof initReveal === 'function') {
+    initReveal();
+  }
 });
 
 </script>
