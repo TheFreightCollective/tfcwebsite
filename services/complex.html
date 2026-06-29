@@ -1,12 +1,10 @@
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Complex Logistics Movements</title>
- <link rel="stylesheet" href="/tfcwebsite/styles.css">
+<link rel="stylesheet" href="/tfcwebsite/styles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 
 <body>
@@ -18,45 +16,116 @@
 <h1 class="reveal">Complex Logistics Movements</h1>
 
 <p class="reveal reveal-delay-1">
-We specialise in managing multi-stage freight operations requiring precision and coordination.
+When standard transport solutions aren’t enough, The Freight Collective specialises in planning and executing complex logistics movements across Australia.
 </p>
 
 <p class="reveal reveal-delay-2">
-Our team handles planning, execution, and contractor coordination from start to finish.
+From oversized equipment to multi-stage project freight, we coordinate every moving part to ensure your job is delivered safely, on time, and without unnecessary risk.
 </p>
 
-<h2 class="reveal">End-to-End Coordination</h2>
+
+<!-- WHAT WE DO -->
+<h2 class="reveal">What We Handle</h2>
 
 <p class="reveal reveal-delay-1">
-We manage every stage to minimise risk and ensure smooth delivery.
+Our complex logistics service is designed for jobs that require more than just a truck — involving multiple contractors, permits, escort vehicles, cranes, and precise scheduling.
 </p>
 
-<h2 class="reveal">Tailored Solutions</h2>
+<p class="reveal reveal-delay-2">
+We act as your single point of contact, managing everything behind the scenes so you don’t have to deal with multiple suppliers or moving parts.
+</p>
+
+
+<!-- CAPABILITIES -->
+<h2 class="reveal">Capabilities</h2>
 
 <p class="reveal reveal-delay-1">
-Every project is customised based on location, equipment, timing and complexity.
+• Heavy haulage and over-dimensional freight<br>
+• Crane truck coordination and specialised lifting equipment<br>
+• Pilot and escort vehicle scheduling<br>
+• Multi-stage interstate transport movements<br>
+• Site access planning and route assessments<br>
+• Time-critical and shutdown project logistics
 </p>
 
-<div class="reveal" style="margin-top:30px;">
-<a href="../contact/quote.html" class="btn">Request a Quote</a>
+
+<!-- INDUSTRIES / USE CASES -->
+<h2 class="reveal">Typical Projects</h2>
+
+<p class="reveal reveal-delay-1">
+We regularly manage complex freight movements across a wide range of industries, including:
+</p>
+
+<p class="reveal reveal-delay-2">
+• Mining and resources equipment transport<br>
+• Construction and infrastructure projects<br>
+• Machinery relocations and factory moves<br>
+• Remote and regional site deliveries<br>
+• Urgent breakdown or recovery situations
+</p>
+
+
+<!-- PROCESS -->
+<h2 class="reveal">Our Process</h2>
+
+<p class="reveal reveal-delay-1">
+Every complex movement is carefully planned and executed through a structured process:
+</p>
+
+<p class="reveal reveal-delay-2">
+<strong>1. Planning & Assessment:</strong> Understanding your job requirements, site conditions and constraints.<br>
+<strong>2. Solution Design:</strong> Selecting the right equipment, contractors and transport method.<br>
+<strong>3. Coordination:</strong> Managing schedules, permits, escorts and all suppliers involved.<br>
+<strong>4. Execution:</strong> Overseeing the movement from start to finish.<br>
+<strong>5. Communication:</strong> Keeping you informed at every key stage of the job.
+</p>
+
+
+<!-- WHY CHOOSE YOU -->
+<h2 class="reveal">Why Choose The Freight Collective</h2>
+
+<p class="reveal reveal-delay-1">
+We don’t just move freight — we solve problems others can’t.
+</p>
+
+<p class="reveal reveal-delay-2">
+With a national network of trusted operators and a hands-on approach, we’re known for taking on urgent, complex jobs and delivering results where others fall short.
+</p>
+
+<p class="reveal reveal-delay-3">
+You get:
+</p>
+
+<p class="reveal reveal-delay-4">
+• A single point of contact from start to finish<br>
+• Fast response times for urgent jobs<br>
+• Access to a nationwide network of specialised equipment<br>
+• Clear communication and full job visibility<br>
+• A team that takes ownership of the outcome
+</p>
+
+
+<!-- CTA -->
+<div class="reveal" style="margin-top:40px; text-align:center;">
+    <h2>Need Help With a Complex Movement?</h2>
+    <p>Speak with our team today and we’ll find the right solution for your job.</p>
+    <a href="../contact/quote.html" class="btn">Request a Quote</a>
 </div>
 
 </section>
 
 <div id="footer-placeholder"></div>
 
- <script src="../main.js"></script>
+<script src="../main.js"></script>
 
 <!-- SCRIPTS -->
 <script>
-
 
 /* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-   // ✅ INIT NAV AFTER HEADER LOADS
     if (typeof initNav === 'function') {
       initNav();
     }    
@@ -69,14 +138,12 @@ fetch('/tfcwebsite/partials/footer.html')
     document.getElementById('footer-placeholder').innerHTML = data;
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
+/* REVEAL */
 window.addEventListener('DOMContentLoaded', () => {
   initReveal();
 });
 
 </script>
-
 
 </body>
 </html>
