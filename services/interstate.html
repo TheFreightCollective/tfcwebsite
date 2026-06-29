@@ -5,8 +5,7 @@
   <meta charset="UTF-8">
   <title>Interstate Transport</title>
   <link rel="stylesheet" href="/tfcwebsite/styles.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
@@ -17,27 +16,96 @@
 
   <h1 class="reveal">Interstate Transport Network</h1>
 
-  <p class="reveal reveal-delay-1">
-    We provide reliable interstate freight services connecting businesses across Australia.
+  <p class="reveal">
+    The Freight Collective provides reliable interstate transport solutions connecting businesses across Australia.
   </p>
 
-  <p class="reveal reveal-delay-2">
-    Our network ensures consistent, efficient delivery between major cities and regional locations.
+  <p class="reveal">
+    Whether you’re moving freight between capital cities or delivering to remote regional locations, we coordinate the right solution to ensure your freight arrives on time and in full.
   </p>
 
+
+  <!-- WHAT WE DO -->
+  <h2 class="reveal">End-to-End Interstate Freight Solutions</h2>
+
+  <p class="reveal">
+    We manage the movement of freight across state lines using a trusted network of carriers, giving you consistent service without the complexity of dealing with multiple providers.
+  </p>
+
+  <p class="reveal">
+    From single shipments to ongoing transport requirements, we tailor each solution based on your timing, freight type, and delivery location.
+  </p>
+
+
+  <!-- CAPABILITIES -->
+  <h2 class="reveal">What We Can Move</h2>
+
+  <p class="reveal">
+    • General freight and palletised goods<br>
+    • Machinery and industrial equipment<br>
+    • Over-dimensional and heavy haulage<br>
+    • Construction and project freight<br>
+    • Time-sensitive and urgent deliveries<br>
+    • Multi-stage transport movements
+  </p>
+
+
+  <!-- COVERAGE -->
   <h2 class="reveal">National Coverage</h2>
 
-  <p class="reveal reveal-delay-1">
-    We coordinate freight movements across state lines using trusted carrier partnerships.
+  <p class="reveal">
+    Our interstate network connects all major cities including Brisbane, Sydney, Melbourne, Adelaide, and Perth, along with regional and remote locations across Australia.
   </p>
 
-  <h2 class="reveal">Reliable Delivery</h2>
-
-  <p class="reveal reveal-delay-1">
-    We ensure consistent transit times and reliable service across all interstate routes.
+  <p class="reveal">
+    We work with experienced carriers who understand the demands of long-distance transport, ensuring your freight is handled with care across every stage of the journey.
   </p>
 
-  <div class="reveal" style="margin-top:30px;">
+
+  <!-- WHEN TO USE -->
+  <h2 class="reveal">When You Need Interstate Transport</h2>
+
+  <p class="reveal">
+    Our service is ideal when:
+  </p>
+
+  <p class="reveal">
+    • Your freight needs to move between states reliably<br>
+    • You require consistent transit times for planning purposes<br>
+    • You want a single point of contact across multiple routes<br>
+    • Your shipment involves complex coordination or multiple legs<br>
+    • You need flexibility for urgent or last-minute jobs
+  </p>
+
+
+  <!-- WHY YOU -->
+  <h2 class="reveal">Why Choose The Freight Collective</h2>
+
+  <p class="reveal">
+    We take the complexity out of interstate logistics by managing the entire process on your behalf.
+  </p>
+
+  <p class="reveal">
+    Instead of dealing with multiple operators, you get one team coordinating your freight from pickup through to final delivery.
+  </p>
+
+  <p class="reveal">
+    You get:
+  </p>
+
+  <p class="reveal">
+    • Access to a national carrier network<br>
+    • Reliable transit times across major routes<br>
+    • Flexible solutions for both standard and complex freight<br>
+    • Fast response for urgent and time-critical jobs<br>
+    • Clear communication and end-to-end visibility
+  </p>
+
+
+  <!-- CTA -->
+  <div class="reveal" style="margin-top:40px; text-align:center;">
+    <h2>Need Reliable Interstate Transport?</h2>
+    <p>Tell us where your freight needs to go and we’ll organise the right solution.</p>
     <a href="../contact/quote.html" class="btn">Request a Quote</a>
   </div>
 
@@ -45,18 +113,16 @@
 
 <div id="footer-placeholder"></div>
 
- <script src="../main.js"></script>
+<script src="../main.js"></script>
 
 <!-- SCRIPTS -->
 <script>
-
 
 /* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-    // ✅ INIT NAV AFTER HEADER LOADS
     if (typeof initNav === 'function') {
       initNav();
     }    
@@ -69,15 +135,12 @@ fetch('/tfcwebsite/partials/footer.html')
     document.getElementById('footer-placeholder').innerHTML = data;
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
+/* REVEAL */
 window.addEventListener('DOMContentLoaded', () => {
   initReveal();
 });
 
 </script>
-
-
 
 </body>
 </html>
