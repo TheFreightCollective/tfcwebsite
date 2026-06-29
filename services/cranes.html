@@ -5,7 +5,6 @@
 <title>Cranes & Crane Trucks</title>
 <link rel="stylesheet" href="/tfcwebsite/styles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 
 <body>
@@ -16,48 +15,113 @@
 
 <h1 class="reveal">Cranes & Crane Trucks</h1>
 
-<p class="reveal reveal-delay-1">
-Crane trucks combine lifting and transport into one efficient solution.
+<p class="reveal">
+Cranes and crane trucks (Hiab vehicles) provide a complete lifting and transport solution in a single operation.
 </p>
 
-<p class="reveal reveal-delay-2">
-This removes the need for multiple contractors and simplifies operations.
+<p class="reveal">
+Instead of coordinating multiple contractors, we supply the right vehicle, operator, and lifting capability to get your job completed safely and efficiently.
 </p>
 
-<h2 class="reveal">Integrated Transport</h2>
 
-<p class="reveal reveal-delay-1">
-We handle machinery, construction freight, and complex site deliveries.
+<!-- WHAT THIS SERVICE IS -->
+<h2 class="reveal">A Smarter Way to Move and Lift</h2>
+
+<p class="reveal">
+Crane trucks combine transport and lifting into one streamlined service — ideal for jobs where freight needs to be loaded, unloaded, or placed in position on-site.
 </p>
 
+<p class="reveal">
+This reduces handling, shortens delivery times, and eliminates the need to organise separate cranes or machinery.
+</p>
+
+
+<!-- CAPABILITIES -->
+<h2 class="reveal">What We Can Handle</h2>
+
+<p class="reveal">
+• Machinery and equipment transport with on-site lifting<br>
+• Steel, structural materials, and construction freight<br>
+• Site deliveries requiring precise placement<br>
+• Palletised freight with no forklift available<br>
+• Tight access and urban delivery environments<br>
+• Remote or regional deliveries with limited infrastructure
+</p>
+
+
+<!-- WHEN TO USE -->
+<h2 class="reveal">When You Need a Crane Truck</h2>
+
+<p class="reveal">
+Crane trucks are the ideal solution when:
+</p>
+
+<p class="reveal">
+• There is no forklift or crane on-site<br>
+• Freight needs to be lifted into position (not just delivered)<br>
+• Access is restricted or space is limited<br>
+• You want to reduce handling and risk of damage<br>
+• Speed and efficiency are critical
+</p>
+
+
+<!-- BENEFITS -->
 <h2 class="reveal">Key Benefits</h2>
 
-<ul class="reveal reveal-delay-2">
-<li>Reduced handling</li>
-<li>Faster delivery</li>
-<li>Lower costs</li>
-<li>Ideal for tight access sites</li>
-</ul>
+<p class="reveal">
+• Single contractor for both transport and lifting<br>
+• Reduced loading and unloading time<br>
+• Lower overall job cost compared to separate services<br>
+• Improved safety with fewer touchpoints<br>
+• Flexible solutions tailored to site conditions
+</p>
 
-<div class="reveal" style="margin-top:30px;">
-<a href="../contact/quote.html" class="btn">Request a Quote</a>
+
+<!-- WHY YOU -->
+<h2 class="reveal">Why Choose The Freight Collective</h2>
+
+<p class="reveal">
+We don’t just organise a truck — we make sure you get the right solution for the job.
+</p>
+
+<p class="reveal">
+With access to a national network of crane truck operators, we can source the right capacity, reach, and configuration for your specific requirements.
+</p>
+
+<p class="reveal">
+You get:
+</p>
+
+<p class="reveal">
+• Fast access to crane trucks across Australia<br>
+• Operators experienced in construction and industrial work<br>
+• Support for urgent and time-sensitive jobs<br>
+• A single point of contact managing the entire process<br>
+• Reliable scheduling and clear communication throughout
+</p>
+
+
+<!-- CTA -->
+<div class="reveal" style="margin-top:40px; text-align:center;">
+    <h2>Need a Crane Truck for Your Next Job?</h2>
+    <p>Tell us what you need lifted or moved and we’ll organise the right solution.</p>
+    <a href="../contact/quote.html" class="btn">Request a Quote</a>
 </div>
 
 </section>
 
 <div id="footer-placeholder"></div>
- <script src="../main.js"></script>
+
+<script src="../main.js"></script>
 
 <!-- SCRIPTS -->
 <script>
-
 
 /* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-   // ✅ INIT NAV AFTER HEADER LOADS
     if (typeof initNav === 'function') {
       initNav();
     }    
@@ -70,14 +134,12 @@ fetch('/tfcwebsite/partials/footer.html')
     document.getElementById('footer-placeholder').innerHTML = data;
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
+/* REVEAL */
 window.addEventListener('DOMContentLoaded', () => {
   initReveal();
 });
 
 </script>
-
 
 </body>
 </html>
