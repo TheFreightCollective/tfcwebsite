@@ -5,7 +5,6 @@
 <title>Port to Destination Transport</title>
 <link rel="stylesheet" href="/tfcwebsite/styles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 
 <body>
@@ -16,45 +15,148 @@
 
 <h1 class="reveal">Port to Destination Transport</h1>
 
-<p class="reveal reveal-delay-1">
-We provide seamless freight movement from port arrival to final destination.
+<p class="reveal">
+The Freight Collective provides efficient port-to-destination transport, ensuring your freight moves smoothly from wharf collection through to final delivery.
 </p>
 
-<p class="reveal reveal-delay-2">
-Our logistics ensure efficient handling and reduced delays.
+<p class="reveal">
+We coordinate every stage of the process, reducing delays, avoiding unnecessary costs, and ensuring your freight reaches its destination safely and on time.
 </p>
 
-<h2 class="reveal">End-to-End Logistics</h2>
+<br><br>
 
-<p class="reveal reveal-delay-1">
-We coordinate transport to warehouses, job sites and delivery locations.
+<!-- WHAT THIS SERVICE IS -->
+<h2 class="reveal">End-to-End Port Logistics</h2>
+
+<p class="reveal">
+Port freight movements require careful coordination to avoid delays, storage fees, and handling issues.
 </p>
 
-<h2 class="reveal">Efficient Movement</h2>
-
-<p class="reveal reveal-delay-1">
-Our process ensures smooth handling and full visibility.
+<p class="reveal">
+We manage the process from container collection through to final delivery, ensuring your freight keeps moving without unnecessary hold-ups.
 </p>
 
-<div class="reveal" style="margin-top:30px;">
-<a href="../contact/quote.html" class="btn">Request a Quote</a>
+<br><br>
+
+<!-- CAPABILITIES -->
+<h2 class="reveal">What We Handle</h2>
+
+<p class="reveal">
+• Container collection from ports and terminals<br>
+• Transport to warehouses, job sites, or distribution centres<br>
+• Machinery and breakbulk cargo handling<br>
+• Over-dimensional and specialised freight movements<br>
+• Coordination of crane trucks and specialised equipment where required
+</p>
+
+<br><br>
+
+<!-- NEW: PROCESS -->
+<h2 class="reveal">How We Manage Port Deliveries</h2>
+
+<p class="reveal">
+Port logistics involves multiple steps and tight timeframes. We coordinate each stage to ensure a smooth transition from port to final destination.
+</p>
+
+<p class="reveal">
+<strong>1. Collection:</strong> Coordinating container or freight pickup from the port<br>
+<strong>2. Planning:</strong> Selecting the right transport and equipment<br>
+<strong>3. Scheduling:</strong> Managing delivery timing to avoid delays and fees<br>
+<strong>4. Delivery:</strong> Ensuring safe and efficient transport to final location<br>
+<strong>5. Communication:</strong> Keeping you updated throughout the process
+</p>
+
+<br><br>
+
+<!-- NEW: CHALLENGES -->
+<h2 class="reveal">Avoid Delays & Additional Costs</h2>
+
+<p class="reveal">
+Delays at the port can result in demurrage, storage charges, and missed delivery windows.
+</p>
+
+<p class="reveal">
+We proactively manage timing, transport, and coordination to minimise these risks and keep your freight moving efficiently.
+</p>
+
+<br><br>
+
+<!-- USE CASES -->
+<h2 class="reveal">Typical Port Transport Jobs</h2>
+
+<p class="reveal">
+We regularly coordinate transport such as:
+</p>
+
+<p class="reveal">
+• Container deliveries to warehouses and distribution centres<br>
+• Direct-to-site deliveries for construction projects<br>
+• Machinery and equipment from port to regional or remote locations<br>
+• Urgent freight requiring immediate collection from port arrival<br>
+• Multi-stage deliveries involving cranes or specialised handling
+</p>
+
+<br><br>
+
+<!-- POSITIONING -->
+<h2 class="reveal">Seamless Coordination from Wharf to Site</h2>
+
+<p class="reveal">
+Our role is to ensure the transition from port to delivery is seamless, removing the need for you to manage multiple contractors or logistics steps.
+</p>
+
+<p class="reveal">
+By coordinating the entire process, we reduce risk, improve efficiency, and ensure your freight reaches its destination without unnecessary delays.
+</p>
+
+<br><br>
+
+<!-- WHY YOU -->
+<h2 class="reveal">Why Choose The Freight Collective</h2>
+
+<p class="reveal">
+We understand the time-sensitive nature of port logistics and the importance of getting it right the first time.
+</p>
+
+<p class="reveal">
+With access to a network of trusted operators and a hands-on approach, we ensure your freight moves quickly and efficiently through every stage.
+</p>
+
+<p class="reveal">
+You get:
+</p>
+
+<p class="reveal">
+• Fast and reliable port collection<br>
+• Reduced risk of storage and delay charges<br>
+• Access to specialised transport solutions where required<br>
+• A single point of contact for the entire process<br>
+• Clear communication and full job visibility
+</p>
+
+<br><br>
+
+<!-- CTA -->
+<div class="reveal" style="margin-top:40px; text-align:center;">
+    <h2>Need Freight Collected from Port?</h2>
+    <p>Tell us your requirements and we’ll organise a smooth and efficient delivery.</p>
+    <a href="../contact/quote.html" class="btn">Request a Quote</a>
 </div>
 
 </section>
 
 <div id="footer-placeholder"></div>
- <script src="../main.js"></script>
+
+<script src="../main.js"></script>
 
 <!-- SCRIPTS -->
 <script>
-
 
 /* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-   // ✅ INIT NAV AFTER HEADER LOADS
     if (typeof initNav === 'function') {
       initNav();
     }    
@@ -67,15 +169,12 @@ fetch('/tfcwebsite/partials/footer.html')
     document.getElementById('footer-placeholder').innerHTML = data;
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
+/* REVEAL */
 window.addEventListener('DOMContentLoaded', () => {
   initReveal();
 });
 
 </script>
-
-
 
 </body>
 </html>
