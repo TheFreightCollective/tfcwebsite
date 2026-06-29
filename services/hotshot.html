@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Hot Shot Express</title>
-<link rel="stylesheet" href="/tfcwebsite/styles.css">
+/tfcwebsite/styles.css
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 
 <body>
@@ -16,45 +15,112 @@
 
 <h1 class="reveal">Hot Shot Express Transport</h1>
 
-<p class="reveal reveal-delay-1">
-Our hot shot services are designed for urgent, time-critical deliveries.
+<p class="reveal">
+When time matters, The Freight Collective provides rapid-response transport solutions to get your freight moving immediately.
 </p>
 
-<p class="reveal reveal-delay-2">
-We ensure your freight is delivered quickly and efficiently.
+<p class="reveal">
+Our hot shot service is built for urgent, time-critical deliveries where delays aren’t an option — ensuring your freight reaches its destination as quickly and safely as possible.
 </p>
 
-<h2 class="reveal">Fast Response</h2>
 
-<p class="reveal reveal-delay-1">
-Vehicles and operators are allocated rapidly to urgent jobs.
+<!-- WHAT THIS SERVICE IS -->
+<h2 class="reveal">Dedicated Express Freight</h2>
+
+<p class="reveal">
+Hot shot transport is a direct, priority service where your freight is allocated a dedicated vehicle and driver — with no unnecessary stops or handling delays.
 </p>
 
-<h2 class="reveal">Time-Critical Freight</h2>
-
-<p class="reveal reveal-delay-1">
-Ideal for breakdowns, urgent deliveries and priority shipments.
+<p class="reveal">
+From pickup to delivery, your shipment moves as quickly as possible with full focus on speed, reliability, and communication.
 </p>
 
-<div class="reveal" style="margin-top:30px;">
-<a href="../contact/quote.html" class="btn">Request a Quote</a>
+
+<!-- USE CASES -->
+<h2 class="reveal">Common Urgent Transport Scenarios</h2>
+
+<p class="reveal">
+We regularly handle time-sensitive freight such as:
+</p>
+
+<p class="reveal">
+• Breakdown and emergency parts delivery<br>
+• Urgent site equipment or materials<br>
+• Shutdown and project-critical freight<br>
+• Missed or delayed shipments requiring recovery<br>
+• Last-minute deliveries to meet deadlines
+</p>
+
+
+<!-- HOW FAST / RESPONSE -->
+<h2 class="reveal">Fast Response When You Need It</h2>
+
+<p class="reveal">
+We understand that urgent jobs can’t wait. Our team moves quickly to assess your requirements and allocate the right vehicle without delay.
+</p>
+
+<p class="reveal">
+With access to a wide network of operators, we can respond rapidly across metro, regional, and interstate locations.
+</p>
+
+
+<!-- KEY BENEFITS -->
+<h2 class="reveal">Key Benefits</h2>
+
+<p class="reveal">
+• Immediate response and fast dispatch<br>
+• Dedicated vehicle — no shared loads<br>
+• Direct delivery with minimal handling<br>
+• Reduced risk of delays or damage<br>
+• Real-time communication throughout the job
+</p>
+
+
+<!-- WHY YOU -->
+<h2 class="reveal">Why Choose The Freight Collective</h2>
+
+<p class="reveal">
+When things go wrong, you need a team that can act fast and take control of the situation.
+</p>
+
+<p class="reveal">
+We specialise in urgent and complex freight where timing is critical — coordinating the right solution quickly so your operations can keep moving.
+</p>
+
+<p class="reveal">
+You get:
+</p>
+
+<p class="reveal">
+• Rapid response for time-critical jobs<br>
+• National coverage for urgent transport needs<br>
+• Experienced operators who understand priority freight<br>
+• A single point of contact from start to finish<br>
+• Clear, consistent communication at every stage
+</p>
+
+
+<!-- CTA -->
+<div class="reveal" style="margin-top:40px; text-align:center;">
+    <h2>Need Urgent Transport Right Now?</h2>
+    <p>Contact our team and we’ll organise immediate pickup and delivery.</p>
+    ../contact/quote.htmlRequest a Quote</a>
 </div>
 
 </section>
 
 <div id="footer-placeholder"></div>
- <script src="../main.js"></script>
+
+../main.jsscript>
 
 <!-- SCRIPTS -->
 <script>
-
 
 /* HEADER */
 fetch('/tfcwebsite/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
-   // ✅ INIT NAV AFTER HEADER LOADS
     if (typeof initNav === 'function') {
       initNav();
     }    
@@ -67,8 +133,7 @@ fetch('/tfcwebsite/partials/footer.html')
     document.getElementById('footer-placeholder').innerHTML = data;
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
+/* REVEAL */
 window.addEventListener('DOMContentLoaded', () => {
   initReveal();
 });
