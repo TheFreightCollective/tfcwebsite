@@ -4,10 +4,14 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Send Message</title>
-  <link rel="stylesheet" href="/styles.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send A Message</title>
+  /styles.css
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+  <style>
+  </style>
 </head>
 
 <body>
@@ -15,22 +19,194 @@
 <div id="header-placeholder" class="header-wrapper"></div>
 
 <section class="section">
-  <h1 class="reveal">Send Message</h1>
+
+  <div class="quote-intro">
+    <h1 class="reveal">Message Us</h1>
+    <p class="reveal reveal-delay-1">
+      Have a question or need to get in touch? Send us a message below and we'll come back to you shortly.
+    </p>
+  </div>
+
+  <form class="quote-form reveal reveal-delay-2" id="contactForm" novalidate>
+
+    <p class="form-section-label">Your details</p>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="full_name">Full name <span class="field-required">*</span></label>
+        <input type="text" id="full_name" name="full_name" placeholder="Jane Smith" required>
+      </div>
+
+      <div class="form-group">
+        <label for="company">Company</label>
+        <input type="text" id="company" name="company" placeholder="Acme Industries">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Email address <span class="field-required">*</span></label>
+        <input type="email" id="email" name="email" placeholder="jane@company.com.au" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" name="phone" placeholder="04XX XXX XXX">
+      </div>
+    </div>
+
+    <hr class="form-divider">
+
+    <p class="form-section-label">Your message</p>
+
+    <div class="form-group">
+      <label for="notes">How can we help? <span class="field-required">*</span></label>
+      <span class="field-hint">Let us know what you're looking for, what you need help with, or anything else we should know.</span>
+      <textarea id="notes" name="notes" rows="5" placeholder="e.g. I wanted to ask about regular freight from Brisbane to Melbourne." required></textarea>
+    </div>
+
+    <div class="form-group">
+      <div
+        class="cf-turnstile"
+        data-sitekey="0x4AAAAAADuWAhW2h3Ab65SY">
+      </div>
+    </div>
+
+    <div class="form-submit">
+      <button type="submit" class="btn" id="submitBtn">Send message</button>
+      <span class="form-status" id="formStatus"></span>
+    </div>
+
+  </form>
+
 </section>
 
 <div id="footer-placeholder"></div>
+../main.jsscript>
 
- <script src="../main.js"></script>
-
-<!-- SCRIPTS -->
 <script>
 
+/* CONTACT FORM SUBMISSION */
+document.getElementById('contactForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const submitBtn = document.getElementById('submitBtn');
+  const statusEl = document.getElementById('formStatus');
+
+  const required = form.querySelectorAll('[required]');
+  let valid = true;
+
+  required.forEach(field => {
+    if (!field.value.trim()) {
+      field.classList.add('field-error');
+      valid = false;
+    } else {
+      field.classList.remove('field-error');
+    }
+  });
+
+  const turnstileToken = form.querySelector('[name="cf-turnstile-response"]')?.value;
+
+  if (!turnstileToken) {
+    statusEl.textContent = 'Please complete the verification check.';
+    statusEl.className = 'form-status error';
+    return;
+  }
+
+  if (!valid) {
+    statusEl.textContent = 'Please fill in all required fields.';
+    statusEl.className = 'form-status error';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  statusEl.textContent = '';
+  statusEl.className = 'form-status';
+
+  const payload = {
+    full_name: form.full_name.value.trim(),
+    company: form.company.value.trim() || null,
+    email: form.email.value.trim(),
+    phone: form.phone.value.trim() || null,
+    notes: form.notes.value.trim(),
+    turnstileToken: turnstileToken
+  };
+
+  try {
+    const response = await fetch(
+      'https://wwrgcvwgjhcnmuzjjvcb.supabase.co/functions/v1/contact-responder',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    let result = {};
+
+    try {
+      result = await response.json();
+    } catch (jsonError) {
+      result = {};
+    }
+
+    if (!response.ok) {
+      console.error('Contact submission error:', result);
+
+      statusEl.textContent = result.error || 'Something went wrong — please try again or call us directly.';
+      statusEl.className = 'form-status error';
+
+      if (window.turnstile) {
+        window.turnstile.reset();
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send message';
+      return;
+    }
+
+    form.reset();
+
+    if (window.turnstile) {
+      window.turnstile.reset();
+    }
+
+    statusEl.textContent = "Thanks — we've received your message and will be in touch shortly.";
+    statusEl.className = 'form-status success';
+
+    statusEl.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send message';
+
+  } catch (error) {
+    console.error('Network/function error:', error);
+
+    statusEl.textContent = 'Something went wrong — please try again or call us directly.';
+    statusEl.className = 'form-status error';
+
+    if (window.turnstile) {
+      window.turnstile.reset();
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send message';
+  }
+});
 
 /* HEADER */
 fetch('/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
+    if (typeof initNav === 'function') initNav();
   });
 
 /* FOOTER */
@@ -38,21 +214,13 @@ fetch('/partials/footer.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('footer-placeholder').innerHTML = data;
-    // ✅ INIT NAV AFTER HEADER LOADS
-    if (typeof initNav === 'function') {
-      initNav();
-    }    
   });
 
-/* ✅ WAIT FOR RENDER PROPERLY */
-
 window.addEventListener('DOMContentLoaded', () => {
-  initReveal();
+  if (typeof initReveal === 'function') initReveal();
 });
 
 </script>
-
-
 
 </body>
 </html>
