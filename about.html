@@ -2,7 +2,7 @@
 <html>
   <meta charset="UTF-8">
   <title>About The Freight Collective</title>
-    <link rel="stylesheet" href="/tfcwebsite/styles.css">
+    <link rel="stylesheet" href="styles.css"
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -100,7 +100,7 @@
   </p>
 
   <div class="reveal reveal-delay-2" style="margin-top:20px;">
-    <a href="/tfcwebsite/contact/quote.html" class="btn">Request a Quote</a>
+    <a href="/contact/quote.html" class="btn">Request a Quote</a>
   </div>
 
 </section>
@@ -113,7 +113,7 @@
 
 
 /* HEADER */
-fetch('/tfcwebsite/partials/header.html')
+fetch('/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
@@ -124,7 +124,7 @@ fetch('/tfcwebsite/partials/header.html')
   });
 
 /* FOOTER */
-fetch('/tfcwebsite/partials/footer.html')
+fetch('/partials/footer.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('footer-placeholder').innerHTML = data;
