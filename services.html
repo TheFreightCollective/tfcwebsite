@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Our Services</title>
-        <link rel="stylesheet" href="/tfcwebsite/styles.css">
+        <link rel="stylesheet" href="/styles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -20,64 +20,64 @@
   <div class="services-grid">
 
     <!-- Specialised -->
-    <a href="/tfcwebsite/services/specialised.html" class="service-card reveal reveal-delay-1">
-      <img src="/tfcwebsite/assets/images/icons/brainpower.png" class="service-icon" alt="">
+    <a href="/services/specialised.html" class="service-card reveal reveal-delay-1">
+      <img src="/assets/images/icons/brainpower.png" class="service-icon" alt="">
       <h3>Specialised & General Logistics</h3>
       <p>Oversized, complex and general freight solutions.</p>
     </a>
 
     <!-- Cranes -->
-    <a href="/tfcwebsite/services/cranes.html" class="service-card reveal reveal-delay-2">
-      <img src="/tfcwebsite/assets/images/icons/cranetruck.png" class="service-icon" alt="">
+    <a href="/services/cranes.html" class="service-card reveal reveal-delay-2">
+      <img src="/assets/images/icons/cranetruck.png" class="service-icon" alt="">
       <h3>Cranes & Crane Trucks</h3>
       <p>Lifting and transport combined into one system.</p>
     </a>
 
     <!-- Complex -->
-    <a href="/tfcwebsite/services/complex.html" class="service-card reveal reveal-delay-3">
-      <img src="/tfcwebsite/assets/images/icons/australiapoints.png" class="service-icon" alt="">
+    <a href="/services/complex.html" class="service-card reveal reveal-delay-3">
+      <img src="/assets/images/icons/australiapoints.png" class="service-icon" alt="">
       <h3>Complex Logistics Movements</h3>
       <p>Multi-stage logistics coordination and planning.</p>
     </a>
 
     <!-- Regional -->
-    <a href="/tfcwebsite/services/regional.html" class="service-card reveal reveal-delay-1">
-      <img src="/tfcwebsite/assets/images/icons/australia.png" class="service-icon" alt="">
+    <a href="/services/regional.html" class="service-card reveal reveal-delay-1">
+      <img src="/assets/images/icons/australia.png" class="service-icon" alt="">
       <h3>Regional Transport Network</h3>
       <p>Reliable transport across regional Australia.</p>
     </a>
 
     <!-- Project -->
-    <a href="/tfcwebsite/services/project.html" class="service-card reveal reveal-delay-2">
-      <img src="/tfcwebsite/assets/images/icons/hardhatkog.png" class="service-icon" alt="">
+    <a href="/services/project.html" class="service-card reveal reveal-delay-2">
+      <img src="/assets/images/icons/hardhatkog.png" class="service-icon" alt="">
       <h3>Project Management</h3>
       <p>End-to-end logistics planning and execution.</p>
     </a>
 
     <!-- Hotshot -->
-    <a href="/tfcwebsite/services/hotshot.html" class="service-card reveal reveal-delay-3">
-      <img src="/tfcwebsite/assets/images/icons/express.png" class="service-icon" alt="">
+    <a href="/services/hotshot.html" class="service-card reveal reveal-delay-3">
+      <img src="/assets/images/icons/express.png" class="service-icon" alt="">
       <h3>Hot Shot Express</h3>
       <p>Urgent, time-critical freight delivery.</p>
     </a>
 
     <!-- Interstate -->
-    <a href="/tfcwebsite/services/interstate.html" class="service-card reveal reveal-delay-1">
-      <img src="/tfcwebsite/assets/images/icons/pointtopoint.png" class="service-icon" alt="">
+    <a href="/services/interstate.html" class="service-card reveal reveal-delay-1">
+      <img src="/assets/images/icons/pointtopoint.png" class="service-icon" alt="">
       <h3>Interstate Transport</h3>
       <p>Consistent freight movement nationwide.</p>
     </a>
 
     <!-- Consulting -->
-    <a href="/tfcwebsite/services/consulting.html" class="service-card reveal reveal-delay-2">
-      <img src="/tfcwebsite/assets/images/icons/roundtable.png" class="service-icon" alt="">
+    <a href="/services/consulting.html" class="service-card reveal reveal-delay-2">
+      <img src="/assets/images/icons/roundtable.png" class="service-icon" alt="">
       <h3>Logistics & Consulting</h3>
       <p>Expert advice to optimise freight operations.</p>
     </a>
 
     <!-- Port -->
-    <a href="/tfcwebsite/services/port.html" class="service-card reveal reveal-delay-3">
-      <img src="/tfcwebsite/assets/images/icons/australiapoints.png" class="service-icon" alt="">
+    <a href="/services/port.html" class="service-card reveal reveal-delay-3">
+      <img src="/assets/images/icons/australiapoints.png" class="service-icon" alt="">
       <h3>Port to Destination Transport</h3>
       <p>Seamless coordination from port to delivery.</p>
     </a>
@@ -94,7 +94,7 @@
 
 
 /* HEADER */
-fetch('/tfcwebsite/partials/header.html')
+fetch('/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
@@ -105,7 +105,7 @@ fetch('/tfcwebsite/partials/header.html')
   });
 
 /* FOOTER */
-fetch('/tfcwebsite/partials/footer.html')
+fetch('/partials/footer.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('footer-placeholder').innerHTML = data;
