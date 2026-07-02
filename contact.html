@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Contact</title>
-      <link rel="stylesheet" href="/tfcwebsite/styles.css">
+      <link rel="stylesheet" href="/styles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -26,21 +26,21 @@
 
     <!-- MESSAGE -->
     <a href="contact/message.html" class="service-card reveal reveal-delay-1">
-      <img src="/tfcwebsite/assets/images/icons/brainpower.png" class="service-icon" alt="">
+      <img src="/assets/images/icons/brainpower.png" class="service-icon" alt="">
       <h3>Send Message</h3>
       <p>General enquiries, questions or support.</p>
     </a>
 
     <!-- QUOTE -->
     <a href="contact/quote.html" class="service-card reveal reveal-delay-2">
-      <img src="/tfcwebsite/assets/images/icons/pointtopoint.png" class="service-icon" alt="">
+      <img src="/assets/images/icons/pointtopoint.png" class="service-icon" alt="">
       <h3>Request a Quote</h3>
       <p>Get pricing and availability for your job.</p>
     </a>
 
     <!-- ACCOUNT -->
     <a href="contact/account.html" class="service-card reveal reveal-delay-3">
-      <img src="/tfcwebsite/assets/images/icons/roundtable.png" class="service-icon" alt="">
+      <img src="/assets/images/icons/roundtable.png" class="service-icon" alt="">
       <h3>Account Application</h3>
       <p>Apply for a business trading account.</p>
     </a>
@@ -58,7 +58,7 @@
 
 
 /* HEADER */
-fetch('/tfcwebsite/partials/header.html')
+fetch('/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
@@ -69,7 +69,7 @@ fetch('/tfcwebsite/partials/header.html')
   });
 
 /* FOOTER */
-fetch('/tfcwebsite/partials/footer.html')
+fetch('/partials/footer.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('footer-placeholder').innerHTML = data;
