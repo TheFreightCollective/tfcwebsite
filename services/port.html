@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Port to Destination Transport</title>
-<link rel="stylesheet" href="/tfcwebsite/styles.css">
+<link rel="stylesheet" href="/styles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
@@ -153,7 +153,7 @@ You get:
 <script>
 
 /* HEADER */
-fetch('/tfcwebsite/partials/header.html')
+fetch('/partials/header.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('header-placeholder').innerHTML = data;
@@ -163,7 +163,7 @@ fetch('/tfcwebsite/partials/header.html')
   });
 
 /* FOOTER */
-fetch('/tfcwebsite/partials/footer.html')
+fetch('/partials/footer.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('footer-placeholder').innerHTML = data;
