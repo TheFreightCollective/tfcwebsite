@@ -4,45 +4,38 @@
 
 function initNav() {
   const menuToggle = document.querySelector('.mobile-menu-toggle');
-  const navLinks = document.querySelector('.nav-links');
+  const mobileNav = document.querySelector('.mobile-nav');
 
-  if (menuToggle && navLinks) {
-    menuToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
-    });
-  }
-}
+  if (!menuToggle || !mobileNav) return;
 
-
-
-// ===============================
-// CLOSE MENU WHEN LINK CLICKED (Mobile UX fix)
-// ===============================
-const navItems = document.querySelectorAll('.nav-links a');
-
-navItems.forEach(link => {
-  link.addEventListener('click', () => {
-    if (navLinks.classList.contains('active')) {
-      navLinks.classList.remove('active');
-    }
+  menuToggle.addEventListener('click', () => {
+    const isActive = mobileNav.classList.toggle('active');
+    menuToggle.classList.toggle('active', isActive);
+    menuToggle.setAttribute('aria-expanded', isActive);
   });
-});
+
+  // Close menu when a link is clicked
+  mobileNav.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileNav.classList.remove('active');
+      menuToggle.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', false);
+    });
+  });
+}
 
 
 // ===============================
 // HEADER SCROLL EFFECT (premium feel)
 // ===============================
-const header = document.querySelector('.site-header');
+function initHeaderScroll() {
+  const header = document.querySelector('.header');
+  if (!header) return;
 
-window.addEventListener('scroll', () => {
-  if (header) {
-    if (window.scrollY > 50) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  }
-});
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 50);
+  });
+}
 
 
 // ===============================
@@ -55,7 +48,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     if (target) {
       e.preventDefault();
       target.scrollIntoView({
-        behaviour: 'smooth'
+        behavior: 'smooth'
       });
     }
   });
@@ -63,16 +56,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 
 // ===============================
-// SAFETY: PREVENT ERRORS IF ELEMENTS MISSING
-// (prevents console errors across multiple pages)
-// ===============================
-console.log("Main JS loaded ✅");
-
-
-
-
-// ===============================
-// SCROLL REVEAL SYSTEM (PROPER)
+// SCROLL REVEAL SYSTEM
 // ===============================
 function initReveal() {
   const elements = document.querySelectorAll('.reveal');
@@ -98,10 +82,16 @@ function initReveal() {
     });
   };
 
-  // Run once on load
   revealOnScroll();
-
-  // Run on scroll
   window.addEventListener('scroll', revealOnScroll);
 }
 
+
+// ===============================
+// INIT
+// ===============================
+window.addEventListener('DOMContentLoaded', () => {
+  initHeaderScroll();
+});
+
+console.log("Main JS loaded ✅");
