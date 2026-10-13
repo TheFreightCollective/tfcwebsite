@@ -34,3 +34,8 @@ Keep all three files together. The page loads Konva 10.7.1 from jsDelivr.
 5. Change Maximum available and regenerate.
 6. Test Allow mixed trailer types on and off.
 7. Print and select Save as PDF.
+
+## Version 2.1 cache-fix package
+This package uses new asset filenames (`styles-v2-1.css` and `app-v2-1.js`) plus query-string versions. This avoids the browser, CDN or web host continuing to serve the previous CSS and JavaScript under the old filenames.
+
+Delete the old `index.html`, `styles.css` and `app.js` from the live load-planner folder, then upload all files from this package. Perform a hard refresh after publishing.
