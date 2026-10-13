@@ -1,40 +1,36 @@
-# The Freight Collective Load Planner
+# The Freight Collective Multi-Trailer Load Planner
 
-A static public load-planning tool built with HTML, CSS, JavaScript and Konva.js.
+## Install
+Replace the current load-planner folder contents with:
+- index.html
+- styles.css
+- app.js
 
-## Files
-- `index.html` - public page
-- `styles.css` - responsive styling
-- `app.js` - trailer, freight, auto-placement, stacking, drag/drop and export logic
+Keep all three files together. The page loads Konva 10.7.1 from jsDelivr.
 
-## Publish as a subpage
-Upload all three files to the same public folder, for example:
+## Essential release features
+- Select multiple permitted trailer types with tick boxes
+- Edit length, width, height, payload and maximum available quantity per type
+- Allow or prevent mixed equipment
+- Multi-trailer automatic planning, favouring complete placement, then fewer trailers, then better utilisation
+- 90-degree floor rotation and side-by-side shelf packing
+- Basic identical-item stacking with height checks
+- Separate diagram for each trailer
+- Unplaced freight reasons
+- Print / Save PDF export for the complete plan
+- CSV import/export
 
-`/load-planner/index.html`
-`/load-planner/styles.css`
-`/load-planner/app.js`
+## Important model limits
+- Mezzanine and drop-deck types are rectangular approximations in this release.
+- The optimiser is a practical heuristic, not a mathematical proof of the global optimum.
+- No axle-group, centre-of-gravity, load restraint, legal dimension, deck obstruction or loading-sequence calculation is included.
+- Confirm every plan with the carrier and actual equipment.
 
-The public address will normally become `https://your-domain.com/load-planner/`.
-
-## What is included
-- Editable semi, mezzanine, flat top, 40 ft container and custom profiles
-- Freight line entry and CSV import/export
-- Automatic top-view placement with rotation
-- Basic identical-item stacking allowance
-- Drag-and-drop manual adjustment and double-click rotation
-- Floor, payload and cube indicators
-- PNG export and browser Print / Save PDF
-- Responsive public layout
-
-## Important limitations
-This version is a planning aid. It does not calculate axle-group mass, centre of gravity, legal dimensions, load restraint, deck obstructions, wheel arches, mezzanine geometry, loading order or carrier-specific requirements. Trailer dimensions are editable because actual equipment varies.
-
-## Konva dependency
-The page currently loads Konva 10.7.1 from jsDelivr. If your site has a Content Security Policy, allow `https://cdn.jsdelivr.net` for scripts or download `konva.min.js` into this folder and change the script path in `index.html`.
-
-## Quick check before publishing
-1. Open `index.html` in a browser while online.
-2. Click **Load sample**, then **Generate plan**.
-3. Drag a crate and double-click it to rotate.
-4. Test **Export PNG** and **Print / Save PDF**.
-5. Replace wording or colours if required, then upload the folder.
+## Quick test
+1. Open the page while online.
+2. Click Load sample.
+3. Confirm multiple trailer diagrams appear if required.
+4. Untick a trailer and regenerate to verify it is excluded.
+5. Change Maximum available and regenerate.
+6. Test Allow mixed trailer types on and off.
+7. Print and select Save as PDF.
