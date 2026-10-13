@@ -1,49 +1,17 @@
-# The Freight Collective Multi-Trailer Load Planner
+# Load Planner V2.4
 
-## Install
-Replace the current load-planner folder contents with:
+Replace the current live planner files with:
 - index.html
-- styles.css
-- app.js
+- styles-v2-4.css
+- app-v2-4.js
 
-Keep all three files together. The page loads Konva 10.7.1 from jsDelivr.
+Changes:
+- Default planning length is now 13,200 mm.
+- Default usable width is now 2,400 mm for every supplied trailer profile.
+- Users may manually increase either dimension when confirmed.
+- Two-dimensional side-by-side packing and item-level rotation remain included.
+- Form data now autosaves to browser localStorage on the current device.
+- No database or server storage is used.
+- Generated plans are recalculated in memory and are not permanently saved.
 
-## Essential release features
-- Select multiple permitted trailer types with tick boxes
-- Edit length, width, height, payload and maximum available quantity per type
-- Allow or prevent mixed equipment
-- Multi-trailer automatic planning, favouring complete placement, then fewer trailers, then better utilisation
-- 90-degree floor rotation and side-by-side shelf packing
-- Basic identical-item stacking with height checks
-- Separate diagram for each trailer
-- Unplaced freight reasons
-- Print / Save PDF export for the complete plan
-- CSV import/export
-
-## Important model limits
-- Mezzanine and drop-deck types are rectangular approximations in this release.
-- The optimiser is a practical heuristic, not a mathematical proof of the global optimum.
-- No axle-group, centre-of-gravity, load restraint, legal dimension, deck obstruction or loading-sequence calculation is included.
-- Confirm every plan with the carrier and actual equipment.
-
-## Quick test
-1. Open the page while online.
-2. Click Load sample.
-3. Confirm multiple trailer diagrams appear if required.
-4. Untick a trailer and regenerate to verify it is excluded.
-5. Change Maximum available and regenerate.
-6. Test Allow mixed trailer types on and off.
-7. Print and select Save as PDF.
-
-## Version 2.1 cache-fix package
-This package uses new asset filenames (`styles-v2-1.css` and `app-v2-1.js`) plus query-string versions. This avoids the browser, CDN or web host continuing to serve the previous CSS and JavaScript under the old filenames.
-
-Delete the old `index.html`, `styles.css` and `app.js` from the live load-planner folder, then upload all files from this package. Perform a hard refresh after publishing.
-
-
-## Version 2.2 rotation update
-- Added a Rotate checkbox to every freight line.
-- Added a rotatable CSV column before stackable. Accepted values: yes/no, true/false, 1/0.
-- Old eight-column CSV files still import and default each item to rotatable.
-- The optimiser now runs multiple packing passes with different sort orders and both orientation preferences, then keeps the pass that places the most freight.
-- Manual double-click rotation respects the item-level Rotate setting.
+Privacy/storage note: localStorage remains in that browser profile until Reset is selected, site data is cleared, private browsing ends, or browser settings remove it. It does not sync to the CRM database.
