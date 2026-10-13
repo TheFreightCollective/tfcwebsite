@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Free freight load planner by The Freight Collective.">
+  <title>Free Load Planner | The Freight Collective</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/konva@10.7.1/konva.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <p class="eyebrow">THE FREIGHT COLLECTIVE</p>
+    <h1>Free Load Planner</h1>
+    <p class="lede">Plan crates on Australian trailers, test rotations and stacking, then export a clear loading plan.</p>
+  </div>
+  <div class="header-actions">
+    <button id="sampleBtn" class="secondary">Load sample</button>
+    <button id="resetBtn" class="ghost">Reset</button>
+  </div>
+</header>
+
+<main class="app-shell">
+  <section class="panel controls-panel">
+    <h2>1. Trailer</h2>
+    <label>Trailer type
+      <select id="trailerSelect"></select>
+    </label>
+    <div class="dimension-grid">
+      <label>Internal length (mm)<input id="trailerLength" type="number" min="1000" step="10"></label>
+      <label>Internal width (mm)<input id="trailerWidth" type="number" min="1000" step="10"></label>
+      <label>Max height (mm)<input id="trailerHeight" type="number" min="1000" step="10"></label>
+      <label>Payload (kg)<input id="trailerPayload" type="number" min="0" step="10"></label>
+    </div>
+    <p class="notice">Trailer data is editable. Confirm actual internal dimensions, payload, axle limits and restraint requirements with the carrier.</p>
+
+    <div class="section-heading">
+      <h2>2. Freight</h2>
+      <button id="addItemBtn" class="secondary small">+ Add line</button>
+    </div>
+    <div class="table-wrap">
+      <table id="itemTable">
+        <thead><tr><th>Ref</th><th>Qty</th><th>L</th><th>W</th><th>H</th><th>kg ea</th><th>Stack</th><th>Max</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="hint">Dimensions are millimetres. “Max” is the maximum number of identical items allowed in one stack.</p>
+
+    <div class="button-grid">
+      <button id="autoPlanBtn" class="primary">Generate plan</button>
+      <button id="clearPlanBtn" class="secondary">Clear layout</button>
+      <button id="exportPngBtn" class="secondary">Export PNG</button>
+      <button id="printBtn" class="secondary">Print / Save PDF</button>
+    </div>
+    <details>
+      <summary>CSV import / export</summary>
+      <p class="hint">Columns: ref, qty, length_mm, width_mm, height_mm, weight_kg, stackable, max_stack.</p>
+      <input id="csvInput" type="file" accept=".csv,text/csv">
+      <button id="exportCsvBtn" class="ghost small">Download CSV</button>
+    </details>
+  </section>
+
+  <section class="workspace">
+    <div class="stats-grid">
+      <article><span>Floor used</span><strong id="floorStat">0%</strong></article>
+      <article><span>Payload</span><strong id="weightStat">0 kg</strong></article>
+      <article><span>Volume used</span><strong id="volumeStat">0%</strong></article>
+      <article><span>Placed</span><strong id="placedStat">0 / 0</strong></article>
+    </div>
+    <div id="warningBox" class="warning hidden"></div>
+    <div class="canvas-card">
+      <div class="canvas-toolbar">
+        <div><strong>Top view</strong><span> Drag items to fine-tune. Double-click an item to rotate it.</span></div>
+        <div>
+          <button id="zoomOutBtn" class="icon-btn" aria-label="Zoom out">−</button>
+          <button id="fitBtn" class="icon-btn">Fit</button>
+          <button id="zoomInBtn" class="icon-btn" aria-label="Zoom in">+</button>
+        </div>
+      </div>
+      <div id="stageWrap"><div id="konvaContainer"></div></div>
+      <div id="legend" class="legend"></div>
+    </div>
+    <div class="results-card">
+      <h2>Loading summary</h2>
+      <div id="summary"></div>
+    </div>
+  </section>
+</main>
+<footer>Free tool provided by <strong>The Freight Collective</strong>. Planning aid only, not engineering, legal, axle-mass or load-restraint advice.</footer>
+</body>
+</html>
