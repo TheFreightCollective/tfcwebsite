@@ -449,7 +449,27 @@
         function importTrailerCSV(file) {const r = new FileReader(); r.onload = () => {const rows = parseCSV(String(r.result)), list = rows.slice(1).filter(x => x.length >= 6).map((x, i) => ({id: 'imported-' + Date.now() + '-' + i, name: x[0] || 'Imported trailer', l: +x[1] || 13200, w: +x[2] || 2400, h: +x[3] || 0, p: +x[4] || 24000, max: +x[5] || 1, on: /^(yes|true|1)$/i.test(x[6] || 'no')})); if (list.length) {equipment(list); save()} }; r.readAsText(file)}
         function importFreightCSV(file) {const r = new FileReader(); r.onload = () => {const rows = parseCSV(String(r.result)); $('#rows').innerHTML = ''; rows.slice(1).filter(x => x.length >= 10).forEach(x => add({ref: x[0] || 'ITEM', qty: +x[1] || 1, l: +x[2] || 0, w: +x[3] || 0, h: +x[4] || 0, kg: +x[5] || 0, rot: /^(yes|true|1)$/i.test(x[6]), stk: /^(yes|true|1)$/i.test(x[7]), top: /^(yes|true|1)$/i.test(x[8]), max: +x[9] || 1})); save()}; r.readAsText(file)}
         function restore() {try {const d = JSON.parse(localStorage.getItem(KEY)); if (!d) return false; equipment(d.types || DEF); $('#rows').innerHTML = ''; (d.items || []).forEach(add); $('#mixed').checked = d.mixed !== false; $('#rotation').checked = d.rotation !== false; $('#stacking').checked = d.stacking !== false; return true} catch (e) {return false} }
-        $('#addTrailer').onclick = () => {const list = types(); list.push({id: 'custom-' + Date.now(), name: 'New trailer type', l: 13200, w: 2400, h: 2700, p: 24000, max: 1, on: true}); equipment(list); save()}; $('#exportTrailers').onclick = exportTrailerCSV; $('#importTrailers').onclick = () => $('#trailerFile').click(); $('#trailerFile').onchange = e => e.target.files[0] && importTrailerCSV(e.target.files[0]); $('#importFreight').onclick = () => $('#freightFile').click(); $('#freightFile').onchange = e => e.target.files[0] && importFreightCSV(e.target.files[0]); $('#add').onclick = () => add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1}); $('#generate').onclick = generate; $('#sample').onclick = sample; $('#reset').onclick = reset; $('#print').onclick = () => window.print(); $('#csv').onclick = csv; document.addEventListener('input', save); document.addEventListener('change', save); if (!restore()) {equipment(); add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1});}
+        $('#addTrailer').onclick = () => {const list = types(); list.push({id: 'custom-' + Date.now(), name: 'New trailer type', l: 13200, w: 2400, h: 2700, p: 24000, max: 1, on: true}); equipment(list); save()}; $('#exportTrailers').onclick = exportTrailerCSV; $('#importTrailers').onclick = () => $('#trailerFile').click(); $('#trailerFile').onchange = e => e.target.files[0] && importTrailerCSV(e.target.files[0]); $('#importFreight').onclick = () => $('#freightFile').click(); $('#freightFile').onchange = e => e.target.files[0] && importFreightCSV(e.target.files[0]); $('#add').onclick = () => add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1}); $('#generate').onclick = generate; $('#sample').onclick = sample; $('#reset').onclick = reset; $('#print').onclick = () => window.print(); $('#csv').onclick = exportFreightCSV; document.addEventListener('input', save); document.addEventListener('change', save); if (!restore()) {equipment(); add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1});}
+        function exportFreightCSV() {
+        downloadCSV(
+            'load-planner.csv',
+            [
+                ['ref','qty','length_mm','width_mm','height_mm','weight_kg','rotatable','stackable','top_load_only','max_stack'],
+                ...items().map(x => [
+                    x.ref,
+                    x.qty,
+                    x.l,
+                    x.w,
+                    x.h,
+                    x.kg,
+                    x.rot ? 'yes' : 'no',
+                    x.stk ? 'yes' : 'no',
+                    x.top ? 'yes' : 'no',
+                    x.max
+                ])
+            ]
+        );
+    }
     </script>
 </body>
 
