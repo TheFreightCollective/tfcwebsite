@@ -803,14 +803,17 @@
           }),
         );
         p.p.forEach((x) => {
-          let g = new Konva.Group({ x: x.x * z, y: x.y * z }),
+          let g = new Konva.Group({
+    x: x.x * z,
+    y: x.y * z,
+    draggable: true
+}),
             r = new Konva.Rect({
               width: x.l * z,
               height: x.w * z,
               fill: x.col,
               opacity: 0.86,
               stroke: "#10344f",
-              draggable: true
             }),
             refs = x.members
               .map(
@@ -869,7 +872,7 @@
 
 });
 g.on('dragend', () => {
-    checkOverlaps();
+    console.log('dragged');
 });
           fg.add(g);
         });
