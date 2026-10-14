@@ -1,24 +1,456 @@
-<!doctype html><html lang="en-AU"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Freight Collective Load Planner</title><script src="https://cdn.jsdelivr.net/npm/konva@10.7.1/konva.min.js"></script><style>
-*{box-sizing:border-box}body{margin:0;background:#eef3f7;color:#183148;font:14px Segoe UI,Arial}header{background:#10344f;color:#fff;padding:24px 36px}h1{margin:4px 0}main{display:grid;grid-template-columns:570px 1fr;gap:16px;padding:16px;max-width:1900px;margin:auto}aside,.stats,.trailer,.empty,.unloaded{background:#fff;border:1px solid #cad8e3;border-radius:12px;overflow:hidden}aside{padding:16px;align-self:start}button,input{font:inherit}button{border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer}.primary{background:#0876bb;color:#fff}.equipment{border:1px solid #cad8e3;border-radius:8px;margin:7px 0}.equipment summary{padding:9px;background:#f4f8fb;font-weight:700}.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:9px}.fields label{font-size:11px}.fields input{width:100%;padding:6px}.options{display:grid;gap:6px;padding:10px;background:#f4f8fb;border-radius:8px}.bar{display:flex;justify-content:space-between;align-items:center}.scroll{overflow:auto}table{border-collapse:collapse;min-width:880px;width:100%;font-size:11px}th{background:#e7f0f6;padding:6px;text-align:left}td{padding:3px;border-bottom:1px solid #e5edf2}td input{width:64px;padding:5px}td input[type=checkbox]{width:auto}.libraryActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:9px 0}.removeTrailer{background:#fee4e2;color:#8b241b;padding:5px 8px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}.actions .primary{grid-column:1/-1}.stats{display:grid;grid-template-columns:repeat(4,1fr)}.stats div{padding:13px}.stats span{display:block;color:#60778c;font-size:11px}.stats b{font-size:19px}.alert{background:#fff0ef;color:#81271d;border:1px solid #eeaaa3;padding:10px;border-radius:8px;margin:10px 0}.unloaded{margin:10px 0}.unloaded h2{margin:0;padding:11px;background:#fff0ef}.ug{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:7px;padding:10px}.ui{border:1px solid #edd0cc;border-radius:8px;padding:8px;font-size:12px}.plans{display:grid;gap:12px;margin-top:12px}.empty{text-align:center;padding:50px}.head{display:flex;justify-content:space-between;padding:11px}.head h2{margin:0}.badges{display:flex;gap:5px;flex-wrap:wrap}.badge{background:#e7f3fa;border-radius:999px;padding:5px 7px;font-size:11px}.canvas{background:#dce7ee;padding:15px;overflow:auto;min-height:210px}.konva{width:max-content;background:#fff}.foot{padding:9px 12px;color:#60778c;font-size:11px}.note{color:#60778c;font-size:12px}@media(max-width:1100px){main{grid-template-columns:1fr}}@media(max-width:600px){main{padding:8px}.stats{grid-template-columns:1fr 1fr}.fields{grid-template-columns:1fr 1fr}.actions{grid-template-columns:1fr}.actions .primary{grid-column:auto}}@media print{header,aside{display:none}main{display:block}.trailer{break-inside:avoid}.canvas{background:#fff}.alert{display:none}}
-</style></head><body><header><h1>The Freight Collective Load Planner</h1><div>Trailer selection, automatic stacking and multi-trailer planning</div></header><main><aside><div class="bar"><h2>1. Trailer Library</h2><button id="addTrailer">+ Add trailer type</button></div><p class="note">Add, edit, select or remove trailer types. The library autosaves on this device.</p><div id="equipment"></div><div class="libraryActions"><button id="importTrailers">Import trailer CSV</button><button id="exportTrailers">Export trailer CSV</button><input id="trailerFile" type="file" accept=".csv,text/csv" hidden></div><div class="options"><label><input id="mixed" type="checkbox" checked> Allow mixed equipment</label><label><input id="rotation" type="checkbox" checked> Allow rotation</label><label><input id="stacking" type="checkbox" checked> Use automatic stacking</label></div><div class="bar"><h2>2. Freight</h2><button id="add">+ Add line</button></div><div class="scroll"><table><thead><tr><th>Ref</th><th>Qty</th><th>L</th><th>W</th><th>H</th><th>kg</th><th>Rotate</th><th>Stack</th><th>Top only</th><th>Max</th><th></th></tr></thead><tbody id="rows"></tbody></table></div><p class="note">Stacking is automatic. Top only means the item may sit above another item but cannot support freight above it.</p><div class="actions"><button id="generate" class="primary">Generate Best Load Plan</button><button id="sample">Load sample</button><button id="reset">Reset</button><button id="print">Export / Print</button><button id="importFreight">Import CSV</button><button id="csv">Export CSV</button><input id="freightFile" type="file" accept=".csv,text/csv" hidden></div></aside><section><div class="stats" id="stats"><div><span>Status</span><b>Ready</b></div><div><span>Trailers</span><b>0</b></div><div><span>Items placed</span><b>0 / 0</b></div><div><span>Total weight</span><b>0 kg</b></div></div><div id="alerts"></div><div id="unloaded"></div><div id="plans" class="plans"><div class="empty"><h2>No plan generated</h2></div></div></section></main><script>
-'use strict';const KEY='tfc-v27',COL=['#2f80ed','#26a69a','#ed8b24','#9b61d9','#ef6670','#7f8c8d','#00a0c6','#8d9d3b'];const DEF=[{id:'semi',name:'Semi tautliner',l:13200,w:2400,h:2700,p:24000,max:4,on:true},{id:'flat',name:'Flat top',l:13200,w:2400,h:0,p:24000,max:4,on:false},{id:'drop',name:'Drop deck',l:13200,w:2400,h:3200,p:24000,max:2,on:false},{id:'mezz',name:'Mezzanine trailer',l:13200,w:2400,h:3000,p:22000,max:2,on:false},{id:'bdoublelead',name:'B-double lead',l:8200,w:2400,h:2700,p:20000,max:2,on:false},{id:'bdoublerear',name:'B-double rear',l:13200,w:2400,h:2700,p:24000,max:2,on:false},{id:'container20',name:'20 ft container',l:5890,w:2350,h:2390,p:28000,max:4,on:false},{id:'container40',name:'40 ft container',l:12030,w:2350,h:2390,p:26700,max:4,on:false},{id:'custom',name:'Custom trailer',l:13200,w:2400,h:2700,p:24000,max:2,on:false}];const $=s=>document.querySelector(s);
-function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function equipment(data=DEF){$('#equipment').innerHTML='';data.forEach((t,n)=>{let d=document.createElement('details');d.className='equipment';d.open=!!t.on;d.dataset.id=t.id||('trailer-'+Date.now()+'-'+n);d.innerHTML=`<summary><input class="on" type="checkbox" ${t.on?'checked':''}> <input class="name" value="${safe(t.name||'New trailer type')}"> <button type="button" class="removeTrailer">Remove</button></summary><div class="fields"><label>Length mm<input class="l" type="number" min="1" value="${t.l||13200}"></label><label>Usable width mm<input class="w" type="number" min="1" value="${t.w||2400}"></label><label>Height mm<input class="h" type="number" min="0" value="${t.h??2700}"></label><label>Payload kg<input class="p" type="number" min="0" value="${t.p||24000}"></label><label>Maximum available<input class="max" type="number" min="1" value="${t.max||1}"></label></div>`;d.querySelector('.removeTrailer').onclick=e=>{e.preventDefault();d.remove();save()};$('#equipment').appendChild(d)})}
-function add(x){let r=document.createElement('tr');r.innerHTML=`<td><input class="ref" value="${safe(x.ref)}"></td><td><input class="qty" type="number" min="1" value="${x.qty||1}"></td><td><input class="l" type="number" value="${x.l}"></td><td><input class="w" type="number" value="${x.w}"></td><td><input class="h" type="number" value="${x.h}"></td><td><input class="kg" type="number" value="${x.kg||0}"></td><td><input class="rot" type="checkbox" ${x.rot!==false?'checked':''}></td><td><input class="stk" type="checkbox" ${x.stk?'checked':''}></td><td><input class="top" type="checkbox" ${x.top?'checked':''}></td><td><input class="max" type="number" min="1" value="${x.max||1}"></td><td><button class="del">×</button></td>`;r.querySelector('.del').onclick=()=>{r.remove();save()};$('#rows').appendChild(r)}
-function types(){return [...document.querySelectorAll('.equipment')].map(d=>({id:d.dataset.id,name:d.querySelector('.name').value||'Unnamed trailer',on:d.querySelector('.on').checked,l:+d.querySelector('.l').value,w:+d.querySelector('.w').value,h:+d.querySelector('.h').value,p:+d.querySelector('.p').value,max:+d.querySelector('.max').value||1}))}function items(){return [...$('#rows').rows].map((r,i)=>({ref:r.querySelector('.ref').value||'ITEM-'+(i+1),qty:+r.querySelector('.qty').value||1,l:+r.querySelector('.l').value,w:+r.querySelector('.w').value,h:+r.querySelector('.h').value,kg:+r.querySelector('.kg').value||0,rot:r.querySelector('.rot').checked,stk:r.querySelector('.stk').checked,top:r.querySelector('.top').checked,max:+r.querySelector('.max').value||1,col:COL[i%COL.length]}))}function units(a){let o=[];a.forEach(x=>{for(let i=1;i<=x.qty;i++)o.push({...x,id:x.ref+'-'+i,unit:i})});return o}
-function stacks(u,t){if(!$('#stacking').checked)return u.map(x=>({...x,members:[x],sh:x.h,sw:x.kg}));let rem=u.slice().sort((a,b)=>b.l*b.w-a.l*a.w),out=[];while(rem.length){let bi=rem.findIndex(x=>x.stk&&!x.top&&x.max>1);if(bi<0)break;let base=rem.splice(bi,1)[0],mem=[base],h=base.h,kg=base.kg;while(mem.length<base.max){let best=-1,score=-1;for(let i=0;i<rem.length;i++){let x=rem[i];if(!x.stk)continue;let fit=(x.l<=base.l&&x.w<=base.w)||(x.rot&&x.w<=base.l&&x.l<=base.w);if(!fit||(t.h&&h+x.h>t.h)||mem.length>=x.max)continue;let sc=(x.top?1e12:0)+x.l*x.w;if(sc>score){score=sc;best=i}}if(best<0)break;let x=rem.splice(best,1)[0];mem.push(x);h+=x.h;kg+=x.kg}out.push({...base,members:mem,sh:h,sw:kg})}return out.concat(rem.map(x=>({...x,members:[x],sh:x.h,sw:x.kg})))}
-function hit(a,b){return a.x<b.x+b.l&&a.x+a.l>b.x&&a.y<b.y+b.w&&a.y+a.w>b.y}function inside(a,b){return b.x>=a.x&&b.y>=a.y&&b.x+b.l<=a.x+a.l&&b.y+b.w<=a.y+a.w}function split(f,u){let o=[];for(const r of f){if(!hit(r,u)){o.push(r);continue}let rr=r.x+r.l,rb=r.y+r.w,ur=u.x+u.l,ub=u.y+u.w;if(u.x>r.x)o.push({x:r.x,y:r.y,l:u.x-r.x,w:r.w});if(ur<rr)o.push({x:ur,y:r.y,l:rr-ur,w:r.w});if(u.y>r.y)o.push({x:r.x,y:r.y,l:r.l,w:u.y-r.y});if(ub<rb)o.push({x:r.x,y:ub,l:r.l,w:rb-ub})}return o.filter(r=>r.l>0&&r.w>0).filter((r,i,a)=>!a.some((q,j)=>i!==j&&inside(q,r)))}function placed(p){return p.p.reduce((n,x)=>n+x.members.length,0)}
-function pack(t,u){let all=[];for(const pref of [0,1]){let list=stacks(u,t).sort((a,b)=>b.l*b.w-a.l*a.w),free=[{x:0,y:0,l:t.l,w:t.w}],p=[],kg=0,area=0;for(const x of list){if((t.h&&x.sh>t.h)||kg+x.sw>t.p)continue;let os=[{l:x.l,w:x.w}],can=$('#rotation').checked&&x.rot&&x.l!=x.w;if(can)os.push({l:x.w,w:x.l});if(pref&&can)os.reverse();let best=null;for(const r of free)for(const q of os)if(q.l<=r.l&&q.w<=r.w){let sc=Math.min(r.l-q.l,r.w-q.w);if(!best||sc<best.sc)best={...q,x:r.x,y:r.y,sc}}if(!best)continue;free=split(free,best);p.push({...x,...best});kg+=x.sw;area+=best.l*best.w}all.push({p,kg,area})}all.sort((a,b)=>placed(b)-placed(a)||b.area-a.area);return all[0]}
-function solve(ts,u){let left=u.slice(),tr=[],av=new Map(ts.map(t=>[t.id,t.max]));while(left.length&&[...av.values()].some(x=>x>0)){let best;for(const t of ts){if(av.get(t.id)<=0)continue;let q=pack(t,left),score=placed(q)*1e12+q.area;if(!best||score>best.score)best={...q,t,score}}if(!best||!placed(best))break;tr.push(best);av.set(best.t.id,av.get(best.t.id)-1);let used=new Set(best.p.flatMap(x=>x.members.map(m=>m.id)));left=left.filter(x=>!used.has(x.id))}return{tr,left}}
-function generate(){save();let ts=types().filter(x=>x.on),src=items(),u=units(src);if(!ts.length)return showAlert('Select equipment.');let candidates=$('#mixed').checked?[solve(ts,u)]:ts.map(t=>solve([t],u));candidates.sort((a,b)=>a.left.length-b.left.length||a.tr.length-b.tr.length);render(candidates[0],src)}
-function render(s,src){let total=src.reduce((n,x)=>n+x.qty,0),kg=src.reduce((n,x)=>n+x.qty*x.kg,0);stats(s.left.length?'Incomplete':'Complete',s.tr.length,total-s.left.length,total,kg);showAlert(s.left.length?s.left.length+' item(s) not loaded.':'');unloaded(s.left);$('#plans').innerHTML='';s.tr.forEach((p,i)=>{let stacks=p.p.filter(x=>x.members.length>1),saved=stacks.reduce((n,x)=>n+x.members.length-1,0),a=document.createElement('article');a.className='trailer';a.innerHTML=`<div class="head"><h2>Trailer ${i+1}: ${p.t.name}</h2><div class="badges"><span class="badge">${placed(p)} items</span><span class="badge">${stacks.length} stacks</span><span class="badge">${saved} floor positions saved</span><span class="badge">${Math.round(p.kg)} kg</span></div></div><div class="canvas"><div class="konva" id="k${i}"></div></div><div class="foot">${p.t.l.toLocaleString()} × ${p.t.w.toLocaleString()} mm</div>`;$('#plans').appendChild(a);draw(p,i)})}
-function unloaded(a){if(!a.length){$('#unloaded').innerHTML='';return}let m=new Map();a.forEach(x=>{if(!m.has(x.ref))m.set(x.ref,{...x,q:0});m.get(x.ref).q++});$('#unloaded').innerHTML=`<section class="unloaded"><h2>Not loaded - ${a.length}</h2><div class="ug">${[...m.values()].map(x=>`<div class="ui"><b>${safe(x.ref)} × ${x.q}</b>${x.l} × ${x.w} × ${x.h} mm<br>${x.kg} kg<br>${x.stk?(x.top?'Stackable - TOP LOAD ONLY':'Stackable'):'Not stackable'}</div>`).join('')}</div></section>`}
-function draw(p,i){let z=.07,W=Math.max(700,p.t.l*z),H=Math.max(180,p.t.w*z),s=new Konva.Stage({container:'k'+i,width:W,height:H}),bg=new Konva.Layer(),fg=new Konva.Layer();s.add(bg);s.add(fg);bg.add(new Konva.Rect({x:0,y:0,width:W,height:H,fill:'#fff',stroke:'#10344f',strokeWidth:4}));p.p.forEach(x=>{let g=new Konva.Group({x:x.x*z,y:x.y*z}),r=new Konva.Rect({width:x.l*z,height:x.w*z,fill:x.col,opacity:.86,stroke:'#10344f'}),refs=x.members.map((m,n)=>(n?'TOP '+n+' ':'BOTTOM ')+m.ref+' #'+m.unit).join('\n'),t=new Konva.Text({x:4,y:4,width:x.l*z-8,height:x.w*z-8,text:refs+(x.members.length>1?'\nSTACK x'+x.members.length:'')+'\n'+x.l+' × '+x.w,fontSize:9,fontStyle:'bold',fill:'#fff',ellipsis:true});g.add(r,t);fg.add(g)});bg.draw();fg.draw();let wrap=s.container().parentElement,sc=Math.min(1,(wrap.clientWidth-30)/W);s.container().style.transform=`scale(${sc})`;s.container().style.transformOrigin='top left';s.container().style.marginRight=W*(sc-1)+'px';s.container().style.marginBottom=H*(sc-1)+'px'}
-function stats(a,b,c,d,e){let v=[a,b,c+' / '+d,Math.round(e)+' kg'];[...$('#stats').children].forEach((x,i)=>x.querySelector('b').textContent=v[i])}function showAlert(s){$('#alerts').innerHTML=s?`<div class="alert">${safe(s)}</div>`:''}function save(){try{localStorage.setItem(KEY,JSON.stringify({types:types(),items:items(),mixed:$('#mixed').checked,rotation:$('#rotation').checked,stacking:$('#stacking').checked}))}catch(e){}}function reset(){localStorage.removeItem(KEY);equipment();$('#rows').innerHTML='';add({ref:'ITEM',qty:1,l:1200,w:1000,h:1000,kg:0,rot:true,stk:false,top:false,max:1});$('#plans').innerHTML='<div class="empty"><h2>No plan generated</h2></div>';$('#unloaded').innerHTML=''}function sample(){$('#rows').innerHTML='';add({ref:'BASE',qty:3,l:1200,w:1165,h:900,kg:650,rot:true,stk:true,top:false,max:3});add({ref:'TOP',qty:3,l:1100,w:1000,h:700,kg:300,rot:true,stk:true,top:true,max:3});generate()}function csv(){downloadCSV('load-planner.csv',[['ref','qty','length_mm','width_mm','height_mm','weight_kg','rotatable','stackable','top_load_only','max_stack'],...items().map(x=>[x.ref,x.qty,x.l,x.w,x.h,x.kg,x.rot?'yes':'no',x.stk?'yes':'no',x.top?'yes':'no',x.max])])}
-function parseCSV(text){const rows=[];let row=[],cell='',q=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'&&q&&text[i+1]==='"'){cell+='"';i++}else if(c==='"')q=!q;else if(c===','&&!q){row.push(cell);cell=''}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);if(row.some(v=>v.trim()))rows.push(row);row=[];cell=''}else cell+=c}row.push(cell);if(row.some(v=>v.trim()))rows.push(row);return rows}
-function downloadCSV(name,rows){const quote=v=>{v=String(v??'');return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v},a=document.createElement('a'),url=URL.createObjectURL(new Blob([rows.map(r=>r.map(quote).join(',')).join('\n')],{type:'text/csv'}));a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),500)}
-function exportTrailerCSV(){downloadCSV('trailer-library.csv',[['name','length_mm','width_mm','height_mm','payload_kg','maximum_available','selected'],...types().map(t=>[t.name,t.l,t.w,t.h,t.p,t.max,t.on?'yes':'no'])])}
-function importTrailerCSV(file){const r=new FileReader();r.onload=()=>{const rows=parseCSV(String(r.result)),list=rows.slice(1).filter(x=>x.length>=6).map((x,i)=>({id:'imported-'+Date.now()+'-'+i,name:x[0]||'Imported trailer',l:+x[1]||13200,w:+x[2]||2400,h:+x[3]||0,p:+x[4]||24000,max:+x[5]||1,on:/^(yes|true|1)$/i.test(x[6]||'no')}));if(list.length){equipment(list);save()}};r.readAsText(file)}
-function importFreightCSV(file){const r=new FileReader();r.onload=()=>{const rows=parseCSV(String(r.result));$('#rows').innerHTML='';rows.slice(1).filter(x=>x.length>=10).forEach(x=>add({ref:x[0]||'ITEM',qty:+x[1]||1,l:+x[2]||0,w:+x[3]||0,h:+x[4]||0,kg:+x[5]||0,rot:/^(yes|true|1)$/i.test(x[6]),stk:/^(yes|true|1)$/i.test(x[7]),top:/^(yes|true|1)$/i.test(x[8]),max:+x[9]||1}));save()};r.readAsText(file)}
-function restore(){try{const d=JSON.parse(localStorage.getItem(KEY));if(!d)return false;equipment(d.types||DEF);$('#rows').innerHTML='';(d.items||[]).forEach(add);$('#mixed').checked=d.mixed!==false;$('#rotation').checked=d.rotation!==false;$('#stacking').checked=d.stacking!==false;return true}catch(e){return false}}
-$('#addTrailer').onclick=()=>{const list=types();list.push({id:'custom-'+Date.now(),name:'New trailer type',l:13200,w:2400,h:2700,p:24000,max:1,on:true});equipment(list);save()};$('#exportTrailers').onclick=exportTrailerCSV;$('#importTrailers').onclick=()=>$('#trailerFile').click();$('#trailerFile').onchange=e=>e.target.files[0]&&importTrailerCSV(e.target.files[0]);$('#importFreight').onclick=()=>$('#freightFile').click();$('#freightFile').onchange=e=>e.target.files[0]&&importFreightCSV(e.target.files[0]);$('#add').onclick=()=>add({ref:'ITEM',qty:1,l:1200,w:1000,h:1000,kg:0,rot:true,stk:false,top:false,max:1});$('#generate').onclick=generate;$('#sample').onclick=sample;$('#reset').onclick=reset;$('#print').onclick=()=>window.print();$('#csv').onclick=csv;document.addEventListener('input',save);document.addEventListener('change',save);if(!restore()){equipment();add({ref:'ITEM',qty:1,l:1200,w:1000,h:1000,kg:0,rot:true,stk:false,top:false,max:1});}
-</script></body></html>
+<!doctype html>
+<html lang="en-AU">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>The Freight Collective Load Planner</title>
+    <script src="https://cdn.jsdelivr.net/npm/konva@10.7.1/konva.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: #eef3f7;
+            color: #183148;
+            font: 14px Segoe UI, Arial
+        }
+
+        header {
+            background: #10344f;
+            color: #fff;
+            padding: 24px 36px
+        }
+
+        h1 {
+            margin: 4px 0
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 570px 1fr;
+            gap: 16px;
+            padding: 16px;
+            max-width: 1900px;
+            margin: auto
+        }
+
+        aside,
+        .stats,
+        .trailer,
+        .empty,
+        .unloaded {
+            background: #fff;
+            border: 1px solid #cad8e3;
+            border-radius: 12px;
+            overflow: hidden
+        }
+
+        aside {
+            padding: 16px;
+            align-self: start
+        }
+
+        button,
+        input {
+            font: inherit
+        }
+
+        button {
+            border: 0;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-weight: 700;
+            cursor: pointer
+        }
+
+        .primary {
+            background: #0876bb;
+            color: #fff
+        }
+
+        .equipment {
+            border: 1px solid #cad8e3;
+            border-radius: 8px;
+            margin: 7px 0
+        }
+
+        .equipment summary {
+            padding: 9px;
+            background: #f4f8fb;
+            font-weight: 700
+        }
+
+        .fields {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 7px;
+            padding: 9px
+        }
+
+        .fields label {
+            font-size: 11px
+        }
+
+        .fields input {
+            width: 100%;
+            padding: 6px
+        }
+
+        .options {
+            display: grid;
+            gap: 6px;
+            padding: 10px;
+            background: #f4f8fb;
+            border-radius: 8px
+        }
+
+        .bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .scroll {
+            overflow: auto
+        }
+
+        table {
+            border-collapse: collapse;
+            min-width: 880px;
+            width: 100%;
+            font-size: 11px
+        }
+
+        th {
+            background: #e7f0f6;
+            padding: 6px;
+            text-align: left
+        }
+
+        td {
+            padding: 3px;
+            border-bottom: 1px solid #e5edf2
+        }
+
+        td input {
+            width: 64px;
+            padding: 5px
+        }
+
+        td input[type=checkbox] {
+            width: auto
+        }
+
+        .libraryActions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 7px;
+            margin: 9px 0
+        }
+
+        .removeTrailer {
+            background: #fee4e2;
+            color: #8b241b;
+            padding: 5px 8px
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 7px;
+            margin-top: 12px
+        }
+
+        .actions .primary {
+            grid-column: 1/-1
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr)
+        }
+
+        .stats div {
+            padding: 13px
+        }
+
+        .stats span {
+            display: block;
+            color: #60778c;
+            font-size: 11px
+        }
+
+        .stats b {
+            font-size: 19px
+        }
+
+        .alert {
+            background: #fff0ef;
+            color: #81271d;
+            border: 1px solid #eeaaa3;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0
+        }
+
+        .unloaded {
+            margin: 10px 0
+        }
+
+        .unloaded h2 {
+            margin: 0;
+            padding: 11px;
+            background: #fff0ef
+        }
+
+        .ug {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 7px;
+            padding: 10px
+        }
+
+        .ui {
+            border: 1px solid #edd0cc;
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 12px
+        }
+
+        .plans {
+            display: grid;
+            gap: 12px;
+            margin-top: 12px
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px
+        }
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            padding: 11px
+        }
+
+        .head h2 {
+            margin: 0
+        }
+
+        .badges {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap
+        }
+
+        .badge {
+            background: #e7f3fa;
+            border-radius: 999px;
+            padding: 5px 7px;
+            font-size: 11px
+        }
+
+        .canvas {
+            background: #dce7ee;
+            padding: 15px;
+            overflow: auto;
+            min-height: 210px
+        }
+
+        .konva {
+            width: max-content;
+            background: #fff
+        }
+
+        .foot {
+            padding: 9px 12px;
+            color: #60778c;
+            font-size: 11px
+        }
+
+        .note {
+            color: #60778c;
+            font-size: 12px
+        }
+
+        @media(max-width:1100px) {
+            main {
+                grid-template-columns: 1fr
+            }
+        }
+
+        @media(max-width:600px) {
+            main {
+                padding: 8px
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .fields {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .actions {
+                grid-template-columns: 1fr
+            }
+
+            .actions .primary {
+                grid-column: auto
+            }
+        }
+
+        @media print {
+
+            header,
+            aside {
+                display: none
+            }
+
+            main {
+                display: block
+            }
+
+            .trailer {
+                break-inside: avoid
+            }
+
+            .canvas {
+                background: #fff
+            }
+
+            .alert {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>The Freight Collective Load Planner</h1>
+        <div>Trailer selection, automatic stacking and multi-trailer planning</div>
+    </header>
+    <main>
+        <aside>
+            <div class="bar">
+                <h2>1. Trailer Library</h2><button id="addTrailer">+ Add trailer type</button>
+            </div>
+            <p class="note">Add, edit, select or remove trailer types. The library autosaves on this device.</p>
+            <div id="equipment"></div>
+            <div class="libraryActions"><button id="importTrailers">Import trailer CSV</button><button
+                    id="exportTrailers">Export trailer CSV</button><input id="trailerFile" type="file"
+                    accept=".csv,text/csv" hidden></div>
+            <div class="options"><label><input id="mixed" type="checkbox" checked> Allow mixed
+                    equipment</label><label><input id="rotation" type="checkbox" checked> Allow
+                    rotation</label><label><input id="stacking" type="checkbox" checked> Use automatic stacking</label>
+            </div>
+            <div class="bar">
+                <h2>2. Freight</h2><button id="add">+ Add line</button>
+            </div>
+            <div class="scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ref</th>
+                            <th>Qty</th>
+                            <th>L</th>
+                            <th>W</th>
+                            <th>H</th>
+                            <th>kg</th>
+                            <th>Rotate</th>
+                            <th>Stack</th>
+                            <th>Top only</th>
+                            <th>Max</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows"></tbody>
+                </table>
+            </div>
+            <p class="note">Stacking is automatic. Top only means the item may sit above another item but cannot support
+                freight above it.</p>
+            <div class="actions"><button id="generate" class="primary">Generate Best Load Plan</button><button
+                    id="sample">Load sample</button><button id="reset">Reset</button><button id="print">Export /
+                    Print</button><button id="importFreight">Import CSV</button><button id="csv">Export
+                    CSV</button><input id="freightFile" type="file" accept=".csv,text/csv" hidden></div>
+        </aside>
+        <section>
+            <div class="stats" id="stats">
+                <div><span>Status</span><b>Ready</b></div>
+                <div><span>Trailers</span><b>0</b></div>
+                <div><span>Items placed</span><b>0 / 0</b></div>
+                <div><span>Total weight</span><b>0 kg</b></div>
+            </div>
+            <div id="alerts"></div>
+            <div id="unloaded"></div>
+            <div id="plans" class="plans">
+                <div class="empty">
+                    <h2>No plan generated</h2>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        'use strict'; const KEY = 'tfc-v27', COL = ['#2f80ed', '#26a69a', '#ed8b24', '#9b61d9', '#ef6670', '#7f8c8d', '#00a0c6', '#8d9d3b']; const DEF = [{id: 'semi', name: 'Semi tautliner', l: 13200, w: 2400, h: 2700, p: 24000, max: 4, on: true}, {id: 'flat', name: 'Flat top', l: 13200, w: 2400, h: 0, p: 24000, max: 4, on: false}, {id: 'drop', name: 'Drop deck', l: 13200, w: 2400, h: 3200, p: 24000, max: 2, on: false}, {id: 'mezz', name: 'Mezzanine trailer', l: 13200, w: 2400, h: 3000, p: 22000, max: 2, on: false}, {id: 'bdoublelead', name: 'B-double lead', l: 8200, w: 2400, h: 2700, p: 20000, max: 2, on: false}, {id: 'bdoublerear', name: 'B-double rear', l: 13200, w: 2400, h: 2700, p: 24000, max: 2, on: false}, {id: 'container20', name: '20 ft container', l: 5890, w: 2350, h: 2390, p: 28000, max: 4, on: false}, {id: 'container40', name: '40 ft container', l: 12030, w: 2350, h: 2390, p: 26700, max: 4, on: false}, {id: 'custom', name: 'Custom trailer', l: 13200, w: 2400, h: 2700, p: 24000, max: 2, on: false}]; const $ = s => document.querySelector(s);
+        function safe(s) {return String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]))} function equipment(data = DEF) {$('#equipment').innerHTML = ''; data.forEach((t, n) => {let d = document.createElement('details'); d.className = 'equipment'; d.open = !!t.on; d.dataset.id = t.id || ('trailer-' + Date.now() + '-' + n); d.innerHTML = `<summary><input class="on" type="checkbox" ${t.on ? 'checked' : ''}> <input class="name" value="${safe(t.name || 'New trailer type')}"> <button type="button" class="removeTrailer">Remove</button></summary><div class="fields"><label>Length mm<input class="l" type="number" min="1" value="${t.l || 13200}"></label><label>Usable width mm<input class="w" type="number" min="1" value="${t.w || 2400}"></label><label>Height mm<input class="h" type="number" min="0" value="${t.h ?? 2700}"></label><label>Payload kg<input class="p" type="number" min="0" value="${t.p || 24000}"></label><label>Maximum available<input class="max" type="number" min="1" value="${t.max || 1}"></label></div>`; d.querySelector('.removeTrailer').onclick = e => {e.preventDefault(); d.remove(); save()}; $('#equipment').appendChild(d)})}
+        function add(x) {let r = document.createElement('tr'); r.innerHTML = `<td><input class="ref" value="${safe(x.ref)}"></td><td><input class="qty" type="number" min="1" value="${x.qty || 1}"></td><td><input class="l" type="number" value="${x.l}"></td><td><input class="w" type="number" value="${x.w}"></td><td><input class="h" type="number" value="${x.h}"></td><td><input class="kg" type="number" value="${x.kg || 0}"></td><td><input class="rot" type="checkbox" ${x.rot !== false ? 'checked' : ''}></td><td><input class="stk" type="checkbox" ${x.stk ? 'checked' : ''}></td><td><input class="top" type="checkbox" ${x.top ? 'checked' : ''}></td><td><input class="max" type="number" min="1" value="${x.max || 1}"></td><td><button class="del">×</button></td>`; r.querySelector('.del').onclick = () => {r.remove(); save()}; $('#rows').appendChild(r)}
+        function types() {return [...document.querySelectorAll('.equipment')].map(d => ({id: d.dataset.id, name: d.querySelector('.name').value || 'Unnamed trailer', on: d.querySelector('.on').checked, l: +d.querySelector('.l').value, w: +d.querySelector('.w').value, h: +d.querySelector('.h').value, p: +d.querySelector('.p').value, max: +d.querySelector('.max').value || 1}))} function items() {return [...$('#rows').rows].map((r, i) => ({ref: r.querySelector('.ref').value || 'ITEM-' + (i + 1), qty: +r.querySelector('.qty').value || 1, l: +r.querySelector('.l').value, w: +r.querySelector('.w').value, h: +r.querySelector('.h').value, kg: +r.querySelector('.kg').value || 0, rot: r.querySelector('.rot').checked, stk: r.querySelector('.stk').checked, top: r.querySelector('.top').checked, max: +r.querySelector('.max').value || 1, col: COL[i % COL.length]}))} function units(a) {let o = []; a.forEach(x => {for (let i = 1; i <= x.qty; i++)o.push({...x, id: x.ref + '-' + i, unit: i})}); return o}
+        function stacks(u, t) {if (!$('#stacking').checked) return u.map(x => ({...x, members: [x], sh: x.h, sw: x.kg})); let rem = u.slice().sort((a, b) => b.l * b.w - a.l * a.w), out = []; while (rem.length) {let bi = rem.findIndex(x => x.stk && !x.top && x.max > 1); if (bi < 0) break; let base = rem.splice(bi, 1)[0], mem = [base], h = base.h, kg = base.kg; while (mem.length < base.max) {let best = -1, score = -1; for (let i = 0; i < rem.length; i++) {let x = rem[i]; if (!x.stk) continue; let fit = (x.l <= base.l && x.w <= base.w) || (x.rot && x.w <= base.l && x.l <= base.w); if (!fit || (t.h && h + x.h > t.h) || mem.length >= x.max) continue; let sc = (x.top ? 1e12 : 0) + x.l * x.w; if (sc > score) {score = sc; best = i} } if (best < 0) break; let x = rem.splice(best, 1)[0]; mem.push(x); h += x.h; kg += x.kg} out.push({...base, members: mem, sh: h, sw: kg})} return out.concat(rem.map(x => ({...x, members: [x], sh: x.h, sw: x.kg})))}
+        function hit(a, b) {return a.x < b.x + b.l && a.x + a.l > b.x && a.y < b.y + b.w && a.y + a.w > b.y} function inside(a, b) {return b.x >= a.x && b.y >= a.y && b.x + b.l <= a.x + a.l && b.y + b.w <= a.y + a.w} function split(f, u) {let o = []; for (const r of f) {if (!hit(r, u)) {o.push(r); continue} let rr = r.x + r.l, rb = r.y + r.w, ur = u.x + u.l, ub = u.y + u.w; if (u.x > r.x) o.push({x: r.x, y: r.y, l: u.x - r.x, w: r.w}); if (ur < rr) o.push({x: ur, y: r.y, l: rr - ur, w: r.w}); if (u.y > r.y) o.push({x: r.x, y: r.y, l: r.l, w: u.y - r.y}); if (ub < rb) o.push({x: r.x, y: ub, l: r.l, w: rb - ub})} return o.filter(r => r.l > 0 && r.w > 0).filter((r, i, a) => !a.some((q, j) => i !== j && inside(q, r)))} function placed(p) {return p.p.reduce((n, x) => n + x.members.length, 0)}
+        function pack(t, u) {let all = []; for (const pref of [0, 1]) {let list = stacks(u, t).sort((a, b) => b.l * b.w - a.l * a.w), free = [{x: 0, y: 0, l: t.l, w: t.w}], p = [], kg = 0, area = 0; for (const x of list) {if ((t.h && x.sh > t.h) || kg + x.sw > t.p) continue; let os = [{l: x.l, w: x.w}], can = $('#rotation').checked && x.rot && x.l != x.w; if (can) os.push({l: x.w, w: x.l}); if (pref && can) os.reverse(); let best = null; for (const r of free) for (const q of os) if (q.l <= r.l && q.w <= r.w) {let sc = Math.min(r.l - q.l, r.w - q.w); if (!best || sc < best.sc) best = {...q, x: r.x, y: r.y, sc}} if (!best) continue; free = split(free, best); p.push({...x, ...best}); kg += x.sw; area += best.l * best.w} all.push({p, kg, area})} all.sort((a, b) => placed(b) - placed(a) || b.area - a.area); return all[0]}
+        function solve(ts, u) {let left = u.slice(), tr = [], av = new Map(ts.map(t => [t.id, t.max])); while (left.length && [...av.values()].some(x => x > 0)) {let best; for (const t of ts) {if (av.get(t.id) <= 0) continue; let q = pack(t, left), score = placed(q) * 1e12 + q.area; if (!best || score > best.score) best = {...q, t, score}} if (!best || !placed(best)) break; tr.push(best); av.set(best.t.id, av.get(best.t.id) - 1); let used = new Set(best.p.flatMap(x => x.members.map(m => m.id))); left = left.filter(x => !used.has(x.id))} return {tr, left}}
+        function generate() {save(); let ts = types().filter(x => x.on), src = items(), u = units(src); if (!ts.length) return showAlert('Select equipment.'); let candidates = $('#mixed').checked ? [solve(ts, u)] : ts.map(t => solve([t], u)); candidates.sort((a, b) => a.left.length - b.left.length || a.tr.length - b.tr.length); render(candidates[0], src)}
+        function render(s, src) {let total = src.reduce((n, x) => n + x.qty, 0), kg = src.reduce((n, x) => n + x.qty * x.kg, 0); stats(s.left.length ? 'Incomplete' : 'Complete', s.tr.length, total - s.left.length, total, kg); showAlert(s.left.length ? s.left.length + ' item(s) not loaded.' : ''); unloaded(s.left); $('#plans').innerHTML = ''; s.tr.forEach((p, i) => {let stacks = p.p.filter(x => x.members.length > 1), saved = stacks.reduce((n, x) => n + x.members.length - 1, 0), a = document.createElement('article'); a.className = 'trailer'; a.innerHTML = `<div class="head"><h2>Trailer ${i + 1}: ${p.t.name}</h2><div class="badges"><span class="badge">${placed(p)} items</span><span class="badge">${stacks.length} stacks</span><span class="badge">${saved} floor positions saved</span><span class="badge">${Math.round(p.kg)} kg</span></div></div><div class="canvas"><div class="konva" id="k${i}"></div></div><div class="foot">${p.t.l.toLocaleString()} × ${p.t.w.toLocaleString()} mm</div>`; $('#plans').appendChild(a); draw(p, i)})}
+        function unloaded(a) {if (!a.length) {$('#unloaded').innerHTML = ''; return } let m = new Map(); a.forEach(x => {if (!m.has(x.ref)) m.set(x.ref, {...x, q: 0}); m.get(x.ref).q++}); $('#unloaded').innerHTML = `<section class="unloaded"><h2>Not loaded - ${a.length}</h2><div class="ug">${[...m.values()].map(x => `<div class="ui"><b>${safe(x.ref)} × ${x.q}</b>${x.l} × ${x.w} × ${x.h} mm<br>${x.kg} kg<br>${x.stk ? (x.top ? 'Stackable - TOP LOAD ONLY' : 'Stackable') : 'Not stackable'}</div>`).join('')}</div></section>`}
+        function draw(p, i) {let z = .07, W = Math.max(700, p.t.l * z), H = Math.max(180, p.t.w * z), s = new Konva.Stage({container: 'k' + i, width: W, height: H}), bg = new Konva.Layer(), fg = new Konva.Layer(); s.add(bg); s.add(fg); bg.add(new Konva.Rect({x: 0, y: 0, width: W, height: H, fill: '#fff', stroke: '#10344f', strokeWidth: 4})); p.p.forEach(x => {let g = new Konva.Group({x: x.x * z, y: x.y * z}), r = new Konva.Rect({width: x.l * z, height: x.w * z, fill: x.col, opacity: .86, stroke: '#10344f'}), refs = x.members.map((m, n) => (n ? 'TOP ' + n + ' ' : 'BOTTOM ') + m.ref + ' #' + m.unit).join('\n'), t = new Konva.Text({x: 4, y: 4, width: x.l * z - 8, height: x.w * z - 8, text: refs + (x.members.length > 1 ? '\nSTACK x' + x.members.length : '') + '\n' + x.l + ' × ' + x.w, fontSize: 9, fontStyle: 'bold', fill: '#fff', ellipsis: true}); g.add(r, t); fg.add(g)}); bg.draw(); fg.draw(); let wrap = s.container().parentElement, sc = Math.min(1, (wrap.clientWidth - 30) / W); s.container().style.transform = `scale(${sc})`; s.container().style.transformOrigin = 'top left'; s.container().style.marginRight = W * (sc - 1) + 'px'; s.container().style.marginBottom = H * (sc - 1) + 'px'}
+        function stats(a, b, c, d, e) {let v = [a, b, c + ' / ' + d, Math.round(e) + ' kg'];[...$('#stats').children].forEach((x, i) => x.querySelector('b').textContent = v[i])} function showAlert(s) {$('#alerts').innerHTML = s ? `<div class="alert">${safe(s)}</div>` : ''} function save() {try {localStorage.setItem(KEY, JSON.stringify({types: types(), items: items(), mixed: $('#mixed').checked, rotation: $('#rotation').checked, stacking: $('#stacking').checked}))} catch (e) { } } function reset() {localStorage.removeItem(KEY); equipment(); $('#rows').innerHTML = ''; add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1}); $('#plans').innerHTML = '<div class="empty"><h2>No plan generated</h2></div>'; $('#unloaded').innerHTML = ''} 
+        function sample() {
+
+    $('#rows').innerHTML = '';
+
+    const freight = [
+
+        { ref:'MACHINE', qty:8, l:3200, w:1800, h:2200, kg:2800, rot:false, stk:false, top:false, max:1 },
+
+        { ref:'FORKLIFT', qty:4, l:2400, w:1200, h:2100, kg:3500, rot:false, stk:false, top:false, max:1 },
+
+        { ref:'CRATE-LARGE', qty:12, l:2390, w:1190, h:1344, kg:850, rot:true, stk:false, top:false, max:1 },
+
+        { ref:'CRATE-MED', qty:18, l:1800, w:1000, h:1200, kg:500, rot:true, stk:true, top:false, max:2 },
+
+        { ref:'CRATE-SMALL', qty:20, l:1200, w:1000, h:800, kg:350, rot:true, stk:true, top:false, max:3 },
+
+        { ref:'PALLET-A', qty:10, l:1200, w:1165, h:900, kg:650, rot:true, stk:true, top:false, max:2 },
+
+        { ref:'PALLET-B', qty:10, l:1100, w:1000, h:700, kg:300, rot:true, stk:true, top:true, max:2 },
+
+        { ref:'PIPE-BUNDLE', qty:6, l:5800, w:900, h:900, kg:1200, rot:false, stk:false, top:false, max:1 },
+
+        { ref:'TIMBER-PACK', qty:5, l:4800, w:1200, h:750, kg:900, rot:false, stk:true, top:false, max:2 },
+
+        { ref:'TOOLBOX', qty:7, l:800, w:800, h:700, kg:150, rot:true, stk:true, top:true, max:3 }
+
+    ];
+
+    freight.forEach(item => add(item));
+
+    generate();
+}
+        
+        function parseCSV(text) {const rows = []; let row = [], cell = '', q = false; for (let i = 0; i < text.length; i++) {const c = text[i]; if (c === '"' && q && text[i + 1] === '"') {cell += '"'; i++} else if (c === '"') q = !q; else if (c === ',' && !q) {row.push(cell); cell = ''} else if ((c === '\n' || c === '\r') && !q) {if (c === '\r' && text[i + 1] === '\n') i++; row.push(cell); if (row.some(v => v.trim())) rows.push(row); row = []; cell = ''} else cell += c} row.push(cell); if (row.some(v => v.trim())) rows.push(row); return rows}
+        function downloadCSV(name, rows) {const quote = v => {v = String(v ?? ''); return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v}, a = document.createElement('a'), url = URL.createObjectURL(new Blob([rows.map(r => r.map(quote).join(',')).join('\n')], {type: 'text/csv'})); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 500)}
+        function exportTrailerCSV() {downloadCSV('trailer-library.csv', [['name', 'length_mm', 'width_mm', 'height_mm', 'payload_kg', 'maximum_available', 'selected'], ...types().map(t => [t.name, t.l, t.w, t.h, t.p, t.max, t.on ? 'yes' : 'no'])])}
+        function importTrailerCSV(file) {const r = new FileReader(); r.onload = () => {const rows = parseCSV(String(r.result)), list = rows.slice(1).filter(x => x.length >= 6).map((x, i) => ({id: 'imported-' + Date.now() + '-' + i, name: x[0] || 'Imported trailer', l: +x[1] || 13200, w: +x[2] || 2400, h: +x[3] || 0, p: +x[4] || 24000, max: +x[5] || 1, on: /^(yes|true|1)$/i.test(x[6] || 'no')})); if (list.length) {equipment(list); save()} }; r.readAsText(file)}
+        function importFreightCSV(file) {const r = new FileReader(); r.onload = () => {const rows = parseCSV(String(r.result)); $('#rows').innerHTML = ''; rows.slice(1).filter(x => x.length >= 10).forEach(x => add({ref: x[0] || 'ITEM', qty: +x[1] || 1, l: +x[2] || 0, w: +x[3] || 0, h: +x[4] || 0, kg: +x[5] || 0, rot: /^(yes|true|1)$/i.test(x[6]), stk: /^(yes|true|1)$/i.test(x[7]), top: /^(yes|true|1)$/i.test(x[8]), max: +x[9] || 1})); save()}; r.readAsText(file)}
+        function restore() {try {const d = JSON.parse(localStorage.getItem(KEY)); if (!d) return false; equipment(d.types || DEF); $('#rows').innerHTML = ''; (d.items || []).forEach(add); $('#mixed').checked = d.mixed !== false; $('#rotation').checked = d.rotation !== false; $('#stacking').checked = d.stacking !== false; return true} catch (e) {return false} }
+        $('#addTrailer').onclick = () => {const list = types(); list.push({id: 'custom-' + Date.now(), name: 'New trailer type', l: 13200, w: 2400, h: 2700, p: 24000, max: 1, on: true}); equipment(list); save()}; $('#exportTrailers').onclick = exportTrailerCSV; $('#importTrailers').onclick = () => $('#trailerFile').click(); $('#trailerFile').onchange = e => e.target.files[0] && importTrailerCSV(e.target.files[0]); $('#importFreight').onclick = () => $('#freightFile').click(); $('#freightFile').onchange = e => e.target.files[0] && importFreightCSV(e.target.files[0]); $('#add').onclick = () => add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1}); $('#generate').onclick = generate; $('#sample').onclick = sample; $('#reset').onclick = reset; $('#print').onclick = () => window.print(); $('#csv').onclick = csv; document.addEventListener('input', save); document.addEventListener('change', save); if (!restore()) {equipment(); add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1});}
+    </script>
+</body>
+
+</html>
