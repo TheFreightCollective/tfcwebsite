@@ -409,67 +409,70 @@
         function render(s, src) {let total = src.reduce((n, x) => n + x.qty, 0), kg = src.reduce((n, x) => n + x.qty * x.kg, 0); stats(s.left.length ? 'Incomplete' : 'Complete', s.tr.length, total - s.left.length, total, kg); showAlert(s.left.length ? s.left.length + ' item(s) not loaded.' : ''); unloaded(s.left); $('#plans').innerHTML = ''; s.tr.forEach((p, i) => {let stacks = p.p.filter(x => x.members.length > 1), saved = stacks.reduce((n, x) => n + x.members.length - 1, 0), a = document.createElement('article'); a.className = 'trailer'; a.innerHTML = `<div class="head"><h2>Trailer ${i + 1}: ${p.t.name}</h2><div class="badges"><span class="badge">${placed(p)} items</span><span class="badge">${stacks.length} stacks</span><span class="badge">${saved} floor positions saved</span><span class="badge">${Math.round(p.kg)} kg</span></div></div><div class="canvas"><div class="konva" id="k${i}"></div></div><div class="foot">${p.t.l.toLocaleString()} × ${p.t.w.toLocaleString()} mm</div>`; $('#plans').appendChild(a); draw(p, i)})}
         function unloaded(a) {if (!a.length) {$('#unloaded').innerHTML = ''; return } let m = new Map(); a.forEach(x => {if (!m.has(x.ref)) m.set(x.ref, {...x, q: 0}); m.get(x.ref).q++}); $('#unloaded').innerHTML = `<section class="unloaded"><h2>Not loaded - ${a.length}</h2><div class="ug">${[...m.values()].map(x => `<div class="ui"><b>${safe(x.ref)} × ${x.q}</b>${x.l} × ${x.w} × ${x.h} mm<br>${x.kg} kg<br>${x.stk ? (x.top ? 'Stackable - TOP LOAD ONLY' : 'Stackable') : 'Not stackable'}</div>`).join('')}</div></section>`}
         function draw(p, i) {let z = .07, W = Math.max(700, p.t.l * z), H = Math.max(180, p.t.w * z), s = new Konva.Stage({container: 'k' + i, width: W, height: H}), bg = new Konva.Layer(), fg = new Konva.Layer(); s.add(bg); s.add(fg); bg.add(new Konva.Rect({x: 0, y: 0, width: W, height: H, fill: '#fff', stroke: '#10344f', strokeWidth: 4})); p.p.forEach(x => {let g = new Konva.Group({x: x.x * z, y: x.y * z}), r = new Konva.Rect({width: x.l * z, height: x.w * z, fill: x.col, opacity: .86, stroke: '#10344f'}), refs = x.members.map((m, n) => (n ? 'TOP ' + n + ' ' : 'BOTTOM ') + m.ref + ' #' + m.unit).join('\n'), t = new Konva.Text({x: 4, y: 4, width: x.l * z - 8, height: x.w * z - 8, text: refs + (x.members.length > 1 ? '\nSTACK x' + x.members.length : '') + '\n' + x.l + ' × ' + x.w, fontSize: 9, fontStyle: 'bold', fill: '#fff', ellipsis: true}); g.add(r, t); fg.add(g)}); bg.draw(); fg.draw(); let wrap = s.container().parentElement, sc = Math.min(1, (wrap.clientWidth - 30) / W); s.container().style.transform = `scale(${sc})`; s.container().style.transformOrigin = 'top left'; s.container().style.marginRight = W * (sc - 1) + 'px'; s.container().style.marginBottom = H * (sc - 1) + 'px'}
-        function stats(a, b, c, d, e) {let v = [a, b, c + ' / ' + d, Math.round(e) + ' kg'];[...$('#stats').children].forEach((x, i) => x.querySelector('b').textContent = v[i])} function showAlert(s) {$('#alerts').innerHTML = s ? `<div class="alert">${safe(s)}</div>` : ''} function save() {try {localStorage.setItem(KEY, JSON.stringify({types: types(), items: items(), mixed: $('#mixed').checked, rotation: $('#rotation').checked, stacking: $('#stacking').checked}))} catch (e) { } } function reset() {localStorage.removeItem(KEY); equipment(); $('#rows').innerHTML = ''; add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1}); $('#plans').innerHTML = '<div class="empty"><h2>No plan generated</h2></div>'; $('#unloaded').innerHTML = ''} 
+        function stats(a, b, c, d, e) {let v = [a, b, c + ' / ' + d, Math.round(e) + ' kg'];[...$('#stats').children].forEach((x, i) => x.querySelector('b').textContent = v[i])} function showAlert(s) {$('#alerts').innerHTML = s ? `<div class="alert">${safe(s)}</div>` : ''} function save() {try {localStorage.setItem(KEY, JSON.stringify({types: types(), items: items(), mixed: $('#mixed').checked, rotation: $('#rotation').checked, stacking: $('#stacking').checked}))} catch (e) { } } function reset() {localStorage.removeItem(KEY); equipment(); $('#rows').innerHTML = ''; add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1}); $('#plans').innerHTML = '<div class="empty"><h2>No plan generated</h2></div>'; $('#unloaded').innerHTML = ''}
         function sample() {
 
-    $('#rows').innerHTML = '';
+            $('#rows').innerHTML = '';
 
-    const freight = [
+            const freight = [
 
-        { ref:'MACHINE', qty:8, l:3200, w:1800, h:2200, kg:2800, rot:false, stk:false, top:false, max:1 },
+                {ref: 'MACHINE', qty: 8, l: 3200, w: 1800, h: 2200, kg: 2800, rot: false, stk: false, top: false, max: 1},
 
-        { ref:'FORKLIFT', qty:4, l:2400, w:1200, h:2100, kg:3500, rot:false, stk:false, top:false, max:1 },
+                {ref: 'FORKLIFT', qty: 4, l: 2400, w: 1200, h: 2100, kg: 3500, rot: false, stk: false, top: false, max: 1},
 
-        { ref:'CRATE-LARGE', qty:12, l:2390, w:1190, h:1344, kg:850, rot:true, stk:false, top:false, max:1 },
+                {ref: 'CRATE-LARGE', qty: 12, l: 2390, w: 1190, h: 1344, kg: 850, rot: true, stk: false, top: false, max: 1},
 
-        { ref:'CRATE-MED', qty:18, l:1800, w:1000, h:1200, kg:500, rot:true, stk:true, top:false, max:2 },
+                {ref: 'CRATE-MED', qty: 18, l: 1800, w: 1000, h: 1200, kg: 500, rot: true, stk: true, top: false, max: 2},
 
-        { ref:'CRATE-SMALL', qty:20, l:1200, w:1000, h:800, kg:350, rot:true, stk:true, top:false, max:3 },
+                {ref: 'CRATE-SMALL', qty: 20, l: 1200, w: 1000, h: 800, kg: 350, rot: true, stk: true, top: false, max: 3},
 
-        { ref:'PALLET-A', qty:10, l:1200, w:1165, h:900, kg:650, rot:true, stk:true, top:false, max:2 },
+                {ref: 'PALLET-A', qty: 10, l: 1200, w: 1165, h: 900, kg: 650, rot: true, stk: true, top: false, max: 2},
 
-        { ref:'PALLET-B', qty:10, l:1100, w:1000, h:700, kg:300, rot:true, stk:true, top:true, max:2 },
+                {ref: 'PALLET-B', qty: 10, l: 1100, w: 1000, h: 700, kg: 300, rot: true, stk: true, top: true, max: 2},
 
-        { ref:'PIPE-BUNDLE', qty:6, l:5800, w:900, h:900, kg:1200, rot:false, stk:false, top:false, max:1 },
+                {ref: 'PIPE-BUNDLE', qty: 6, l: 5800, w: 900, h: 900, kg: 1200, rot: false, stk: false, top: false, max: 1},
 
-        { ref:'TIMBER-PACK', qty:5, l:4800, w:1200, h:750, kg:900, rot:false, stk:true, top:false, max:2 },
+                {ref: 'TIMBER-PACK', qty: 5, l: 4800, w: 1200, h: 750, kg: 900, rot: false, stk: true, top: false, max: 2},
 
-        { ref:'TOOLBOX', qty:7, l:800, w:800, h:700, kg:150, rot:true, stk:true, top:true, max:3 }
+                {ref: 'TOOLBOX', qty: 7, l: 800, w: 800, h: 700, kg: 150, rot: true, stk: true, top: true, max: 3}
 
-    ];
+            ];
 
-    freight.forEach(item => add(item));
+            freight.forEach(item => add(item));
 
-    generate();
-}
-        
+            generate();
+        }
+
         function parseCSV(text) {const rows = []; let row = [], cell = '', q = false; for (let i = 0; i < text.length; i++) {const c = text[i]; if (c === '"' && q && text[i + 1] === '"') {cell += '"'; i++} else if (c === '"') q = !q; else if (c === ',' && !q) {row.push(cell); cell = ''} else if ((c === '\n' || c === '\r') && !q) {if (c === '\r' && text[i + 1] === '\n') i++; row.push(cell); if (row.some(v => v.trim())) rows.push(row); row = []; cell = ''} else cell += c} row.push(cell); if (row.some(v => v.trim())) rows.push(row); return rows}
         function downloadCSV(name, rows) {const quote = v => {v = String(v ?? ''); return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v}, a = document.createElement('a'), url = URL.createObjectURL(new Blob([rows.map(r => r.map(quote).join(',')).join('\n')], {type: 'text/csv'})); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 500)}
         function exportTrailerCSV() {downloadCSV('trailer-library.csv', [['name', 'length_mm', 'width_mm', 'height_mm', 'payload_kg', 'maximum_available', 'selected'], ...types().map(t => [t.name, t.l, t.w, t.h, t.p, t.max, t.on ? 'yes' : 'no'])])}
         function importTrailerCSV(file) {const r = new FileReader(); r.onload = () => {const rows = parseCSV(String(r.result)), list = rows.slice(1).filter(x => x.length >= 6).map((x, i) => ({id: 'imported-' + Date.now() + '-' + i, name: x[0] || 'Imported trailer', l: +x[1] || 13200, w: +x[2] || 2400, h: +x[3] || 0, p: +x[4] || 24000, max: +x[5] || 1, on: /^(yes|true|1)$/i.test(x[6] || 'no')})); if (list.length) {equipment(list); save()} }; r.readAsText(file)}
         function importFreightCSV(file) {const r = new FileReader(); r.onload = () => {const rows = parseCSV(String(r.result)); $('#rows').innerHTML = ''; rows.slice(1).filter(x => x.length >= 10).forEach(x => add({ref: x[0] || 'ITEM', qty: +x[1] || 1, l: +x[2] || 0, w: +x[3] || 0, h: +x[4] || 0, kg: +x[5] || 0, rot: /^(yes|true|1)$/i.test(x[6]), stk: /^(yes|true|1)$/i.test(x[7]), top: /^(yes|true|1)$/i.test(x[8]), max: +x[9] || 1})); save()}; r.readAsText(file)}
         function restore() {try {const d = JSON.parse(localStorage.getItem(KEY)); if (!d) return false; equipment(d.types || DEF); $('#rows').innerHTML = ''; (d.items || []).forEach(add); $('#mixed').checked = d.mixed !== false; $('#rotation').checked = d.rotation !== false; $('#stacking').checked = d.stacking !== false; return true} catch (e) {return false} }
-        $('#addTrailer').onclick = () => {const list = types(); list.push({id: 'custom-' + Date.now(), name: 'New trailer type', l: 13200, w: 2400, h: 2700, p: 24000, max: 1, on: true}); equipment(list); save()}; $('#exportTrailers').onclick = exportTrailerCSV; $('#importTrailers').onclick = () => $('#trailerFile').click(); $('#trailerFile').onchange = e => e.target.files[0] && importTrailerCSV(e.target.files[0]); $('#importFreight').onclick = () => $('#freightFile').click(); $('#freightFile').onchange = e => e.target.files[0] && importFreightCSV(e.target.files[0]); $('#add').onclick = () => add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1}); $('#generate').onclick = generate; $('#sample').onclick = sample; $('#reset').onclick = reset; $('#print').onclick = () => window.print(); $('#csv').onclick = exportFreightCSV; document.addEventListener('input', save); document.addEventListener('change', save); if (!restore()) {equipment(); add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1});}
+        $('#addTrailer').onclick = () => {const list = types(); list.push({id: 'custom-' + Date.now(), name: 'New trailer type', l: 13200, w: 2400, h: 2700, p: 24000, max: 1, on: true}); equipment(list); save()}; $('#exportTrailers').onclick = exportTrailerCSV; $('#importTrailers').onclick = () => $('#trailerFile').click(); $('#trailerFile').onchange = e => e.target.files[0] && importTrailerCSV(e.target.files[0]); $('#importFreight').onclick = () => $('#freightFile').click(); $('#freightFile').onchange = e => e.target.files[0] && importFreightCSV(e.target.files[0]); $('#add').onclick = () => add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1}); $('#generate').onclick = generate; $('#sample').onclick = sample; $('#reset').onclick = reset; $('#print').onclick = () => window.print(); document.getElementById('csv').addEventListener(
+    'click',
+    exportFreightCSV
+); document.addEventListener('input', save); document.addEventListener('change', save); if (!restore()) {equipment(); add({ref: 'ITEM', qty: 1, l: 1200, w: 1000, h: 1000, kg: 0, rot: true, stk: false, top: false, max: 1});}
         function exportFreightCSV() {
-        downloadCSV(
-            'load-planner.csv',
-            [
-                ['ref','qty','length_mm','width_mm','height_mm','weight_kg','rotatable','stackable','top_load_only','max_stack'],
-                ...items().map(x => [
-                    x.ref,
-                    x.qty,
-                    x.l,
-                    x.w,
-                    x.h,
-                    x.kg,
-                    x.rot ? 'yes' : 'no',
-                    x.stk ? 'yes' : 'no',
-                    x.top ? 'yes' : 'no',
-                    x.max
-                ])
-            ]
-        );
-    }
+            downloadCSV(
+                'load-planner.csv',
+                [
+                    ['ref', 'qty', 'length_mm', 'width_mm', 'height_mm', 'weight_kg', 'rotatable', 'stackable', 'top_load_only', 'max_stack'],
+                    ...items().map(x => [
+                        x.ref,
+                        x.qty,
+                        x.l,
+                        x.w,
+                        x.h,
+                        x.kg,
+                        x.rot ? 'yes' : 'no',
+                        x.stk ? 'yes' : 'no',
+                        x.top ? 'yes' : 'no',
+                        x.max
+                    ])
+                ]
+            );
+        }
     </script>
 </body>
 
