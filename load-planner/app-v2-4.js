@@ -35,7 +35,37 @@ function clearPlan(){plans=[];$('#plans').innerHTML='<div class="empty"><h2>No p
 function save(){try{localStorage.setItem(KEY,JSON.stringify({types:getTypes(),items:getItems(),mixed:$('#mixed').checked,rotation:$('#rotation').checked,stacking:$('#stacking').checked}))}catch(e){}}
 function restore(){try{const d=JSON.parse(localStorage.getItem(KEY));if(!d)return false;renderTypes(d.types);$('#rows').innerHTML='';d.items.forEach(addRow);$('#mixed').checked=d.mixed!==false;$('#rotation').checked=d.rotation!==false;$('#stacking').checked=d.stacking!==false;return true}catch(e){return false}}
 function reset(){localStorage.removeItem(KEY);renderTypes();$('#rows').innerHTML='';addRow({ref:'B1',qty:1,l:1200,w:1000,h:1000,kg:0,rotatable:true,stack:false,max:1});clearPlan();save()}
-function sample(){$('#rows').innerHTML='';[{ref:'CRATE-2390',qty:10,l:2390,w:1190,h:1344,kg:850,rotatable:true,stack:false,max:1},{ref:'PALLET',qty:8,l:1200,w:1165,h:1100,kg:650,rotatable:true,stack:false,max:1}].forEach(addRow);generate()}
+function sample() {
+
+    $('#rows').innerHTML = '';
+
+    const freight = [
+        { ref:'MACHINE', qty:8, l:3200, w:1800, h:2200, kg:2800, rot:false, stk:false, top:false, max:1 },
+        { ref:'FORKLIFT', qty:4, l:2400, w:1200, h:2100, kg:3500, rot:false, stk:false, top:false, max:1 },
+
+        { ref:'CRATE-LARGE', qty:12, l:2390, w:1190, h:1344, kg:850, rot:true, stk:false, top:false, max:1 },
+
+        { ref:'CRATE-MED', qty:18, l:1800, w:1000, h:1200, kg:500, rot:true, stk:true, top:false, max:2 },
+
+        { ref:'CRATE-SMALL', qty:20, l:1200, w:1000, h:800, kg:350, rot:true, stk:true, top:false, max:3 },
+
+        { ref:'PALLET-A', qty:10, l:1200, w:1165, h:900, kg:650, rot:true, stk:true, top:false, max:2 },
+
+        { ref:'PALLET-B', qty:10, l:1100, w:1000, h:700, kg:300, rot:true, stk:true, top:true, max:2 },
+
+        { ref:'PIPE-BUNDLE', qty:6, l:5800, w:900, h:900, kg:1200, rot:false, stk:false, top:false, max:1 },
+
+        { ref:'TIMBER-PACK', qty:5, l:4800, w:1200, h:750, kg:900, rot:false, stk:true, top:false, max:2 },
+
+        { ref:'TOOLBOX', qty:7, l:800, w:800, h:700, kg:150, rot:true, stk:true, top:true, max:3 }
+    ];
+
+    freight.forEach(item => add(item));
+
+    generate();
+}
+
+
 function exportCsv(){const r=[['ref','qty','length_mm','width_mm','height_mm','weight_kg','rotatable','stackable','max_stack'],...getItems().map(x=>[x.ref,x.qty,x.l,x.w,x.h,x.kg,x.rotatable?'yes':'no',x.stack?'yes':'no',x.max])],a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r.map(x=>x.join(',')).join('\n')],{type:'text/csv'}));a.download='load-planner-freight.csv';a.click()}
 function importCsv(e){const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const lines=String(rd.result).trim().split(/\r?\n/);$('#rows').innerHTML='';lines.slice(1).forEach(z=>{const c=z.split(',');if(c.length>=9)addRow({ref:c[0],qty:+c[1]||1,l:+c[2],w:+c[3],h:+c[4],kg:+c[5],rotatable:/^(yes|true|1)$/i.test(c[6]),stack:/^(yes|true|1)$/i.test(c[7]),max:+c[8]||1})});save();clearPlan()};rd.readAsText(f)}
 window.addEventListener('load',()=>{if(typeof Konva==='undefined'){document.body.innerHTML='<p>Konva failed to load.</p>';return}init()});
