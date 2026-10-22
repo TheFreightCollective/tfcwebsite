@@ -2180,8 +2180,8 @@
           kg = 0;
         us.forEach((u) => {
           const o = orient(u.m, u.pos),
-            ml = Math.max(u.pos.l, o.l) * sc,
-            mw = Math.max(u.pos.w, o.w) * sc,
+            ml = o.l * sc,
+            mw = o.w * sc,
             mh = u.m.h * sc,
             x = (u.pos.x + u.pos.l / 2) * sc - L / 2,
             y = u.z * sc + mh / 2,
