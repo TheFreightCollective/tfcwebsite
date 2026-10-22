@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>The Freight Collective Load Planner</title>
     <script src="https://cdn.jsdelivr.net/npm/konva@10.7.1/konva.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
     <style>
       * {
         box-sizing: border-box;
@@ -278,6 +279,8 @@
         font-size: 12px;
       }
 
+      /* ---- V3.3 universal 3D information cards ---- */
+      .viewSwitch,.threeTools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.viewSwitch button,.threeTools button,.threeTools label,.labelStatus{background:#e7f0f6;color:#10344f;padding:6px 9px;border-radius:7px;font-size:11px;font-weight:700}.viewSwitch button.active{background:#0876bb;color:#fff}.labelStatus{background:#e3f6ea;color:#14612f}.threeWrap{display:none;position:relative;background:#dce7ee}.threeWrap.active{display:block}.canvas.hidden{display:none}.threeHost{height:520px;width:100%;touch-action:none}.threeTools{padding:8px 10px;border-bottom:1px solid #cad8e3}.threeInfo{margin-left:auto;font-size:11px;color:#60778c}.rowHighlight{outline:3px solid #f0a000;background:#fff4cc}.threeHelp{position:absolute;left:10px;bottom:10px;background:rgba(16,52,79,.88);color:#fff;padding:7px 10px;border-radius:7px;font-size:11px;pointer-events:none}@media(max-width:600px){.threeHost{height:420px}}@media print{.viewSwitch,.threeWrap{display:none!important}.canvas.hidden{display:block}}
       /* ---- V2.8 additions ---- */
       button:hover {
         filter: brightness(1.06);
@@ -430,54 +433,6 @@
         margin-left: 8px;
       }
 
-      /* ---- manual stack / unstack + footprint overhang ---- */
-      .badge.amber {
-        background: #fff1d6;
-        color: #7a4b00;
-        font-weight: 700;
-      }
-
-      .stacklist {
-        padding: 6px 12px;
-        font-size: 11px;
-        border-top: 1px solid #e5edf2;
-      }
-
-      .stackrow {
-        display: flex;
-        gap: 8px;
-        justify-content: space-between;
-        align-items: center;
-        padding: 4px 0;
-      }
-
-      .stackrow.ov {
-        color: #7a4b00;
-      }
-
-      .stackrow .unstack {
-        background: #e7f0f6;
-        color: #10344f;
-        padding: 4px 8px;
-        white-space: nowrap;
-      }
-
-      .fpwarn {
-        background: #fff1d6;
-        color: #7a4b00;
-        border: 2px solid #b45309;
-        padding: 10px;
-        border-radius: 8px;
-        margin: 10px 0;
-      }
-
-      /* ---- reporting: master manifest ---- */
-      .reportSection { background:#fff; border:1px solid #cad8e3; border-radius:12px; overflow:hidden; margin-top:12px; }
-      .reportTableWrap { overflow-x:auto; padding:0 12px 12px; }
-      .manifestTable { min-width:1180px; }
-      .manifestTable td, .manifestTable th { vertical-align:top; white-space:nowrap; }
-      .manifestTable td:last-child { white-space:normal; min-width:150px; }
-      .manifestWarn { color:#8b241b; font-weight:700; }
       @media (max-width: 1100px) {
         main {
           grid-template-columns: 1fr;
@@ -517,10 +472,9 @@
           display: block;
         }
 
-        .trailer, .reportSection { break-inside: avoid; }
-        .reportTableWrap { overflow:visible; padding:0 6px 8px; }
-        .manifestTable { min-width:0; table-layout:auto; font-size:8px; }
-        .manifestTable th, .manifestTable td { padding:3px; white-space:normal; overflow-wrap:anywhere; }
+        .trailer {
+          break-inside: avoid;
+        }
 
         .canvas {
           background: #fff;
@@ -528,9 +482,132 @@
 
         .alert,
         .notice,
-        .tools,
-        .unstack {
+        .tools {
           display: none;
+        }
+      }
+
+      /* ---- V3.4: layout, options, sticky sidebar ---- */
+      header {
+        padding: 14px 28px;
+      }
+
+      header h1 {
+        font-size: 22px;
+      }
+
+      aside > .actions {
+        margin: 0 0 10px;
+      }
+
+      .options {
+        grid-template-columns: 1fr 1fr;
+        margin-bottom: 12px;
+      }
+
+      .options label.wide {
+        grid-column: 1/-1;
+      }
+
+      .tableScroll {
+        max-height: 46vh;
+        border: 1px solid #e5edf2;
+        border-radius: 8px;
+      }
+
+      th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      .libSec {
+        margin-top: 12px;
+        border: 1px solid #cad8e3;
+        border-radius: 10px;
+      }
+
+      .libSec > summary {
+        padding: 10px 12px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        background: #f4f8fb;
+        border-radius: 10px;
+      }
+
+      .libSec > summary .note {
+        font-weight: 400;
+        margin-left: 6px;
+      }
+
+      .libSec .inner {
+        padding: 10px;
+      }
+
+      .threeHost canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .threeTools input:disabled {
+        opacity: 0.4;
+      }
+
+      @media (min-width: 1101px) {
+        aside {
+          position: sticky;
+          top: 8px;
+          max-height: calc(100vh - 16px);
+          overflow: auto;
+        }
+      }
+
+      /* ---- V3.5: job summary, manifest, stack details ---- */
+      .reportCard {
+        background: #fff;
+        border: 1px solid #cad8e3;
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-top: 12px;
+      }
+
+      .reportCard h2 {
+        margin: 4px 0 10px;
+      }
+
+      .reportCard table {
+        min-width: 700px;
+      }
+
+      .reportCard td {
+        padding: 4px 6px;
+      }
+
+      .reportCard td.warnCell {
+        color: #8b241b;
+        font-weight: 700;
+      }
+
+      .stackInfo {
+        padding: 12px 14px;
+        font-size: 12px;
+        border-top: 1px solid #e5edf2;
+        line-height: 1.5;
+      }
+
+      .stackInfo .stackBlock {
+        margin-bottom: 14px;
+      }
+
+      .stackInfo .stackBlock > div.gap {
+        margin-top: 6px;
+      }
+
+      @media print {
+        .reportCard {
+          break-inside: auto;
         }
       }
     </style>
@@ -545,19 +622,14 @@
     </header>
     <main>
       <aside>
-        <div class="bar">
-          <h2>1. Trailer Library</h2>
-          <button id="addTrailer">+ Add trailer type</button>
-        </div>
-        <p class="note">
-          Add, edit, select or remove trailer types. The library autosaves on
-          this device.
-        </p>
-        <div id="equipment"></div>
-        <div class="libraryActions">
-          <button id="importTrailers">Import trailer CSV</button
-          ><button id="exportTrailers">Export trailer CSV</button
-          ><input id="trailerFile" type="file" accept=".csv,text/csv" hidden />
+        <div class="actions">
+          <button id="generate" class="primary">Generate Best Load Plan</button>
+          <button id="sample">Load sample</button>
+          <button id="reset">Reset</button>
+          <button id="print">Export / Print</button>
+          <button id="importFreight">Import CSV</button>
+          <button id="csv">Export CSV</button>
+          <input id="freightFile" type="file" accept=".csv,text/csv" hidden />
         </div>
         <div class="options">
           <label
@@ -573,22 +645,17 @@
             ><input id="snap" type="checkbox" checked /> Snap to edges when
             dragging</label
           ><label
-            title="When off, larger upper items may overhang their support. Trailer boundaries, stack height, payload, overlap, stackability, Top Load Only and maximum-stack checks still apply."
-            ><input id="reqFp" type="checkbox" checked /> Require top item to
-            fit within base footprint</label
-          ><span class="note" id="reqFpHelp"
-            >When enabled, each item above another must fit within the footprint
-            of the item directly below it. When disabled, larger upper items may
-            overhang their support, but trailer boundaries, stack height,
-            payload, overlap, stackability, Top Load Only and maximum-stack
-            checks still apply.</span
+            class="wide"
+            title="When ticked, you can drag a larger item onto a smaller one. Works at any time, including after a plan is generated."
+            ><input id="overhang" type="checkbox" /> Allow stacking on a
+            smaller footprint (manual drag and drop)</label
           >
         </div>
         <div class="bar">
-          <h2>2. Freight</h2>
+          <h2>1. Freight</h2>
           <button id="add">+ Add line</button>
         </div>
-        <div class="scroll">
+        <div class="scroll tableScroll">
           <table>
             <thead>
               <tr>
@@ -609,20 +676,38 @@
           </table>
         </div>
         <p class="note">
-          Stacking is automatic. Top only means the item may sit above another
-          item but cannot support freight above it. Max is the highest number of
-          items allowed in a stack that includes this item.
+          Changes here update the current plan as soon as you leave the field:
+          new lines and extra quantity go to Not Loaded, deleted lines are
+          removed, and edited items update where they sit. Stacking is
+          automatic when generating. Top only means the item may sit above
+          another item but cannot support freight above it. Max is the highest
+          number of items allowed in a stack that includes this item.
         </p>
-        <div class="actions">
-          <button id="generate" class="primary">Generate Best Load Plan</button
-          ><button id="sample">Load sample</button
-          ><button id="reset">Reset</button
-          ><button id="print">Export / Print</button
-          ><button id="importFreight">Import CSV</button
-          ><button id="csv">Export CSV</button
-          ><button id="planCsv">Export Load Plan CSV</button>
-          <input id="freightFile" type="file" accept=".csv,text/csv" hidden />
-        </div>
+        <details id="libSec" class="libSec">
+          <summary>
+            2. Trailer Library <span class="note" id="libCount"></span>
+          </summary>
+          <div class="inner">
+            <div class="bar">
+              <p class="note" style="margin: 0">
+                Add, edit, select or remove trailer types. The library autosaves
+                on this device.
+              </p>
+              <button id="addTrailer">+ Add trailer type</button>
+            </div>
+            <div id="equipment"></div>
+            <div class="libraryActions">
+              <button id="importTrailers">Import trailer CSV</button
+              ><button id="exportTrailers">Export trailer CSV</button
+              ><input
+                id="trailerFile"
+                type="file"
+                accept=".csv,text/csv"
+                hidden
+              />
+            </div>
+          </div>
+        </details>
       </aside>
       <section>
         <div class="stats" id="stats">
@@ -636,24 +721,17 @@
             Clear trailers (all freight to Not Loaded)
           </button>
           <select id="addTrailerSel" aria-label="Trailer type to add"></select>
-          <button id="addTrailerBtn" type="button">
-            + Add trailer to plan
-          </button>
+          <button id="addTrailerBtn" type="button">+ Add trailer to plan</button>
         </div>
-        <div id="fpWarn"></div>
         <div id="alerts"></div>
         <div id="planNote"></div>
-
-        <div id="jobSummary"></div>
-        <div id="masterManifest"></div>
-
         <div id="unloaded"></div>
-
         <div id="plans" class="plans">
           <div class="empty">
             <h2>No plan generated</h2>
           </div>
         </div>
+        <div id="report"></div>
       </section>
     </main>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -770,9 +848,16 @@
       /* ---------- shared state ---------- */
       let PLAN = null; // current plan: { tr:[{t,p,kg,area}], left:[], total, kg, sig, manual }
       const STAGES = []; // Konva stages, index = trailer index
+      const THREEVIEWS = [];
+      const CAMS = []; // remembered 3D camera per trailer card
       let SIDN = 0,
+        RID = 0,
+        COLN = 0,
         toastTimer;
       const nid = () => "s" + Date.now().toString(36) + "-" + ++SIDN;
+      const newUid = () => "r" + Date.now().toString(36) + "-" + ++RID;
+      // payload of 0 means "no limit"
+      const overPay = (t, kg) => t.p > 0 && kg > t.p;
 
       function safe(s) {
         return String(s).replace(
@@ -803,7 +888,7 @@
           d.className = "equipment";
           d.open = !!t.on;
           d.dataset.id = t.id || "trailer-" + Date.now() + "-" + n;
-          d.innerHTML = `<summary><input class="on" type="checkbox" ${t.on ? "checked" : ""}> <input class="name" value="${safe(t.name || "New trailer type")}"> <button type="button" class="removeTrailer">Remove</button></summary><div class="fields"><label>Length mm<input class="l" type="number" min="1" value="${t.l || 13200}"></label><label>Usable width mm<input class="w" type="number" min="1" value="${t.w || 2400}"></label><label>Height mm (0 = open)<input class="h" type="number" min="0" value="${t.h ?? 2700}"></label><label>Payload kg<input class="p" type="number" min="0" value="${t.p || 24000}"></label><label>Maximum available<input class="max" type="number" min="1" value="${t.max || 1}"></label></div>`;
+          d.innerHTML = `<summary><input class="on" type="checkbox" ${t.on ? "checked" : ""}> <input class="name" value="${safe(t.name || "New trailer type")}"> <button type="button" class="removeTrailer">Remove</button></summary><div class="fields"><label>Length mm<input class="l" type="number" min="1" value="${t.l || 13200}"></label><label>Usable width mm<input class="w" type="number" min="1" value="${t.w || 2400}"></label><label>Height mm (0 = open)<input class="h" type="number" min="0" value="${t.h ?? 2700}"></label><label>Payload kg (0 = no limit)<input class="p" type="number" min="0" value="${t.p ?? 24000}"></label><label>Maximum available<input class="max" type="number" min="1" value="${t.max || 1}"></label></div>`;
           // typing a space in the name box must not fold/unfold the trailer panel
           d.querySelectorAll("summary input").forEach((el) =>
             ["keydown", "keyup"].forEach((ev) =>
@@ -821,11 +906,16 @@
       }
       function add(x) {
         let r = document.createElement("tr");
+        // every freight line keeps a stable id and colour so plan edits can follow it
+        r.dataset.uid = x.uid || newUid();
+        r.dataset.col = x.col || COL[COLN % COL.length];
+        COLN++;
         r.innerHTML = `<td><input class="ref" value="${safe(x.ref)}"></td><td><input class="qty" type="number" min="1" value="${x.qty || 1}"></td><td><input class="l" type="number" value="${x.l}"></td><td><input class="w" type="number" value="${x.w}"></td><td><input class="h" type="number" value="${x.h}"></td><td><input class="kg" type="number" value="${x.kg || 0}"></td><td><input class="rot" type="checkbox" ${x.rot !== false ? "checked" : ""}></td><td><input class="stk" type="checkbox" ${x.stk ? "checked" : ""}></td><td><input class="top" type="checkbox" ${x.top ? "checked" : ""}></td><td><input class="max" type="number" min="1" value="${x.max || 1}"></td><td><button class="del">×</button></td>`;
         r.querySelector(".del").onclick = () => {
           r.remove();
           save();
           planNote();
+          syncPlan();
         };
         $("#rows").appendChild(r);
       }
@@ -842,142 +932,46 @@
         }));
       }
       function items() {
-        return [...$("#rows").rows].map((r, i) => ({
-          ref: r.querySelector(".ref").value || "ITEM-" + (i + 1),
-          qty: +r.querySelector(".qty").value || 1,
-          l: +r.querySelector(".l").value,
-          w: +r.querySelector(".w").value,
-          h: +r.querySelector(".h").value,
-          kg: +r.querySelector(".kg").value || 0,
-          rot: r.querySelector(".rot").checked,
-          stk: r.querySelector(".stk").checked,
-          top: r.querySelector(".top").checked,
-          max: +r.querySelector(".max").value || 1,
-          col: COL[i % COL.length],
-          line: i + 1,
-        }));
+        return [...$("#rows").rows].map((r, i) => {
+          const q = r.querySelector(".qty").value,
+            o = {
+              uid: r.dataset.uid,
+              ref: r.querySelector(".ref").value || "ITEM-" + (i + 1),
+              qty: +q || 1,
+              l: +r.querySelector(".l").value,
+              w: +r.querySelector(".w").value,
+              h: +r.querySelector(".h").value,
+              kg: +r.querySelector(".kg").value || 0,
+              rot: r.querySelector(".rot").checked,
+              stk: r.querySelector(".stk").checked,
+              top: r.querySelector(".top").checked,
+              max: +r.querySelector(".max").value || 1,
+              col: r.dataset.col || COL[i % COL.length],
+              line: i + 1,
+            };
+          // a half-typed row (blank size or quantity) must never change the plan
+          o.ok = o.l > 0 && o.w > 0 && o.h > 0 && +q >= 1;
+          return o;
+        });
       }
       function units(a) {
-        // id includes the table line so two lines sharing a Ref never collide
+        // id includes the line's stable id so two lines sharing a Ref never collide
         let o = [];
         a.forEach((x) => {
           for (let i = 1; i <= x.qty; i++)
-            o.push({ ...x, id: "L" + x.line + "-" + x.ref + "-" + i, unit: i });
+            o.push({ ...x, id: "U" + x.uid + "-" + i, unit: i });
         });
         return o;
-      }
-
-      /* ---------- stack geometry (footprint support + envelope) ----------
-               A floor position's x / y / l / w is the projected ENVELOPE of the whole stack.
-               bl / bw = placed footprint of the base member; mp[k] = placed {l,w,dx,dy} of member k
-               inside the envelope (dx/dy = offset from the envelope origin). Every upper member is
-               centred over the member directly below it, so all members share one centre and the
-               envelope is simply the largest l and the largest w of any member.
-               ov = at least one member is larger than the member directly below it. */
-      // requireStackFootprintSupport: when true an upper item must fit within the member below it
-      const requireStackFootprintSupport = () => $("#reqFp").checked;
-      function geom(mem, bl, bw, rotOK = $("#rotation").checked) {
-        const b = mem[0],
-          baseRot = b.l !== b.w && bl === b.w && bw === b.l,
-          mp = [{ l: bl, w: bw, rot: baseRot }],
-          fitA = [true];
-        for (let k = 1; k < mem.length; k++) {
-          const m = mem[k],
-            sup = mp[k - 1],
-            same = baseRot
-              ? { l: m.w, w: m.l, rot: true }
-              : { l: m.l, w: m.w, rot: false },
-            alt = baseRot
-              ? { l: m.l, w: m.w, rot: false }
-              : { l: m.w, w: m.l, rot: true },
-            fit = (o) => o.l <= sup.l && o.w <= sup.w;
-          let o = same;
-          // another orientation is used only when it is permitted and it makes the item fit
-          if (!fit(same) && rotOK && m.rot && m.l !== m.w && fit(alt)) o = alt;
-          mp.push({ l: o.l, w: o.w, rot: o.rot });
-          fitA.push(fit(o));
-        }
-        const L = Math.max(...mp.map((p) => p.l)),
-          W = Math.max(...mp.map((p) => p.w));
-        mp.forEach((p) => {
-          p.dx = (L - p.l) / 2;
-          p.dy = (W - p.w) / 2;
-        });
-        return { L, W, mp, fit: fitA, ov: fitA.some((f) => !f) };
-      }
-      // recompute a position's envelope, height and weight from its members
-      function restack(s, keepCentre) {
-        const g = geom(s.members, s.bl, s.bw);
-        if (keepCentre) {
-          const cx = s.x + s.l / 2,
-            cy = s.y + s.w / 2;
-          s.x = Math.max(0, Math.round(cx - g.L / 2));
-          s.y = Math.max(0, Math.round(cy - g.W / 2));
-        }
-        s.l = g.L;
-        s.w = g.W;
-        s.mp = g.mp;
-        s.ov = g.ov;
-        s.sh = s.members.reduce((n, m) => n + m.h, 0);
-        s.sw = s.members.reduce((n, m) => n + m.kg, 0);
-      }
-      // saved plans from before this feature have no bl / bw / mp / ov
-      function ensureGeom(s) {
-        if (s.bl === undefined || s.bw === undefined) {
-          s.bl = s.l;
-          s.bw = s.w;
-        }
-        const ol = s.l,
-          ow = s.w;
-        restack(s, false);
-        if (s.l !== ol || s.w !== ow) {
-          s.x = Math.round(s.x + ol / 2 - s.l / 2);
-          s.y = Math.round(s.y + ow / 2 - s.w / 2);
-        }
-      }
-      // a brand-new single-member floor position
-      function mkPos(it, l, w, x, y) {
-        const s = {
-          ...it,
-          members: [it],
-          bl: l,
-          bw: w,
-          l,
-          w,
-          x,
-          y,
-          sid: nid(),
-        };
-        restack(s, false);
-        return s;
       }
 
       /* ---------- stacking ---------- */
       function stacks(u, t) {
         const rotOK = $("#rotation").checked,
-          req = requireStackFootprintSupport(),
-          single = (x) => ({
-            ...x,
-            members: [x],
-            sh: x.h,
-            sw: x.kg,
-            bl: x.l,
-            bw: x.w,
-            ov: false,
-          });
+          single = (x) => ({ ...x, members: [x], sh: x.h, sw: x.kg });
         if (!$("#stacking").checked) return u.map(single);
-        // geometry if x joined mem as the new top; null when the footprint rule (if on) or the trailer floor forbids it
-        const can = (x, mem, base) => {
-            const g = geom(mem.concat(x), base.l, base.w, rotOK),
-              allRot = x.rot && mem.every((m) => m.rot);
-            if (req && g.ov) return null;
-            if (
-              !(g.L <= t.l && g.W <= t.w) &&
-              !(rotOK && allRot && g.W <= t.l && g.L <= t.w)
-            )
-              return null;
-            return g;
-          },
+        const fits = (x, b) =>
+            (x.l <= b.l && x.w <= b.w) ||
+            (rotOK && x.rot && x.w <= b.l && x.l <= b.w),
           rem = u.slice().sort((a, b) => b.l * b.w - a.l * a.w || b.kg - a.kg),
           out = [],
           // every member's own "max" limits the whole stack, and nothing may sit on a top-only item
@@ -1001,15 +995,12 @@
               if (
                 !x.stk ||
                 !!x.top !== wantTop ||
+                !fits(x, base) ||
                 !ok(x, mem, h, kg, limit, res)
               )
                 continue;
-              const g = can(x, mem, base);
-              if (!g) continue;
-              // prefer no overhang (only matters when the footprint rule is off),
-              // then lighter-on-heavier, then the biggest footprint
-              const sc =
-                (g.ov ? 0 : 2e9) + (x.kg <= last.kg ? 1e9 : 0) + x.l * x.w;
+              // prefer lighter-on-heavier, then the biggest footprint
+              const sc = (x.kg <= last.kg ? 1e9 : 0) + x.l * x.w;
               if (sc > bs) {
                 bs = sc;
                 bi = i;
@@ -1038,9 +1029,7 @@
             continue;
           }
           // try with and without keeping headroom for a top-only cap, keep the better stack
-          const tops = rem.filter(
-              (x) => x.stk && x.top && can(x, [base], base),
-            ),
+          const tops = rem.filter((x) => x.stk && x.top && fits(x, base)),
             minTop = tops.length ? Math.min(...tops.map((x) => x.h)) : 0;
           let r = build(base, 0);
           if (minTop) {
@@ -1054,19 +1043,7 @@
           const keep = rem.filter((_, i) => !r.used.has(i));
           rem.length = 0;
           keep.forEach((k) => rem.push(k));
-          const g = geom(r.mem, base.l, base.w, rotOK);
-          out.push({
-            ...base,
-            members: r.mem,
-            sh: r.h,
-            sw: r.kg,
-            bl: base.l,
-            bw: base.w,
-            l: g.L,
-            w: g.W,
-            mp: g.mp,
-            ov: g.ov,
-          });
+          out.push({ ...base, members: r.mem, sh: r.h, sw: r.kg });
         }
         return out.concat(rem.map(single));
       }
@@ -1130,7 +1107,7 @@
               kg = 0,
               area = 0;
             for (const x of base.slice().sort(srt)) {
-              if ((t.h && x.sh > t.h) || kg + x.sw > t.p) continue;
+              if ((t.h && x.sh > t.h) || overPay(t, kg + x.sw)) continue;
               // a stack may only be turned if every item in it may be turned
               let os = [{ l: x.l, w: x.w }],
                 can = rotOK && x.members.every((m) => m.rot) && x.l != x.w;
@@ -1145,19 +1122,7 @@
                   }
               if (!b) continue;
               free = split(free, b);
-              // when the whole stack is turned, its base footprint turns with it
-              const turned = x.l !== x.w && b.l === x.w && b.w === x.l,
-                ps = {
-                  ...x,
-                  l: b.l,
-                  w: b.w,
-                  x: b.x,
-                  y: b.y,
-                  bl: turned ? x.bw : x.bl,
-                  bw: turned ? x.bl : x.bw,
-                };
-              restack(ps, false);
-              p.push(ps);
+              p.push({ ...x, l: b.l, w: b.w, x: b.x, y: b.y });
               kg += x.sw;
               area += b.l * b.w;
             }
@@ -1221,69 +1186,34 @@
           bd = 0;
         tr.p.forEach((a, i) => {
           if (outOfBounds(tr.t, a.x, a.y, a.l, a.w)) bd++;
-          for (let j = i + 1; j < tr.p.length; j++) if (hit(a, tr.p[j])) ov++;
+          for (let j = i + 1; j < tr.p.length; j++)
+            if (hit(a, tr.p[j])) ov++;
         });
         if (ov) o.push(ov + " overlap" + (ov > 1 ? "s" : ""));
         if (bd) o.push(bd + " outside trailer");
-        if (tr.kg > tr.t.p) o.push("over payload");
+        if (overPay(tr.t, tr.kg)) o.push("over payload");
         if (tr.t.h && tr.p.some((s) => s.sh > tr.t.h)) o.push("over height");
-        const fr = footprintReview(tr);
-        if (fr)
-          o.push(
-            fr + " stack" + (fr > 1 ? "s" : "") + " need footprint review",
-          );
         return o;
       }
-      // stacks containing overhang (any setting) / those that are invalid under the current setting
-      const overhangCount = (tr) => tr.p.filter((s) => s.ov).length;
-      const footprintReview = (tr) =>
-        requireStackFootprintSupport() ? overhangCount(tr) : 0;
       function recalc(tr) {
         tr.kg = tr.p.reduce((n, s) => n + s.sw, 0);
         tr.area = tr.p.reduce((n, s) => n + s.l * s.w, 0);
       }
 
-      function download(content, filename, type) {
-        const blob = new Blob([content], { type });
-
-        const a = document.createElement("a");
-
-        a.href = URL.createObjectURL(blob);
-
-        a.download = filename;
-
-        document.body.appendChild(a);
-
-        a.click();
-
-        a.remove();
-
-        URL.revokeObjectURL(a.href);
-      }
-
-      function exportLoadPlanCSV() {
-        alert("export function is running");
-      }
-
       /* ---------- generate + render ---------- */
+      // freight edits are synced live, so only trailer choices and options make a plan "stale"
       function inputSig() {
-        const o = {
+        return JSON.stringify({
           t: types().filter((x) => x.on),
-          i: items(),
           m: $("#mixed").checked,
           r: $("#rotation").checked,
           s: $("#stacking").checked,
-        };
-        // only recorded when OFF, so signatures of plans saved before this option existed still match
-        if (!requireStackFootprintSupport()) o.f = 0;
-        return JSON.stringify(o);
+        });
       }
       function inputError(ts, src) {
         const badT = ts.find((t) => !(t.l > 0 && t.w > 0 && t.p >= 0));
         if (badT)
-          return (
-            "Trailer '" + badT.name + "' needs a length, width and payload."
-          );
+          return "Trailer '" + badT.name + "' needs a length, width and payload.";
         const badI = src.find(
           (x) => !(x.l > 0 && x.w > 0 && x.h > 0) || x.qty < 1,
         );
@@ -1296,11 +1226,9 @@
             ") needs a quantity and length, width and height above zero."
           );
         const n = src.reduce((a, x) => a + x.qty, 0);
-        if (n > 2000)
-          return "Too many items (" + n + "). The limit is 2000 units.";
+        if (n > 2000) return "Too many items (" + n + "). The limit is 2000 units.";
         return "";
       }
-
       function generate(force) {
         if (
           force !== true &&
@@ -1327,7 +1255,6 @@
         );
         render(candidates[0], src);
       }
-
       function render(s, src) {
         let total = src.reduce((n, x) => n + x.qty, 0),
           kg = src.reduce((n, x) => n + x.qty * x.kg, 0);
@@ -1345,113 +1272,36 @@
         unloaded(s.left);
         renderPlans();
       }
-
       function updateStats() {
         if (!PLAN) return;
-
-        const review = PLAN.tr.reduce((n, t) => n + footprintReview(t), 0);
-
-        let status = "Complete";
-
-        if (review) {
-          status = "Review needed";
-        } else if (PLAN.left.length) {
-          status = "Incomplete";
-        }
-
         stats(
-          status,
+          PLAN.left.length ? "Incomplete" : "Complete",
           PLAN.tr.length,
           PLAN.total - PLAN.left.length,
           PLAN.total,
           PLAN.kg,
         );
-
-        renderJobSummary();
       }
-
       function cardHTML(p, i) {
         let stk = p.p.filter((x) => x.members.length > 1),
           saved = stk.reduce((n, x) => n + x.members.length - 1, 0),
           iss = issues(p),
-          floor = Math.round((p.area / (p.t.l * p.t.w)) * 100),
-          ovn = overhangCount(p),
-          rd = (n) => Math.round(n).toLocaleString(),
-          rows = stk
-            .map((s) => {
-              const refs = s.members
-                .map((m, idx) => {
-                  const mp = s.mp?.[idx];
-
-                  return `
-            <div style="margin:4px 0;">
-              <b>${idx === 0 ? "BASE" : "TOP " + idx}</b>
-              ${safe(m.ref)} #${m.unit}
-              <br>
-              Original:
-              ${Math.round(m.l)} × ${Math.round(m.w)} × ${Math.round(m.h)} mm
-              ${
-                mp
-                  ? `<br>
-                     Used in stack:
-                     ${Math.round(mp.l)} × ${Math.round(mp.w)} mm`
-                  : ""
-              }
-            </div>
-          `;
-                })
-                .join("");
-              return `
-      <div class="stackrow${s.ov ? " ov" : ""}">
-        <span>
-          <b>Stack contents:</b>
-
-          ${refs}
-
-          <div style="margin-top:6px;">
-            <b>Total stack height:</b>
-            ${rd(s.sh)} mm
-
-            <br>
-
-            <b>Base footprint:</b>
-            ${rd(s.bl)} × ${rd(s.bw)} mm
-
-            <br>
-
-            <b>Stack envelope:</b>
-            ${rd(s.l)} × ${rd(s.w)} mm
-
-            ${
-              s.ov
-                ? `<br><b>FOOTPRINT OVERHANG:</b>
-                   upper freight exceeds supporting footprint.`
-                : ""
-            }
-          </div>
-        </span>
-
-        <button
-          type="button"
-          class="unstack"
-          data-sid="${safe(s.sid)}">
-          Unstack top item
-        </button>
-      </div>
-      `;
-            })
-            .join("");
-        return `<div class="head"><h2>Trailer ${i + 1}: ${safe(p.t.name)}</h2><div class="badges"><span class="badge">${placed(p)} items</span><span class="badge">${stk.length} stacks</span><span class="badge">${saved} floor positions saved</span><span class="badge">${Math.round(p.kg)} kg</span><span class="badge">${floor}% floor used</span>${ovn ? `<span class="badge amber">⚠ FOOTPRINT OVERHANG × ${ovn}</span>` : ""}${iss.length ? `<span class="badge warn">⚠ ${safe(iss.join(", "))}</span>` : `<span class="badge ok">✔ No overlaps</span>`}<button type="button" class="removeTrailer rmT">Remove trailer</button></div></div><div class="canvas"><div class="konva" id="k${i}"></div></div>${rows ? `<div class="stacklist">${rows}</div>` : ""}<div class="foot">${p.t.l.toLocaleString()} × ${p.t.w.toLocaleString()} mm${p.t.h ? " × " + p.t.h.toLocaleString() + " mm high" : ""} · Drag to move · Double-click to rotate · Drag onto another trailer to move it there · Drag an item onto another item to stack it</div>`;
+          floor = Math.round((p.area / (p.t.l * p.t.w)) * 100);
+        return `<div class="head"><h2>Trailer ${i + 1}: ${safe(p.t.name)}</h2><div class="viewSwitch"><button type="button" class="v2 active">2D plan</button><button type="button" class="v3">3D model</button></div><div class="badges"><span class="badge">${placed(p)} items</span><span class="badge">${stk.length} stacks</span><span class="badge">${saved} floor positions saved</span><span class="badge">${Math.round(p.kg)} kg</span><span class="badge">${floor}% floor used</span>${iss.length ? `<span class="badge warn">⚠ ${safe(iss.join(", "))}</span>` : `<span class="badge ok">✔ No overlaps</span>`}<button type="button" class="removeTrailer rmT">Remove trailer</button></div></div><div class="canvas"><div class="konva" id="k${i}"></div></div><div class="threeWrap"><div class="threeTools"><label class="labelStatus"><input class="showCards" type="checkbox" checked> Show information cards</label><label>Card size <input class="cardScale" type="range" min="80" max="140" value="100" step="5"></label><label>Walls <input class="wallAlpha" type="range" min="0" max="80" value="18" step="5"></label><label><input class="showCog" type="checkbox"> CoG</label><button type="button" class="shot3d">Screenshot as shown</button><span class="threeInfo"></span></div><div class="threeHost" id="three${i}"></div><div class="threeHelp">Drag to orbit · wheel to zoom · click freight to highlight its input row</div></div>${stackHTML(p)}<div class="foot">${p.t.l.toLocaleString()} × ${p.t.w.toLocaleString()} mm${p.t.h ? " × " + p.t.h.toLocaleString() + " mm high" : ""} · Drag to move · Double-click to rotate · Drop onto another stack to stack on top · Drag onto another trailer to move it there</div>`;
       }
       function mountCard(a, p, i) {
+        destroy3D(i);
         a.innerHTML = cardHTML(p, i);
         a.querySelector(".rmT").onclick = () => removeTrailer(i);
-        a.querySelectorAll(".unstack").forEach(
-          (b) => (b.onclick = () => unstackTop(i, b.dataset.sid)),
-        );
+        wire3D(a, p, i);
         draw(p, i);
       }
+      function destroyAll3D() {
+        THREEVIEWS.forEach((v, k) => v && destroy3D(k));
+      }
       function renderPlans() {
+        destroyAll3D();
+        CAMS.length = 0;
         STAGES.splice(0).forEach((s) => s && s.stage.destroy());
         $("#plans").innerHTML = "";
         if (!PLAN) return;
@@ -1470,14 +1320,15 @@
           $("#plans").appendChild(a);
           mountCard(a, p, i);
         });
-        renderMasterManifest();
         planNote();
+        renderReport();
       }
       function refreshCard(i) {
         const a = $("#plans").children[i];
         if (!a || !PLAN.tr[i]) return;
         if (STAGES[i]) STAGES[i].stage.destroy();
         mountCard(a, PLAN.tr[i], i);
+        renderReport();
       }
       function unloaded(a) {
         if (!a.length) {
@@ -1488,39 +1339,26 @@
         }
         let m = new Map();
         a.forEach((x) => {
-          let k = x.line + "|" + x.ref;
+          let k = x.uid;
           if (!m.has(k)) m.set(k, { ...x, q: 0 });
           m.get(k).q++;
         });
         $("#unloaded").innerHTML =
-          `<section class="unloaded"><h2>Not loaded - ${a.length}<small class="note">Drag an item onto a trailer to place it · drag a stack here to unload it</small></h2><div class="ug">${[...m.values()].map((x) => `<div class="ui" data-key="${safe(x.line + "|" + x.ref)}" title="Drag onto a trailer to place one"><b>${safe(x.ref)} × ${x.q}</b>${x.l} × ${x.w} × ${x.h} mm<br>${x.kg} kg<br>${x.stk ? (x.top ? "Stackable - TOP LOAD ONLY" : "Stackable") : "Not stackable"}</div>`).join("")}</div></section>`;
+          `<section class="unloaded"><h2>Not loaded - ${a.length}<small class="note">Drag an item onto a trailer to place it (or onto a stack to stack it) · drag a stack here to unload it</small></h2><div class="ug">${[...m.values()].map((x) => `<div class="ui" data-key="${safe(x.uid)}" title="Drag onto a trailer to place one"><b>${safe(x.ref)} × ${x.q}</b>${x.l} × ${x.w} × ${x.h} mm<br>${x.kg} kg<br>${x.stk ? (x.top ? "Stackable - TOP LOAD ONLY" : "Stackable") : "Not stackable"}</div>`).join("")}</div></section>`;
       }
       function fillSel() {
         const sel = $("#addTrailerSel"),
-          v = sel.value;
-        sel.innerHTML = types()
+          v = sel.value,
+          ts = types();
+        sel.innerHTML = ts
           .map((t) => `<option value="${safe(t.id)}">${safe(t.name)}</option>`)
           .join("");
         if ([...sel.options].some((o) => o.value === v)) sel.value = v;
-      }
-      // footprint-support notices: persistent OFF warning, review notice, plan-level overhang warning (printed)
-      function fpNotes() {
-        const req = requireStackFootprintSupport(),
-          nOv = PLAN ? PLAN.tr.reduce((n, t) => n + overhangCount(t), 0) : 0;
-        $("#fpNote").innerHTML =
-          (req
-            ? ""
-            : '<div class="notice warn"><b>Footprint support check is OFF.</b> Larger upper items may overhang their base.</div>') +
-          (req && nOv
-            ? `<div class="alert"><b>Footprint support is now required.</b> ${nOv} existing stack${nOv > 1 ? "s" : ""} contain${nOv > 1 ? "" : "s"} footprint overhang and require review.</div>`
-            : "");
-        $("#fpWarn").innerHTML = nOv
-          ? `<div class="fpwarn"><b>FOOTPRINT OVERHANG</b> (${nOv} stack${nOv > 1 ? "s" : ""}; footprint support required: ${req ? "ON" : "OFF"}). This plan contains stacks where upper freight exceeds the supporting footprint. The planner has checked entered dimensions, trailer boundaries, overlaps, height and payload only. It has not validated structural support, stability, blocking, load restraint, centre of gravity, axle loading or road legality.</div>`
-          : "";
+        $("#libCount").textContent =
+          "(" + ts.filter((t) => t.on).length + " selected)";
       }
       function planNote() {
         fillSel();
-        fpNotes();
         const n = $("#planNote");
         if (!PLAN) {
           n.innerHTML = "";
@@ -1529,11 +1367,140 @@
         let h = "";
         if (PLAN.sig !== inputSig())
           h +=
-            '<div class="notice warn">Trailer or freight inputs have changed since this plan was generated. Click <b>Generate Best Load Plan</b> to update it.</div>';
+            '<div class="notice warn">Trailer selection or options have changed since this plan was generated. Click <b>Generate Best Load Plan</b> to rebuild it. Freight edits are already applied to the plan above.</div>';
         if (PLAN.manual)
           h +=
             '<div class="notice">Manual layout changes are saved automatically on this device. Generating a new plan replaces them.</div>';
         n.innerHTML = h;
+      }
+
+      /* ---------- keep the plan in step with the freight table ---------- */
+      function syncPlan() {
+        if (!PLAN) return;
+        const rows = items(),
+          byUid = new Map(rows.map((r) => [r.uid, r])),
+          before = PLAN.tr.map((t) => JSON.stringify(t.p)),
+          rotMap = new Map();
+        // remember how each stack is turned before any dimensions change
+        PLAN.tr.forEach((t) =>
+          t.p.forEach((pos) => {
+            const b = pos.members[0];
+            rotMap.set(
+              pos,
+              !!b && b.l !== b.w && pos.l === b.w && pos.w === b.l,
+            );
+          }),
+        );
+        const dropFromPlan = (keepFn) => {
+          PLAN.left = PLAN.left.filter(keepFn);
+          PLAN.tr.forEach((t) => {
+            t.p.forEach((pos) => (pos.members = pos.members.filter(keepFn)));
+            t.p = t.p.filter((pos) => pos.members.length);
+          });
+        };
+        // 1. freight lines that were deleted
+        dropFromPlan((m) => byUid.has(m.uid));
+        // 2. quantity changes
+        rows.forEach((r) => {
+          if (!r.ok) return;
+          const leftSet = new Set(PLAN.left),
+            all = [];
+          PLAN.left.forEach((m) => m.uid === r.uid && all.push(m));
+          PLAN.tr.forEach((t) =>
+            t.p.forEach((pos) =>
+              pos.members.forEach((m) => m.uid === r.uid && all.push(m)),
+            ),
+          );
+          let excess = all.length - r.qty;
+          if (excess > 0) {
+            // take surplus units from Not Loaded first, then from the trailers
+            const byHigh = (a, b) => b.unit - a.unit,
+              drop = new Set(),
+              fromLeft = all.filter((m) => leftSet.has(m)).sort(byHigh),
+              fromTr = all.filter((m) => !leftSet.has(m)).sort(byHigh);
+            while (excess > 0 && fromLeft.length) {
+              drop.add(fromLeft.shift());
+              excess--;
+            }
+            while (excess > 0 && fromTr.length) {
+              drop.add(fromTr.shift());
+              excess--;
+            }
+            dropFromPlan((m) => !drop.has(m));
+          } else if (excess < 0) {
+            let n = all.reduce((a, m) => Math.max(a, m.unit || 0), 0);
+            for (let k = 0; k < -excess; k++) {
+              n++;
+              PLAN.left.push({ ...r, id: "U" + r.uid + "-" + n, unit: n });
+            }
+          }
+        });
+        // 3. name, size, weight and flag changes on every unit
+        const upd = (m) => {
+          const r = byUid.get(m.uid);
+          if (!r) return;
+          m.line = r.line;
+          m.col = r.col;
+          if (!r.ok) return;
+          m.ref = r.ref;
+          m.l = r.l;
+          m.w = r.w;
+          m.h = r.h;
+          m.kg = r.kg;
+          m.rot = r.rot;
+          m.stk = r.stk;
+          m.top = r.top;
+          m.max = r.max;
+          m.qty = r.qty;
+        };
+        PLAN.left.forEach(upd);
+        PLAN.tr.forEach((t) =>
+          t.p.forEach((pos) => pos.members.forEach(upd)),
+        );
+        // 4. re-measure every stack on its trailer
+        PLAN.tr.forEach((t) => {
+          const keep = [];
+          t.p.forEach((pos) => {
+            const b = pos.members[0],
+              turned = rotMap.get(pos) && b.rot && b.l !== b.w;
+            pos.l = turned ? b.w : b.l;
+            pos.w = turned ? b.l : b.w;
+            pos.col = b.col;
+            pos.sh = pos.members.reduce((n, m) => n + m.h, 0);
+            pos.sw = pos.members.reduce((n, m) => n + m.kg, 0);
+            if (pos.l > t.t.l || pos.w > t.t.w) {
+              // no longer fits the floor at all, so send it back to Not Loaded
+              pos.members.forEach((m) => PLAN.left.push(m));
+              return;
+            }
+            pos.x = Math.round(clamp(pos.x, 0, t.t.l - pos.l));
+            pos.y = Math.round(clamp(pos.y, 0, t.t.w - pos.w));
+            keep.push(pos);
+          });
+          t.p = keep;
+          recalc(t);
+        });
+        // 5. totals
+        PLAN.total =
+          PLAN.left.length + PLAN.tr.reduce((n, t) => n + placed(t), 0);
+        PLAN.kg =
+          PLAN.left.reduce((n, m) => n + m.kg, 0) +
+          PLAN.tr.reduce(
+            (n, t) =>
+              n + t.p.reduce((a, s) => a + s.members.reduce((b, m) => b + m.kg, 0), 0),
+            0,
+          );
+        // 6. redraw only the trailers that actually changed
+        PLAN.tr.forEach((t, i) => {
+          if (JSON.stringify(t.p) !== before[i]) refreshCard(i);
+        });
+        unloaded(PLAN.left);
+        showAlert(
+          PLAN.left.length ? PLAN.left.length + " item(s) not loaded." : "",
+        );
+        updateStats();
+        save();
+        planNote();
       }
 
       /* ---------- drag / rotate / move between trailers ---------- */
@@ -1558,6 +1525,26 @@
         }
         return null;
       }
+      function worldPt(j, pt) {
+        const r = STAGES[j].stage.container().getBoundingClientRect(),
+          z = STAGES[j].z;
+        return { x: (pt.x - r.left) / z, y: (pt.y - r.top) / z };
+      }
+      // topmost stack on trailer B under a trailer-floor point (mm)
+      function stackAt(B, wp, skipSid) {
+        for (let k = B.p.length - 1; k >= 0; k--) {
+          const s = B.p[k];
+          if (
+            s.sid !== skipSid &&
+            wp.x >= s.x &&
+            wp.x <= s.x + s.l &&
+            wp.y >= s.y &&
+            wp.y <= s.y + s.w
+          )
+            return s;
+        }
+        return null;
+      }
       function markDrop(j, tray) {
         document
           .querySelectorAll(".trailer")
@@ -1569,9 +1556,7 @@
         const t = document.querySelector("#unloaded .unloaded");
         if (!t) return false;
         const r = t.getBoundingClientRect();
-        return (
-          pt.x >= r.left && pt.x <= r.right && pt.y >= r.top && pt.y <= r.bottom
-        );
+        return pt.x >= r.left && pt.x <= r.right && pt.y >= r.top && pt.y <= r.bottom;
       }
       function snapPos(p, s, nx, ny) {
         const T = 120;
@@ -1605,12 +1590,56 @@
       function touch(i) {
         PLAN.manual = true;
         recalc(PLAN.tr[i]);
-        updateStats();
         save();
         refreshCard(i);
         planNote();
       }
-      function commitMove(i, sid, nx, ny) {
+
+      /* ---------- manual stacking (drop one item or stack onto another) ---------- */
+      // mv = { members, sh, sw, l, w }; returns "" when allowed, otherwise the reason
+      function stackCheck(B, T, mv, same) {
+        const t = B.t,
+          below = T.members[T.members.length - 1],
+          bad = mv.members.concat(T.members).find((m) => !m.stk);
+        if (bad) return bad.ref + " isn't marked Stack in the freight list.";
+        if (below.top)
+          return below.ref + " is top-load only - nothing can sit on it.";
+        const mem = T.members.concat(mv.members),
+          lim = Math.min(...mem.map((m) => m.max));
+        if (mem.length > lim) return "Stack limit reached - max " + lim + " high.";
+        if (t.h && T.sh + mv.sh > t.h)
+          return (
+            "Stack would be " +
+            (T.sh + mv.sh) +
+            " mm high - the trailer is " +
+            t.h +
+            " mm."
+          );
+        if (!same && overPay(t, B.kg + mv.sw))
+          return "Would exceed the trailer payload.";
+        if (!$("#overhang").checked) {
+          const canRot = $("#rotation").checked && mv.members.every((m) => m.rot),
+            fit =
+              (mv.l <= T.l && mv.w <= T.w) ||
+              (canRot && mv.w <= T.l && mv.l <= T.w);
+          if (!fit)
+            return (
+              mv.members[0].ref +
+              " has a bigger footprint than " +
+              T.members[0].ref +
+              ". Tick 'Allow stacking on a smaller footprint' to override."
+            );
+        }
+        return "";
+      }
+      function joinStack(T, mv) {
+        T.members = T.members.concat(mv.members);
+        T.sh += mv.sh;
+        T.sw += mv.sw;
+      }
+      const allStk = (s) => s.members.every((m) => m.stk);
+
+      function commitMove(i, sid, nx, ny, pt) {
         const tr = PLAN.tr[i],
           s = tr.p.find((q) => q.sid === sid);
         if (!s) return;
@@ -1619,7 +1648,32 @@
         if (nx === s.x && ny === s.y) return refreshCard(i);
         const c = conflictsFor(tr, sid, nx, ny, s.l, s.w);
         if (c.length) {
-          toast("Overlaps " + c[0].members[0].ref + " - move cancelled.", true);
+          // dropped with the pointer over another stack: try to stack on it
+          const wp = pt ? worldPt(i, pt) : null,
+            T =
+              wp &&
+              c.find(
+                (q) =>
+                  wp.x >= q.x && wp.x <= q.x + q.l && wp.y >= q.y && wp.y <= q.y + q.w,
+              );
+          if (T) {
+            const e = stackCheck(tr, T, s, true);
+            if (e) {
+              toast("Overlaps " + T.members[0].ref + " - " + e, true);
+              return refreshCard(i);
+            }
+            tr.p = tr.p.filter((q) => q !== s);
+            joinStack(T, s);
+            touch(i);
+            toast(
+              s.members[0].ref + " stacked on " + T.members[0].ref + ".",
+            );
+            return;
+          }
+          toast(
+            "Overlaps " + c[0].members[0].ref + " - move cancelled.",
+            true,
+          );
           return refreshCard(i);
         }
         s.x = nx;
@@ -1644,6 +1698,33 @@
           B = PLAN.tr[j],
           s = A.p.find((q) => q.sid === sid);
         if (!s || !B) return refreshCard(i);
+        // dropped on a stack in the other trailer: stack onto it (works even when the floor is full)
+        const T = stackAt(B, worldPt(j, pt));
+        if (T && allStk(s) && allStk(T)) {
+          const e = stackCheck(B, T, s, false);
+          if (e) {
+            toast(e, true);
+            return refreshCard(i);
+          }
+          A.p = A.p.filter((q) => q.sid !== sid);
+          joinStack(T, s);
+          recalc(A);
+          recalc(B);
+          PLAN.manual = true;
+          refreshCard(i);
+          refreshCard(j);
+          toast(
+            s.members[0].ref +
+              " stacked on " +
+              T.members[0].ref +
+              " in Trailer " +
+              (j + 1) +
+              ".",
+          );
+          save();
+          planNote();
+          return;
+        }
         if (s.l > B.t.l || s.w > B.t.w) {
           toast("Doesn't fit the floor of Trailer " + (j + 1) + ".", true);
           return refreshCard(i);
@@ -1655,14 +1736,13 @@
           );
           return refreshCard(i);
         }
-        if (B.kg + s.sw > B.t.p) {
+        if (overPay(B.t, B.kg + s.sw)) {
           toast("Would exceed Trailer " + (j + 1) + " payload.", true);
           return refreshCard(i);
         }
-        const r = STAGES[j].stage.container().getBoundingClientRect(),
-          z = STAGES[j].z,
-          wx = clamp((pt.x - r.left) / z - s.l / 2, 0, B.t.l - s.l),
-          wy = clamp((pt.y - r.top) / z - s.w / 2, 0, B.t.w - s.w),
+        const wp = worldPt(j, pt),
+          wx = clamp(wp.x - s.l / 2, 0, B.t.l - s.l),
+          wy = clamp(wp.y - s.w / 2, 0, B.t.w - s.w),
           spot = findSpot(B, s, wx, wy);
         if (!spot) {
           toast("No free floor space left in Trailer " + (j + 1) + ".", true);
@@ -1673,14 +1753,11 @@
         recalc(A);
         recalc(B);
         PLAN.manual = true;
-        updateStats();
         const moved = spot.d > 1;
         refreshCard(i);
         refreshCard(j);
         toast(
-          "Moved to Trailer " +
-            (j + 1) +
-            (moved ? " (nearest free spot)." : "."),
+          "Moved to Trailer " + (j + 1) + (moved ? " (nearest free spot)." : "."),
         );
         save();
         planNote();
@@ -1693,178 +1770,20 @@
           return toast("Rotation is switched off in the options.", true);
         if (!s.members.every((m) => m.rot))
           return toast("This item can't be rotated.", true);
-        if (s.l === s.w && s.bl === s.bw) return;
-        // the whole stack turns: base footprint swaps, and the envelope is recomputed from every member
-        const g = geom(s.members, s.bw, s.bl),
-          l = g.L,
-          w = g.W;
+        if (s.l === s.w) return;
+        const l = s.w,
+          w = s.l;
         if (l > tr.t.l || w > tr.t.w)
           return toast("Rotated item wouldn't fit the trailer.", true);
         const x = Math.round(clamp(s.x, 0, tr.t.l - l)),
           y = Math.round(clamp(s.y, 0, tr.t.w - w));
         if (conflictsFor(tr, sid, x, y, l, w).length)
           return toast("No room to rotate here - move it first.", true);
-        [s.bl, s.bw] = [s.bw, s.bl];
         s.l = l;
         s.w = w;
-        s.mp = g.mp;
-        s.ov = g.ov;
         s.x = x;
         s.y = y;
         touch(i);
-      }
-      /* ---------- manual stack / unstack ---------- */
-      // Which floor position is the dragged position deliberately being stacked on?
-      // A target needs at least half of the smaller footprint covered; the largest overlap wins.
-      // multi = the drop also touches another floor position (bridging, rejected).
-      function stackTarget(p, x, nx, ny) {
-        const R = { x: nx, y: ny, l: x.l, w: x.w };
-        let best = null,
-          n = 0;
-        p.p.forEach((o) => {
-          if (o.sid === x.sid || !hit(R, o)) return;
-          n++;
-          const a =
-            (Math.min(R.x + R.l, o.x + o.l) - Math.max(R.x, o.x)) *
-            (Math.min(R.y + R.w, o.y + o.w) - Math.max(R.y, o.y));
-          if (
-            a >= 0.5 * Math.min(R.l * R.w, o.l * o.w) &&
-            (!best || a > best.a)
-          )
-            best = { o, a };
-        });
-        return best ? { o: best.o, multi: n > 1 } : null;
-      }
-      // Pure check: may the single item at srcSid be put on top of the position at tgtSid?
-      // Returns { ok, msg } or { ok, g, x, y, rotated, overhang } with no state changed.
-      function checkStack(i, srcSid, tgtSid) {
-        const tr = PLAN.tr[i],
-          s = tr.p.find((q) => q.sid === srcSid),
-          t = tr.p.find((q) => q.sid === tgtSid);
-        if (!s || !t || s === t) return { ok: false, msg: "Nothing to stack." };
-        const up = s.members[0],
-          top = t.members[t.members.length - 1],
-          pre = "Cannot stack " + up.ref + " on " + top.ref + ": ",
-          no = (m) => ({ ok: false, msg: pre + m });
-        if (s.members.length > 1)
-          return {
-            ok: false,
-            msg: "Stack-to-stack merging is not supported. Unstack the source item first.",
-          };
-        if (!up.stk) return no(up.ref + " is not stackable.");
-        const ns = t.members.find((m) => !m.stk);
-        if (ns) return no(ns.ref + " is not stackable.");
-        if (top.top)
-          return no(top.ref + " is Top Load Only and cannot support freight.");
-        const lim = Math.min(up.max, ...t.members.map((m) => m.max));
-        if (t.members.length + 1 > lim)
-          return no("completed stack exceeds the maximum stack limit.");
-        const sh = t.sh + up.h;
-        if (tr.t.h && sh > tr.t.h)
-          return no("completed stack height exceeds the trailer height.");
-        // same trailer, so the trailer total does not change; the stack itself must still be within payload
-        if (tr.t.p && t.sw + up.kg > tr.t.p)
-          return no("completed stack exceeds the trailer payload.");
-        const g = geom(t.members.concat(up), t.bl, t.bw),
-          k = g.mp.length - 1;
-        if (requireStackFootprintSupport()) {
-          if (!g.fit[k])
-            return no(
-              up.ref + " exceeds the supporting footprint of " + top.ref + ".",
-            );
-          if (g.ov)
-            return no(
-              "the stack already contains footprint overhang (footprint support is required).",
-            );
-        }
-        // the envelope keeps the target's centre; it may grow past the base on either side
-        const x = Math.round(t.x + t.l / 2 - g.L / 2),
-          y = Math.round(t.y + t.w / 2 - g.W / 2);
-        if (outOfBounds(tr.t, x, y, g.L, g.W))
-          return no(
-            "the completed stack envelope extends outside the trailer.",
-          );
-        const c = tr.p.filter(
-          (q) => q !== s && q !== t && hit({ x, y, l: g.L, w: g.W }, q),
-        );
-        if (c.length)
-          return no(
-            "the completed stack envelope overlaps " +
-              c[0].members[0].ref +
-              ".",
-          );
-        return {
-          ok: true,
-          g,
-          x,
-          y,
-          rotated: g.mp[k].rot !== g.mp[0].rot,
-          overhang: !g.fit[k],
-          msgBase: up.ref + " stacked on " + top.ref,
-        };
-      }
-      // same as checkStack, plus: a drop that also touches a second floor position would bridge two supports
-      function stackVerdict(i, sid, tg) {
-        const s = PLAN.tr[i].p.find((q) => q.sid === sid);
-        if (s && tg.multi && s.members.length === 1)
-          return {
-            ok: false,
-            msg:
-              "Cannot stack " +
-              s.members[0].ref +
-              " on " +
-              tg.o.members[tg.o.members.length - 1].ref +
-              ": the item spans more than one floor position (bridging two supports is not supported).",
-          };
-        return checkStack(i, sid, tg.o.sid);
-      }
-      function tryStack(i, srcSid, tgtSid) {
-        const r = checkStack(i, srcSid, tgtSid);
-        if (!r.ok) {
-          toast(r.msg, true);
-          return refreshCard(i);
-        }
-        const tr = PLAN.tr[i],
-          s = tr.p.find((q) => q.sid === srcSid),
-          t = tr.p.find((q) => q.sid === tgtSid);
-        // the dragged position becomes the new TOP member of the target; unit objects are moved, never copied
-        tr.p = tr.p.filter((q) => q !== s);
-        t.members = t.members.concat(s.members);
-        restack(t, false);
-        t.x = r.x;
-        t.y = r.y;
-        recalc(tr);
-        PLAN.manual = true;
-        updateStats();
-        save();
-        refreshCard(i);
-        planNote();
-        toast(
-          r.msgBase +
-            (r.overhang ? " with footprint overhang" : "") +
-            (r.rotated ? " (rotated 90° to fit)" : "") +
-            ".",
-        );
-      }
-      function unstackTop(i, sid) {
-        const tr = PLAN && PLAN.tr[i],
-          s = tr && tr.p.find((q) => q.sid === sid);
-        if (!s || s.members.length < 2) return;
-        const top = s.members[s.members.length - 1],
-          below = s.members[0]; // named by the stack's base
-        s.members = s.members.slice(0, -1);
-        PLAN.left.push(top);
-        restack(s, true);
-        recalc(tr);
-        PLAN.manual = true;
-        afterLeftChange();
-        refreshCard(i);
-        toast(
-          top.ref +
-            " removed from the top of " +
-            below.ref +
-            " and moved to Not Loaded.",
-        );
       }
       /* ---------- unloading + manual start ---------- */
       function afterLeftChange() {
@@ -1904,12 +1823,11 @@
       }
       function clearPlanView() {
         PLAN = null;
+        destroyAll3D();
         STAGES.splice(0).forEach((s) => s && s.stage.destroy());
         $("#plans").innerHTML =
           '<div class="empty"><h2>No plan generated</h2></div>';
         $("#unloaded").innerHTML = "";
-        $("#jobSummary").innerHTML = "";
-        $("#masterManifest").innerHTML = "";
         showAlert("");
         stats("Ready", 0, 0, 0, 0);
         planNote();
@@ -1940,55 +1858,77 @@
         renderPlans();
       }
 
-      /* ---------- drag a Not Loaded item onto a trailer ---------- */
+      /* ---------- drag a Not Loaded item onto a trailer (or onto a stack) ---------- */
       function placeUnloaded(key, j, pt) {
         const B = PLAN && PLAN.tr[j],
-          k = PLAN
-            ? PLAN.left.findIndex((q) => q.line + "|" + q.ref === key)
-            : -1;
+          k = PLAN ? PLAN.left.findIndex((q) => q.uid === key) : -1;
         if (!B || k < 0) return;
         const it = PLAN.left[k],
           n = "Trailer " + (j + 1);
         if (B.t.h && it.h > B.t.h)
-          return toast(
-            it.ref + " is too tall for " + n + " (" + B.t.h + " mm).",
-            true,
-          );
-        if (B.kg + it.kg > B.t.p)
+          return toast(it.ref + " is too tall for " + n + " (" + B.t.h + " mm).", true);
+        if (overPay(B.t, B.kg + it.kg))
           return toast("Would exceed " + n + " payload.", true);
-        const r = STAGES[j].stage.container().getBoundingClientRect(),
-          z = STAGES[j].z,
-          cx = (pt.x - r.left) / z,
-          cy = (pt.y - r.top) / z,
-          opts = [{ l: it.l, w: it.w }];
+        const wp = worldPt(j, pt),
+          T = stackAt(B, wp),
+          done = (msg) => {
+            PLAN.manual = true;
+            unloaded(PLAN.left);
+            showAlert(
+              PLAN.left.length ? PLAN.left.length + " item(s) not loaded." : "",
+            );
+            updateStats();
+            refreshCard(j);
+            save();
+            planNote();
+            toast(msg);
+          };
+        // dropped on a stack: stack onto it, even when the trailer floor is completely full
+        if (T && it.stk && T.members.every((m) => m.stk)) {
+          const mv = { members: [it], sh: it.h, sw: it.kg, l: it.l, w: it.w },
+            e = stackCheck(B, T, mv, false);
+          if (e) return toast(e, true);
+          PLAN.left.splice(k, 1);
+          joinStack(T, mv);
+          recalc(B);
+          return done(it.ref + " stacked on " + T.members[0].ref + " in " + n + ".");
+        }
+        const opts = [{ l: it.l, w: it.w }];
         if ($("#rotation").checked && it.rot && it.l !== it.w)
           opts.push({ l: it.w, w: it.l });
         let best = null;
         opts.forEach((o) => {
           if (o.l > B.t.l || o.w > B.t.w) return;
-          const sp = findSpot(B, o, cx - o.l / 2, cy - o.w / 2);
+          const sp = findSpot(B, o, wp.x - o.l / 2, wp.y - o.w / 2);
           if (sp && (!best || sp.d < best.d)) best = { ...sp, ...o };
         });
         if (!best)
           return toast(
-            "No free floor space for " + it.ref + " in " + n + ".",
+            "No free floor space for " +
+              it.ref +
+              " in " +
+              n +
+              (T
+                ? ", and it can't be stacked on " +
+                  T.members[0].ref +
+                  " (both need Stack ticked)."
+                : "."),
             true,
           );
         PLAN.left.splice(k, 1);
-        B.p.push(
-          mkPos(it, best.l, best.w, Math.round(best.x), Math.round(best.y)),
-        );
+        B.p.push({
+          ...it,
+          members: [it],
+          sh: it.h,
+          sw: it.kg,
+          l: best.l,
+          w: best.w,
+          x: Math.round(best.x),
+          y: Math.round(best.y),
+          sid: nid(),
+        });
         recalc(B);
-        PLAN.manual = true;
-        unloaded(PLAN.left);
-        showAlert(
-          PLAN.left.length ? PLAN.left.length + " item(s) not loaded." : "",
-        );
-        updateStats();
-        refreshCard(j);
-        save();
-        planNote();
-        toast(it.ref + " placed in " + n + ".");
+        done(it.ref + " placed in " + n + ".");
       }
       let UD = null; // active Not Loaded drag
       function endUD(e, drop) {
@@ -2004,35 +1944,407 @@
         if (j === null) toast("Drop it onto a trailer to place it.", true);
         else placeUnloaded(u.key, j, pt);
       }
-      const GREEN = "#15803d",
-        AMBER = "#b45309";
-      // drag states: bad = overlap (red dashed) · away = other trailer / Not Loaded (blue dashed)
-      // stack = valid stack target (green solid, thick, labelled) · nostack = rejected stack target (amber dotted, labelled)
       function style(r, mode) {
-        r.stroke(
-          mode === "bad"
-            ? RED
-            : mode === "away"
-              ? BLUE
-              : mode === "stack"
-                ? GREEN
-                : mode === "nostack"
-                  ? AMBER
-                  : NAVY,
-        );
-        r.strokeWidth(
-          mode === "stack" || mode === "nostack" ? 5 : mode ? 3 : 1,
-        );
-        r.dash(
-          mode === "stack"
-            ? []
-            : mode === "nostack"
-              ? [2, 4]
-              : mode
-                ? [6, 3]
-                : [],
-        );
+        r.stroke(mode === "bad" ? RED : mode === "away" ? BLUE : NAVY);
+        r.strokeWidth(mode ? 3 : 1);
+        r.dash(mode ? [6, 3] : []);
       }
+
+      /* ---------- 3D view ---------- */
+      function destroy3D(i) {
+        const v = THREEVIEWS[i];
+        if (!v) return;
+        cancelAnimationFrame(v.raf);
+        v.scene.traverse((o) => {
+          if (o.geometry) o.geometry.dispose();
+          const ms = o.material
+            ? Array.isArray(o.material)
+              ? o.material
+              : [o.material]
+            : [];
+          ms.forEach((m) => {
+            if (m.map) m.map.dispose();
+            m.dispose();
+          });
+        });
+        v.renderer.dispose();
+        v.host.innerHTML = "";
+        THREEVIEWS[i] = null;
+      }
+      function freight3DUnits(tr) {
+        const a = [];
+        tr.p.forEach((pos) => {
+          let z = 0;
+          pos.members.forEach((m, k) => {
+            a.push({ m, pos, k, z });
+            z += m.h;
+          });
+        });
+        return a;
+      }
+      function fitText(ctx, text, maxWidth, start, min) {
+        let size = start;
+        do {
+          ctx.font = "800 " + size + "px Segoe UI,Arial";
+          if (ctx.measureText(text).width <= maxWidth) return size;
+          size -= 2;
+        } while (size > min);
+        return min;
+      }
+      function infoCardTexture(u) {
+        const c = document.createElement("canvas"),
+          x = c.getContext("2d");
+        c.width = 900;
+        c.height = 360;
+        x.fillStyle = "rgba(8,25,38,.96)";
+        x.fillRect(0, 0, c.width, c.height);
+        x.strokeStyle = "#fff";
+        x.lineWidth = 12;
+        x.strokeRect(6, 6, c.width - 12, c.height - 12);
+        const rows = [
+          String(u.m.ref) + " #" + u.m.unit,
+          u.k ? "STACK LEVEL " + (u.k + 1) : "DECK",
+          u.m.l + " × " + u.m.w + " × " + u.m.h + " mm",
+          u.m.kg + " kg",
+        ];
+        x.textAlign = "center";
+        x.textBaseline = "middle";
+        rows.forEach((text, i) => {
+          const size = fitText(x, text, c.width * 0.88, i === 0 ? 72 : 58, 34);
+          x.font = "800 " + size + "px Segoe UI,Arial";
+          x.lineWidth = Math.max(5, size * 0.1);
+          x.strokeStyle = "#081926";
+          x.strokeText(text, c.width / 2, 58 + i * 82);
+          x.fillStyle = "#fff";
+          x.fillText(text, c.width / 2, 58 + i * 82);
+        });
+        const t = new THREE.CanvasTexture(c);
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.minFilter = THREE.LinearFilter;
+        t.magFilter = THREE.LinearFilter;
+        return t;
+      }
+      // builds one floating card (sprite + leader line) at base size; apply3D scales it
+      function addInfoCard(scene, box, u, ui, L, W, H) {
+        const sp = new THREE.Sprite(
+            new THREE.SpriteMaterial({
+              map: infoCardTexture(u),
+              transparent: true,
+              depthTest: false,
+              sizeAttenuation: false,
+            }),
+          ),
+          lane = ui % 5,
+          row = Math.floor(ui / 5) % 2,
+          dx = (lane - 2) * 0.035,
+          dz = (row ? 1 : -1) * 0.025,
+          bh = box.geometry.parameters.height;
+        sp.position.set(
+          clamp(box.position.x + dx, -L / 2 + 0.15, L / 2 - 0.15),
+          Math.min(H - 0.05, box.position.y + bh / 2 + 0.16 + lane * 0.055),
+          clamp(box.position.z + dz, -W / 2 + 0.05, W / 2 - 0.05),
+        );
+        sp.scale.set(0.26, 0.104, 1);
+        sp.renderOrder = 1000;
+        scene.add(sp);
+        const ln = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(
+              box.position.x,
+              box.position.y + bh / 2,
+              box.position.z,
+            ),
+            new THREE.Vector3(
+              sp.position.x,
+              sp.position.y - 0.104 * 0.42,
+              sp.position.z,
+            ),
+          ]),
+          new THREE.LineBasicMaterial({
+            color: 0xffffff,
+            depthTest: false,
+            transparent: true,
+            opacity: 0.85,
+          }),
+        );
+        ln.renderOrder = 999;
+        scene.add(ln);
+        return { sp, ln };
+      }
+      function wire3D(a, p, i) {
+        const b2 = a.querySelector(".v2"),
+          b3 = a.querySelector(".v3"),
+          cv = a.querySelector(".canvas"),
+          tw = a.querySelector(".threeWrap");
+        b2.onclick = () => {
+          cv.classList.remove("hidden");
+          tw.classList.remove("active");
+          b2.classList.add("active");
+          b3.classList.remove("active");
+          destroy3D(i);
+        };
+        b3.onclick = () => {
+          cv.classList.add("hidden");
+          tw.classList.add("active");
+          b3.classList.add("active");
+          b2.classList.remove("active");
+          requestAnimationFrame(() => draw3D(a, p, i));
+        };
+        // sliders and ticks only update the existing scene, so the view never jumps
+        a.querySelectorAll(".cardScale,.wallAlpha,.showCog,.showCards").forEach(
+          (e) =>
+            (e.oninput = () => {
+              const v = THREEVIEWS[i];
+              if (v) v.apply();
+            }),
+        );
+        a.querySelector(".shot3d").onclick = () => {
+          const v = THREEVIEWS[i];
+          if (!v) return toast("Open the 3D model first.", true);
+          v.renderer.render(v.scene, v.camera);
+          const l = document.createElement("a");
+          l.href = v.renderer.domElement.toDataURL("image/png");
+          l.download = "trailer-" + (i + 1) + "-3d.png";
+          l.click();
+        };
+      }
+      function draw3D(a, p, i) {
+        destroy3D(i);
+        const host = a.querySelector(".threeHost");
+        if (!window.THREE)
+          return toast("3D library did not load; the 2D plan remains available.", true);
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xdce7ee);
+        const camera = new THREE.PerspectiveCamera(44, 1, 0.03, 250);
+        let renderer;
+        try {
+          renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            preserveDrawingBuffer: true,
+          });
+        } catch (e) {
+          return toast("The 3D view needs WebGL, which couldn't start here.", true);
+        }
+        renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        host.appendChild(renderer.domElement);
+        scene.add(new THREE.HemisphereLight(0xffffff, 0x405060, 2.2));
+        const light = new THREE.DirectionalLight(0xffffff, 1.8);
+        light.position.set(8, 12, 6);
+        scene.add(light);
+        const sc = 0.001,
+          L = p.t.l * sc,
+          W = p.t.w * sc,
+          H = (p.t.h || Math.max(2700, ...p.p.map((q) => q.sh))) * sc,
+          deck = new THREE.Mesh(
+            new THREE.BoxGeometry(L, 0.08, W),
+            new THREE.MeshStandardMaterial({ color: 0x315d78 }),
+          );
+        deck.position.y = -0.04;
+        scene.add(deck);
+        const shellGeo = new THREE.BoxGeometry(L, H, W),
+          shell = new THREE.Mesh(
+            shellGeo,
+            new THREE.MeshBasicMaterial({
+              color: 0x9fc2d8,
+              transparent: true,
+              opacity: 0.18,
+              side: THREE.BackSide,
+              depthWrite: false,
+            }),
+          );
+        shell.position.y = H / 2;
+        scene.add(shell);
+        const frame = new THREE.LineSegments(
+          new THREE.EdgesGeometry(shellGeo),
+          new THREE.LineBasicMaterial({
+            color: 0x10344f,
+            transparent: true,
+            opacity: 0.62,
+          }),
+        );
+        frame.position.y = H / 2;
+        scene.add(frame);
+        // a larger item on a smaller one is drawn at its own size, centred on the stack
+        const orient = (m, pos) => {
+          const d1 = Math.abs(pos.l - m.l) + Math.abs(pos.w - m.w),
+            d2 = Math.abs(pos.l - m.w) + Math.abs(pos.w - m.l);
+          return d2 < d1 ? { l: m.w, w: m.l } : { l: m.l, w: m.w };
+        };
+        const us = freight3DUnits(p),
+          pick = [],
+          boxes = [];
+        let sx = 0,
+          sy = 0,
+          sz = 0,
+          kg = 0;
+        us.forEach((u) => {
+          const o = orient(u.m, u.pos),
+            ml = Math.max(u.pos.l, o.l) * sc,
+            mw = Math.max(u.pos.w, o.w) * sc,
+            mh = u.m.h * sc,
+            x = (u.pos.x + u.pos.l / 2) * sc - L / 2,
+            y = u.z * sc + mh / 2,
+            z = (u.pos.y + u.pos.w / 2) * sc - W / 2,
+            box = new THREE.Mesh(
+              new THREE.BoxGeometry(ml, mh, mw),
+              new THREE.MeshStandardMaterial({
+                color: new THREE.Color(u.m.col || "#2f80ed"),
+                roughness: 0.62,
+              }),
+            );
+          box.position.set(x, y, z);
+          box.userData = { uid: u.m.uid, ref: u.m.ref, unit: u.m.unit };
+          scene.add(box);
+          pick.push(box);
+          boxes.push(box);
+          const edge = new THREE.LineSegments(
+            new THREE.EdgesGeometry(box.geometry),
+            new THREE.LineBasicMaterial({ color: 0x16354a }),
+          );
+          edge.position.copy(box.position);
+          scene.add(edge);
+          if (Math.max(ml, mw, mh) < 0.15) {
+            const halo = new THREE.LineSegments(
+              new THREE.EdgesGeometry(
+                new THREE.BoxGeometry(
+                  Math.max(ml, 0.12),
+                  Math.max(mh, 0.12),
+                  Math.max(mw, 0.12),
+                ),
+              ),
+              new THREE.LineBasicMaterial({ color: 0xffcf33, depthTest: false }),
+            );
+            halo.position.copy(box.position);
+            scene.add(halo);
+          }
+          sx += (u.pos.x + u.pos.l / 2) * u.m.kg;
+          sy += (u.pos.y + u.pos.w / 2) * u.m.kg;
+          sz += (u.z + u.m.h / 2) * u.m.kg;
+          kg += u.m.kg;
+        });
+        const cog = new THREE.AxesHelper(0.08);
+        cog.visible = false;
+        scene.add(cog);
+        const info = a.querySelector(".threeInfo");
+        info.textContent = "";
+        if (kg) {
+          const cx = sx / kg,
+            cy = sy / kg,
+            cz = sz / kg;
+          info.textContent =
+            "CoG " +
+            Math.round(cx) +
+            " mm from front · " +
+            Math.round(cy) +
+            " mm across · " +
+            Math.round(cz) +
+            " mm high";
+          cog.position.set(cx * sc - L / 2, cz * sc, cy * sc - W / 2);
+        }
+        // camera is remembered per trailer so toggling cards or walls keeps your angle
+        const cs =
+          CAMS[i] ||
+          (CAMS[i] = { yaw: -0.8, pitch: 0.55, rad: Math.max(L, W * 3, H * 3) }),
+          target = new THREE.Vector3(0, H / 3, 0);
+        let drag = false,
+          px = 0,
+          py = 0,
+          moved = 0;
+        function cam() {
+          camera.position.set(
+            cs.rad * Math.cos(cs.pitch) * Math.cos(cs.yaw),
+            target.y + cs.rad * Math.sin(cs.pitch),
+            cs.rad * Math.cos(cs.pitch) * Math.sin(cs.yaw),
+          );
+          camera.lookAt(target);
+        }
+        const c = renderer.domElement;
+        c.onpointerdown = (e) => {
+          drag = true;
+          moved = 0;
+          px = e.clientX;
+          py = e.clientY;
+          c.setPointerCapture(e.pointerId);
+        };
+        c.onpointermove = (e) => {
+          if (!drag) return;
+          moved += Math.abs(e.clientX - px) + Math.abs(e.clientY - py);
+          cs.yaw -= (e.clientX - px) * 0.008;
+          cs.pitch = Math.max(0.05, Math.min(1.35, cs.pitch + (e.clientY - py) * 0.008));
+          px = e.clientX;
+          py = e.clientY;
+          cam();
+        };
+        c.onpointercancel = () => (drag = false);
+        c.onpointerup = (e) => {
+          const was = drag;
+          drag = false;
+          // an orbit drag must not count as a click on the freight
+          if (!was || moved > 6) return;
+          const r = c.getBoundingClientRect(),
+            m = new THREE.Vector2(
+              ((e.clientX - r.left) / r.width) * 2 - 1,
+              -((e.clientY - r.top) / r.height) * 2 + 1,
+            ),
+            ray = new THREE.Raycaster();
+          ray.setFromCamera(m, camera);
+          const h = ray.intersectObjects(pick)[0];
+          if (h) {
+            const row = [...$("#rows").rows].find(
+              (q) => q.dataset.uid === h.object.userData.uid,
+            );
+            if (row) {
+              row.classList.add("rowHighlight");
+              row.scrollIntoView({ behavior: "smooth", block: "center" });
+              setTimeout(() => row.classList.remove("rowHighlight"), 3500);
+            }
+          }
+        };
+        c.onwheel = (e) => {
+          e.preventDefault();
+          cs.rad = Math.max(2, Math.min(60, cs.rad * Math.exp(e.deltaY * 0.001)));
+          cam();
+        };
+        cam();
+        const cards = [],
+          state = { scene, camera, renderer, host, raf: 0 };
+        state.apply = () => {
+          const show = a.querySelector(".showCards").checked,
+            k = +a.querySelector(".cardScale").value / 100;
+          a.querySelector(".cardScale").disabled = !show;
+          if (show && !cards.length)
+            us.forEach((u, ui) =>
+              cards.push(addInfoCard(scene, boxes[ui], u, ui, L, W, H)),
+            );
+          cards.forEach((cd) => {
+            cd.sp.visible = show;
+            cd.ln.visible = show;
+            cd.sp.scale.set(0.26 * k, 0.104 * k, 1);
+          });
+          shell.material.opacity = +a.querySelector(".wallAlpha").value / 100;
+          cog.visible = !!kg && a.querySelector(".showCog").checked;
+        };
+        state.apply();
+        THREEVIEWS[i] = state;
+        let lw = 0,
+          lh = 0;
+        (function loop() {
+          state.raf = requestAnimationFrame(loop);
+          const w = Math.max(280, host.clientWidth),
+            h = Math.max(360, host.clientHeight);
+          if (w !== lw || h !== lh) {
+            lw = w;
+            lh = h;
+            renderer.setSize(w, h, false);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+          }
+          renderer.render(scene, camera);
+        })();
+      }
+
+      /* ---------- 2D drawing ---------- */
       function draw(p, i) {
         let host = $("#k" + i),
           wrap = host.parentElement,
@@ -2043,11 +2355,7 @@
           s = new Konva.Stage({ container: host, width: W, height: H }),
           bg = new Konva.Layer(),
           fg = new Konva.Layer(),
-          bad = overlapSet(p),
-          rk = {}; // sid -> { r: envelope rect, bad } so a stack target can be highlighted while dragging
-        // stacks that break the current footprint rule are marked invalid, like an overlap
-        if (requireStackFootprintSupport())
-          p.p.forEach((q) => q.ov && bad.add(q.sid));
+          bad = overlapSet(p);
         STAGES[i] = { stage: s, z };
         s.add(bg);
         s.add(fg);
@@ -2082,9 +2390,9 @@
               height: x.w * z,
               fill: x.col,
               opacity: 0.86,
-              stroke: isBad ? RED : x.ov ? AMBER : NAVY,
-              strokeWidth: isBad || x.ov ? 3 : 1,
-              dash: isBad || x.ov ? [6, 3] : [],
+              stroke: isBad ? RED : NAVY,
+              strokeWidth: isBad ? 3 : 1,
+              dash: isBad ? [6, 3] : [],
             }),
             refs = x.members
               .map(
@@ -2102,24 +2410,15 @@
                 (x.members.length > 1
                   ? "\nSTACK x" + x.members.length + " (" + x.sh + " mm high)"
                   : "") +
-                (x.ov ? "\n⚠ FOOTPRINT OVERHANG" : "") +
                 "\n" +
-                (x.ov || x.bl !== x.l || x.bw !== x.w
-                  ? "base " +
-                    Math.round(x.bl) +
-                    " × " +
-                    Math.round(x.bw) +
-                    " · envelope " +
-                    Math.round(x.l) +
-                    " × " +
-                    Math.round(x.w)
-                  : x.l + " × " + x.w),
+                x.l +
+                " × " +
+                x.w,
               fontSize: 9,
               fontStyle: "bold",
               fill: "#fff",
               ellipsis: true,
             });
-          rk[x.sid] = { r, bad: isBad };
           const xg = new Konva.Group({ x: Math.max(0, x.l * z - 17), y: 1 });
           xg.add(
             new Konva.Rect({
@@ -2146,24 +2445,7 @@
             e.cancelBubble = true;
             setTimeout(() => unloadStack(i, x.sid), 0);
           });
-          g.add(r);
-          // where the stack overhangs, show every member's true footprint inside the projected envelope
-          if (x.ov && x.mp)
-            x.mp.forEach((q, n) =>
-              g.add(
-                new Konva.Rect({
-                  x: q.dx * z,
-                  y: q.dy * z,
-                  width: q.l * z,
-                  height: q.w * z,
-                  stroke: n ? "#fff" : NAVY,
-                  strokeWidth: 1.5,
-                  dash: [4, 2],
-                  listening: false,
-                }),
-              ),
-            );
-          g.add(t, xg);
+          g.add(r, t, xg);
           g.on("mouseenter", () => (host.style.cursor = "grab"));
           g.on("mouseleave", () => (host.style.cursor = ""));
           g.on("dblclick dbltap", () => rotateStack(i, x.sid));
@@ -2171,15 +2453,6 @@
             g.moveToTop();
             host.style.cursor = "grabbing";
           });
-          // stack-target highlight shown while dragging over another item
-          let hl = null,
-            tip = null;
-          const clearHL = () => {
-            if (hl) style(hl.r, hl.bad ? "bad" : null);
-            hl = null;
-            if (tip) tip.destroy();
-            tip = null;
-          };
           g.on("dragmove", (e) => {
             let nx = clamp(g.x() / z, 0, p.t.l - x.l),
               ny = clamp(g.y() / z, 0, p.t.w - x.w);
@@ -2187,56 +2460,28 @@
               over = trailerAt(pt),
               tray = overTray(pt),
               away = tray || (over !== null && over !== i),
-              tg = away ? null : stackTarget(p, x, nx, ny);
-            // snapping is suspended over a stack target so the drop point stays where the user put it
-            if (!away && !tg && $("#snap").checked) {
+              wp = away ? null : worldPt(i, pt),
+              onStack = wp ? stackAt(p, wp, x.sid) : null;
+            // don't snap away from a stack the pointer is over - the drop will stack on it
+            if (!away && !onStack && $("#snap").checked) {
               const sp = snapPos(p, x, nx, ny);
               nx = clamp(sp.x, 0, p.t.l - x.l);
               ny = clamp(sp.y, 0, p.t.w - x.w);
             }
             g.position({ x: nx * z, y: ny * z });
             markDrop(over !== null && over !== i && !tray ? over : -1, tray);
-            if (tg) {
-              const tk = rk[tg.o.sid],
-                v = stackVerdict(i, x.sid, tg),
-                top = tg.o.members[tg.o.members.length - 1];
-              if (!hl || hl.sid !== tg.o.sid) {
-                clearHL();
-                hl = { sid: tg.o.sid, r: tk.r, bad: tk.bad };
-              }
-              style(tk.r, v.ok ? "stack" : "nostack");
-              style(r, null);
-              if (tip) tip.destroy();
-              tip = new Konva.Label({
-                x: Math.max(0, tg.o.x * z),
-                y: Math.max(0, tg.o.y * z - 18),
-                listening: false,
-              });
-              tip.add(
-                new Konva.Tag({ fill: v.ok ? GREEN : AMBER, opacity: 0.95 }),
-                new Konva.Text({
-                  text: v.ok
-                    ? "⬒ Stack " +
-                      x.members[0].ref +
-                      " on " +
-                      top.ref +
-                      (v.overhang ? " (overhang)" : "")
-                    : "✕ " + v.msg,
-                  fontSize: 11,
-                  fontStyle: "bold",
-                  padding: 3,
-                  fill: "#fff",
-                }),
-              );
-              fg.add(tip);
-              return;
+            let mode = away ? "away" : null;
+            if (!away) {
+              const c = conflictsFor(p, x.sid, Math.round(nx), Math.round(ny), x.l, x.w);
+              if (c.length)
+                mode = c.some(
+                  (q) =>
+                    wp.x >= q.x && wp.x <= q.x + q.l && wp.y >= q.y && wp.y <= q.y + q.w,
+                )
+                  ? "away" // blue: dropping here will stack
+                  : "bad";
             }
-            clearHL();
-            const clash =
-              !away &&
-              conflictsFor(p, x.sid, Math.round(nx), Math.round(ny), x.l, x.w)
-                .length > 0;
-            style(r, away ? "away" : clash ? "bad" : null);
+            style(r, mode);
           });
           g.on("dragend", (e) => {
             host.style.cursor = "";
@@ -2248,25 +2493,10 @@
             markDrop(-1);
             // run after Konva finishes its own drag clean-up, because this redraws the stage
             setTimeout(() => {
-              if (tray) return unloadStack(i, x.sid);
-              if (over !== null && over !== i)
-                return moveToTrailer(i, x.sid, over, pt);
-              // dropped on another item: a deliberate stack attempt, not a floor overlap
-              const tg = stackTarget(
-                p,
-                x,
-                clamp(nx, 0, p.t.l - x.l),
-                clamp(ny, 0, p.t.w - x.w),
-              );
-              if (tg) {
-                const v = stackVerdict(i, x.sid, tg);
-                if (!v.ok) {
-                  toast(v.msg, true);
-                  return refreshCard(i);
-                }
-                return tryStack(i, x.sid, tg.o.sid);
-              }
-              commitMove(i, x.sid, nx, ny);
+              if (tray) unloadStack(i, x.sid);
+              else if (over !== null && over !== i)
+                moveToTrailer(i, x.sid, over, pt);
+              else commitMove(i, x.sid, nx, ny, pt);
             }, 0);
           });
           fg.add(g);
@@ -2274,165 +2504,85 @@
         bg.draw();
         fg.draw();
       }
-
-      function memberIsRotated(pos, memberIndex, member) {
-        const placed = pos.mp && pos.mp[memberIndex];
-        if (placed) return !!placed.rot;
-        if (member.l === member.w) return false;
-        if (memberIndex === 0) return pos.bl === member.w && pos.bw === member.l;
-        return false;
+      /* ---------- reports: job summary, trailer summary, manifest, stack details ---------- */
+      const fmt = (n) => Number(n).toLocaleString();
+      // how a unit sits in its stack: its own size, turned to match the stack footprint
+      function memberOrient(m, pos) {
+        const d1 = Math.abs(pos.l - m.l) + Math.abs(pos.w - m.w),
+          d2 = Math.abs(pos.l - m.w) + Math.abs(pos.w - m.l);
+        return d2 < d1 ? { l: m.w, w: m.l, turned: m.l !== m.w } : { l: m.l, w: m.w, turned: false };
       }
-      function manifestWarnings(tr, pos) {
-        const warnings = [];
-        if (pos.ov) warnings.push("Footprint Overhang");
-        if (tr.t.h && pos.sh > tr.t.h) warnings.push("Over Height");
-        if (tr.kg > tr.t.p) warnings.push("Over Payload");
-        if (outOfBounds(tr.t, pos.x, pos.y, pos.l, pos.w)) warnings.push("Outside Trailer");
-        if (overlapSet(tr).has(pos.sid)) warnings.push("Overlap");
-        if (requireStackFootprintSupport() && pos.ov) warnings.push("Review Needed");
-        return [...new Set(warnings)];
+      function stackHTML(p) {
+        const ss = p.p.filter((x) => x.members.length > 1);
+        if (!ss.length) return "";
+        return (
+          '<div class="stackInfo">' +
+          ss
+            .map((s) => {
+              const ob = memberOrient(s.members[0], s);
+              return (
+                '<div class="stackBlock"><div><b>Stack contents:</b></div>' +
+                s.members
+                  .map((m, k) => {
+                    const o = memberOrient(m, s);
+                    return `<div class="gap"><b>${k ? "TOP " + k : "BASE"}</b> ${safe(m.ref)} #${m.unit}</div><div>Original: ${m.l} × ${m.w} × ${m.h} mm</div><div>Used in stack: ${o.l} × ${o.w} mm</div>`;
+                  })
+                  .join("") +
+                `<div class="gap"><b>Total stack height:</b> ${fmt(s.sh)} mm</div><div><b>Base footprint:</b> ${fmt(ob.l)} × ${fmt(ob.w)} mm</div><div><b>Stack envelope:</b> ${fmt(s.l)} × ${fmt(s.w)} mm</div></div>`
+              );
+            })
+            .join("") +
+          "</div>"
+        );
       }
-      function renderMasterManifest() {
-        const host = $("#masterManifest");
-        if (!host) return;
-        if (!PLAN) { host.innerHTML = ""; return; }
-        const rows = [];
-        PLAN.tr.forEach((tr, trailerIndex) => {
-          tr.p.forEach((pos) => {
-            pos.members.forEach((member, memberIndex) => {
-              const placed = pos.mp && pos.mp[memberIndex];
-              const support = memberIndex ? pos.members[memberIndex - 1] : null;
-              const warnings = manifestWarnings(tr, pos);
-              rows.push({
-                sort: [trailerIndex, pos.y, pos.x, memberIndex],
-                code: member.ref,
-                description: "Unit " + member.unit,
-                trailer: "Trailer " + (trailerIndex + 1) + ": " + tr.t.name,
-                level: memberIndex + 1,
-                placement: support ? "On " + support.ref : "Deck",
-                rotated: memberIsRotated(pos, memberIndex, member) ? "Yes" : "No",
-                dimensions: member.l + " × " + member.w + " × " + member.h + " mm",
-                base: memberIndex === 0
-                  ? Math.round(pos.bl) + " × " + Math.round(pos.bw) + " mm"
-                  : placed
-                    ? Math.round(placed.l) + " × " + Math.round(placed.w) + " mm"
-                    : member.l + " × " + member.w + " mm",
-                envelope: Math.round(pos.l) + " × " + Math.round(pos.w) + " mm",
-                warnings,
-              });
-            });
-          });
-        });
-        PLAN.left.forEach((member, index) => rows.push({
-          sort: [Number.MAX_SAFE_INTEGER, index, 0, 0], code: member.ref,
-          description: "Unit " + member.unit, trailer: "Not Loaded", level: "–",
-          placement: "Not Loaded", rotated: "No",
-          dimensions: member.l + " × " + member.w + " × " + member.h + " mm",
-          base: "–", envelope: "–", warnings: ["Not Loaded", "Review Needed"],
-        }));
-        rows.sort((a, b) => {
-          for (let i = 0; i < a.sort.length; i++) if (a.sort[i] !== b.sort[i]) return a.sort[i] - b.sort[i];
-          return 0;
-        });
-        const body = rows.map((r) => `
-          <tr><td>${safe(r.code)}</td><td>${safe(r.description)}</td><td>${safe(r.trailer)}</td>
-          <td>${safe(r.level)}</td><td>${safe(r.placement)}</td><td>${r.rotated}</td>
-          <td>${safe(r.dimensions)}</td><td>${safe(r.base)}</td><td>${safe(r.envelope)}</td>
-          <td class="${r.warnings.length ? "manifestWarn" : ""}">${safe(r.warnings.join(", ") || "None")}</td></tr>`).join("");
-        host.innerHTML = `<article class="reportSection"><div class="head"><h2>Master Manifest</h2></div>
-          <div class="reportTableWrap"><table class="manifestTable"><thead><tr>
-          <th>Code</th><th>Description</th><th>Trailer</th><th>Stack Level</th><th>Placement</th>
-          <th>Rotated</th><th>Dimensions L × W × H</th><th>Base Footprint</th><th>Envelope</th><th>Warnings</th>
-          </tr></thead><tbody>${body}</tbody></table></div></article>`;
-      }
-      function renderJobSummary() {
+      function renderReport() {
+        const el = $("#report");
+        if (!el) return;
         if (!PLAN) {
-          $("#jobSummary").innerHTML = "";
-          $("#masterManifest").innerHTML = "";
+          el.innerHTML = "";
           return;
         }
-
-        const totalItems = PLAN.total;
-        const unloadedItems = PLAN.left.length;
-        const loadedItems = totalItems - unloadedItems;
-        const trailerCount = PLAN.tr.length;
-
-        let rotated = 0;
-
-        PLAN.tr.forEach((tr) => {
-          tr.p.forEach((p) => {
-            p.members.forEach((m) => {
-              if (m.rot) rotated++;
-            });
-          });
-        });
-
-        let trailerRows = PLAN.tr
-          .map((tr, idx) => {
-            const itemCount = tr.p.reduce((n, p) => n + p.members.length, 0);
-
-            const deckPositions = tr.p.length;
-
-            const warnings = issues(tr).join(", ");
-
-            return `
-            <tr>
-              <td>Trailer ${idx + 1}</td>
-              <td>
-                ${tr.t.l} × ${tr.t.w}
-                ${tr.t.h ? " × " + tr.t.h : ""}
-              </td>
-              <td>${itemCount}</td>
-              <td>${deckPositions}</td>
-              <td>${warnings}</td>
-            </tr>
-          `;
-          })
-          .join("");
-
-        $("#jobSummary").innerHTML = `
-          <article class="trailer">
-            <div class="head">
-              <h2>Job Summary</h2>
-            </div>
-
-            <div style="padding:12px;">
-              <b>${totalItems}</b> total items,
-              <b>${loadedItems}</b> allocated,
-              <b>${unloadedItems}</b> unallocated,
-              <b>${rotated}</b> rotatable items,
-              across <b>${trailerCount}</b> trailer decks.
-            </div>
-
-            <div class="head">
-              <h2>Trailer Summary</h2>
-            </div>
-
-            <div style="padding:12px;">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Trailer</th>
-                    <th>Size L × W × H mm</th>
-                    <th>Items</th>
-                    <th>Deck Positions</th>
-                    <th>Warnings</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${trailerRows}
-                </tbody>
-              </table>
-            </div>
-          </article>
-        `;
+        const all = [];
+        PLAN.tr.forEach((t) =>
+          t.p.forEach((s) => s.members.forEach((m) => all.push(m))),
+        );
+        PLAN.left.forEach((m) => all.push(m));
+        const total = all.length,
+          left = PLAN.left.length,
+          rot = all.filter((m) => m.rot).length,
+          trRows = PLAN.tr
+            .map((t, i) => {
+              const iss = issues(t);
+              return `<tr><td>Trailer ${i + 1} (${safe(t.t.name)})</td><td>${t.t.l} × ${t.t.w} × ${t.t.h || "open"}</td><td>${placed(t)}</td><td>${t.p.length}</td><td>${Math.round(t.kg)}</td><td class="warnCell">${safe(iss.join(", "))}</td></tr>`;
+            })
+            .join(""),
+          mRows = [];
+        PLAN.tr.forEach((t, i) =>
+          t.p.forEach((pos) =>
+            pos.members.forEach((m, k) => {
+              const o = memberOrient(m, pos);
+              mRows.push(
+                `<tr><td>${safe(m.ref)}</td><td>Unit ${m.unit}</td><td>Trailer ${i + 1}: ${safe(t.t.name)}</td><td>${k + 1}</td><td>${k ? "On " + safe(pos.members[k - 1].ref) : "Deck"}</td><td>${o.turned ? "Yes" : "No"}</td><td>${m.l} × ${m.w} × ${m.h} mm</td><td>${o.l} × ${o.w} mm</td><td>${pos.l} × ${pos.w} mm</td><td>${m.kg}</td><td>${pos.x}, ${pos.y}</td></tr>`,
+              );
+            }),
+          ),
+        );
+        PLAN.left.forEach((m) =>
+          mRows.push(
+            `<tr><td>${safe(m.ref)}</td><td>Unit ${m.unit}</td><td><b>Not loaded</b></td><td>-</td><td>-</td><td>-</td><td>${m.l} × ${m.w} × ${m.h} mm</td><td>-</td><td>-</td><td>${m.kg}</td><td>-</td></tr>`,
+          ),
+        );
+        el.innerHTML =
+          `<div class="reportCard"><h2>Job Summary</h2><p><b>${total}</b> total items, <b>${total - left}</b> allocated, <b>${left}</b> unallocated, <b>${rot}</b> rotatable items, across <b>${PLAN.tr.length}</b> trailer deck${PLAN.tr.length === 1 ? "" : "s"}.</p>` +
+          `<h2>Trailer Summary</h2><div class="scroll"><table><thead><tr><th>Trailer</th><th>Size L × W × H mm</th><th>Items</th><th>Deck Positions</th><th>Weight kg</th><th>Warnings</th></tr></thead><tbody>${trRows}</tbody></table></div></div>` +
+          `<div class="reportCard"><h2>Master Manifest</h2><div class="scroll"><table><thead><tr><th>Code</th><th>Description</th><th>Trailer</th><th>Stack Level</th><th>Placement</th><th>Rotated</th><th>Dimensions L × W × H</th><th>Base Footprint</th><th>Envelope</th><th>kg</th><th>Position x, y mm</th></tr></thead><tbody>${mRows.join("")}</tbody></table></div></div>`;
       }
-
       function stats(a, b, c, d, e) {
         let v = [a, b, c + " / " + d, Math.round(e) + " kg"];
         [...$("#stats").children].forEach(
           (x, i) => (x.querySelector("b").textContent = v[i]),
         );
+        renderReport();
       }
       function showAlert(s) {
         $("#alerts").innerHTML = s ? `<div class="alert">${safe(s)}</div>` : "";
@@ -2450,8 +2600,7 @@
               rotation: $("#rotation").checked,
               stacking: $("#stacking").checked,
               snap: $("#snap").checked,
-              requireStackFootprintSupport: requireStackFootprintSupport(),
-              schema: 2, // 2 = stack envelope fields (bl, bw, mp, ov) + footprint setting; older data has none
+              overhang: $("#overhang").checked,
               plan: PLAN,
             }),
           );
@@ -2459,9 +2608,7 @@
       }
       function reset() {
         if (
-          !confirm(
-            "Reset the trailer library, freight and saved layout to defaults?",
-          )
+          !confirm("Reset the trailer library, freight and saved layout to defaults?")
         )
           return;
         try {
@@ -2481,16 +2628,16 @@
           top: false,
           max: 1,
         });
-        ["#mixed", "#rotation", "#stacking", "#snap", "#reqFp"].forEach(
+        ["#mixed", "#rotation", "#stacking", "#snap"].forEach(
           (id) => ($(id).checked = true),
         );
+        $("#overhang").checked = false;
         PLAN = null;
+        destroyAll3D();
         STAGES.splice(0).forEach((s) => s && s.stage.destroy());
         $("#plans").innerHTML =
           '<div class="empty"><h2>No plan generated</h2></div>';
         $("#unloaded").innerHTML = "";
-        $("#jobSummary").innerHTML = "";
-        $("#masterManifest").innerHTML = "";
         showAlert("");
         stats("Ready", 0, 0, 0, 0);
         planNote();
@@ -2635,9 +2782,7 @@
         // loading freight no longer builds a plan; press Generate Best Load Plan, or drag items on yourself
         clearPlanView();
         startManual();
-        toast(
-          "Sample loaded. Drag items onto the trailers, or press Generate Best Load Plan.",
-        );
+        toast("Sample loaded. Drag items onto the trailers, or press Generate Best Load Plan.");
       }
 
       /* ---------- CSV ---------- */
@@ -2770,8 +2915,7 @@
           const rows = parseCSV(r.result),
             L = csvLayout(rows, FREIGHT_COLS),
             data = rows.slice(L.start).filter((x) => x.length >= 5);
-          if (!data.length)
-            return toast("No freight rows found in that file.", true);
+          if (!data.length) return toast("No freight rows found in that file.", true);
           $("#rows").innerHTML = "";
           data.forEach((x) => {
             const g = (k) => x[L.idx[k]];
@@ -2792,8 +2936,7 @@
           clearPlanView();
           startManual();
           toast(
-            data.length +
-              " freight line(s) imported. Press Generate Best Load Plan or drag items onto the trailers.",
+            data.length + " freight line(s) imported. Press Generate Best Load Plan or drag items onto the trailers.",
           );
         };
         r.readAsText(file);
@@ -2828,8 +2971,7 @@
           $("#rotation").checked = d.rotation !== false;
           $("#stacking").checked = d.stacking !== false;
           $("#snap").checked = d.snap !== false;
-          // saved data from before this option existed has no value: default to the original rule (enabled)
-          $("#reqFp").checked = d.requireStackFootprintSupport !== false;
+          $("#overhang").checked = d.overhang === true;
           if (
             d.plan &&
             Array.isArray(d.plan.tr) &&
@@ -2837,13 +2979,21 @@
             d.plan.tr.every((t) => t && t.t && Array.isArray(t.p))
           ) {
             PLAN = d.plan;
-            PLAN.tr.forEach((t) => {
+            // plans saved by older versions have no line ids: link units to their table row
+            const uidAt = (n) => {
+                const r = $("#rows").rows[n - 1];
+                return r ? r.dataset.uid : undefined;
+              },
+              fix = (m) => {
+                if (m && !m.uid) m.uid = uidAt(m.line);
+              };
+            PLAN.left.forEach(fix);
+            PLAN.tr.forEach((t) =>
               t.p.forEach((s) => {
                 s.sid = s.sid || nid();
-                ensureGeom(s); // older plans: add base footprint / envelope fields
-              });
-              recalc(t);
-            });
+                s.members.forEach(fix);
+              }),
+            );
             updateStats();
             showAlert(
               PLAN.left.length ? PLAN.left.length + " item(s) not loaded." : "",
@@ -2851,16 +3001,23 @@
             unloaded(PLAN.left);
             renderPlans();
           }
-          fpNotes();
           return true;
         } catch (e) {
           PLAN = null;
           return false;
         }
       }
-      function onEdit() {
+      function onEdit(e) {
         save();
         planNote();
+        // freight edits apply to the plan once the field is committed (blur, Enter, tick or spinner)
+        if (
+          e &&
+          e.type === "change" &&
+          e.target.closest &&
+          e.target.closest("#rows")
+        )
+          syncPlan();
       }
       $("#addTrailer").onclick = () => {
         const list = types();
@@ -2889,7 +3046,7 @@
         if (e.target.files[0]) importFreightCSV(e.target.files[0]);
         e.target.value = "";
       };
-      $("#add").onclick = () =>
+      $("#add").onclick = () => {
         add({
           ref: "ITEM",
           qty: 1,
@@ -2902,14 +3059,15 @@
           top: false,
           max: 1,
         });
+        save();
+        syncPlan(); // the new line appears straight away in Not Loaded
+      };
       $("#generate").onclick = () => generate();
       $("#clearAll").onclick = () => {
         if (
           PLAN &&
           PLAN.tr.some((t) => t.p.length) &&
-          !confirm(
-            "Move all freight back to Not Loaded and empty the trailers?",
-          )
+          !confirm("Move all freight back to Not Loaded and empty the trailers?")
         )
           return;
         startManual(true);
@@ -2932,33 +3090,16 @@
       $("#sample").onclick = sample;
       $("#reset").onclick = reset;
       $("#print").onclick = () => window.print();
-      $("#planCsv").onclick = exportLoadPlanCSV;
-
       document
         .getElementById("csv")
         .addEventListener("click", exportFreightCSV);
-      // changing the footprint rule never regenerates or edits the plan: it only re-evaluates it
-      $("#reqFp").addEventListener("change", () => {
-        if (PLAN) {
-          updateStats();
-          renderPlans();
-        }
-        save();
-        planNote();
-      });
       document.addEventListener("input", onEdit);
       document.addEventListener("change", onEdit);
       $("#unloaded").addEventListener("pointerdown", (e) => {
         const c = e.target.closest(".ui[data-key]");
         if (!c || !PLAN || e.button > 0) return;
         e.preventDefault();
-        UD = {
-          key: c.dataset.key,
-          x: e.clientX,
-          y: e.clientY,
-          card: c,
-          ghost: null,
-        };
+        UD = { key: c.dataset.key, x: e.clientX, y: e.clientY, card: c, ghost: null };
       });
       window.addEventListener("pointermove", (e) => {
         if (!UD) return;
@@ -2976,11 +3117,16 @@
       });
       window.addEventListener("pointerup", (e) => endUD(e, true));
       window.addEventListener("pointercancel", (e) => endUD(e, false));
-      let resizeT;
+      // only redraw on a real width change (phone address bars fire resize while scrolling)
+      // and never while a 3D view is open
+      let resizeT,
+        lastW = window.innerWidth;
       window.addEventListener("resize", () => {
         clearTimeout(resizeT);
         resizeT = setTimeout(() => {
-          if (PLAN && window.Konva) renderPlans();
+          if (window.innerWidth === lastW) return;
+          lastW = window.innerWidth;
+          if (PLAN && window.Konva && !THREEVIEWS.some(Boolean)) renderPlans();
         }, 250);
       });
       if (!restore()) {
@@ -2998,6 +3144,7 @@
           max: 1,
         });
       }
+      fillSel();
     </script>
   </body>
 </html>
